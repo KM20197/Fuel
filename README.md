@@ -1,4 +1,4 @@
-# Calculadora de Combustível — pacote para GitHub Pages + APK
+# Calculadora de Combustível 
 
 Gerar o APK
 
