@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: file:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: file:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:">
+<title>Calculadora de Combustível — Honda City Hatchback</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#0f131a">
+<meta name="description" content="Calculadora de custo por km para gasolina aditivada, gasolina comum, etanol comum e etanol aditivado.">
+<style>
+  :root{
+    --bg:#0f131a;
+    --bg-panel:#161c25;
+    --bg-panel-2:#1c2431;
+    --bg-input:#10151d;
+    --border:#2a3242;
+    --border-soft:#212938;
+    --text:#e8ecf3;
+    --text-dim:#94a1b5;
+    --text-faint:#5c6879;
+    --accent:#57c1d1;
+    --accent-soft:rgba(87,193,209,.12);
+    --good:#4caf7d;
+    --good-soft:rgba(76,175,125,.14);
+    --warn:#e0a13a;
+    --warn-soft:rgba(224,161,58,.14);
+    --bad:#e0605a;
+    --bad-soft:rgba(224,96,90,.14);
+    --neutral-soft:rgba(148,161,181,.14);
+
+    --c-gasolina-aditivada:#e8974a;
+    --c-gasolina-comum:#d8bb3e;
+    --c-etanol-comum:#4caf7d;
+    --c-etanol-aditivado:#3fb6c4;
+
+    --radius:10px;
+    --radius-sm:6px;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    --mono:ui-monospace,'Roboto Mono',SFMono-Regular,Menlo,Consolas,monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:14px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    font-variant-numeric:tabular-nums;
+  }
+  a{color:var(--accent);}
+
+  ::selection{background:var(--accent-soft);}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px;}
+
+  header.top{margin-bottom:22px;}
+  header.top .eyebrow-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  header.top h1{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:0 0 4px;}
+  header.top .sub{color:var(--text-dim);font-size:13.5px;margin:0;max-width:62ch;}
+  header.top .veiculo{color:var(--text-faint);font-size:12.5px;}
+
+  .session-banner{
+    margin-top:14px;
+    display:flex;align-items:flex-start;gap:10px;
+    background:var(--warn-soft);
+    border:1px solid rgba(224,161,58,.35);
+    border-radius:var(--radius-sm);
+    padding:10px 12px;
+    font-size:12.5px;
+    color:#f0cd8f;
+  }
+  .session-banner strong{color:#f6dfab;}
+
+  nav.tabs{
+    display:flex;gap:4px;flex-wrap:wrap;
+    margin:22px 0 20px;
+    border-bottom:1px solid var(--border);
+    padding-bottom:0;
+  }
+  .tab-btn{
+    appearance:none;border:none;background:transparent;color:var(--text-dim);
+    font-family:var(--sans);font-size:13px;font-weight:600;
+    padding:10px 14px;cursor:pointer;border-radius:8px 8px 0 0;
+    position:relative;top:1px;
+    border-bottom:2px solid transparent;
+    transition:color .15s ease;
+  }
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{color:var(--text);border-bottom-color:var(--accent);}
+  @media(max-width:820px){
+    nav.tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+    nav.tabs::-webkit-scrollbar{display:none;}
+    .tab-btn{flex:0 0 auto;}
+  }
+
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;animation:fadein .18s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(2px);}to{opacity:1;transform:translateY(0);}}
+
+  .panel{
+    background:var(--bg-panel);
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius);
+    padding:18px 20px 20px;
+    margin-bottom:18px;
+  }
+  .panel h2{font-size:14.5px;font-weight:700;margin:0 0 4px;letter-spacing:-.005em;}
+  .panel h2 small{font-weight:500;color:var(--text-faint);font-size:12px;margin-left:6px;}
+  .panel > .note{color:var(--text-dim);font-size:12.5px;margin:0 0 14px;}
+
+  .panel-header-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:2px;}
+  .panel-header-row .actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+  .grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:820px){.grid-2col{grid-template-columns:1fr;}}
+
+  /* --- hero --- */
+  .hero-card{
+    background:linear-gradient(160deg,var(--bg-panel-2),var(--bg-panel));
+    border:1px solid var(--border-soft);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    margin-bottom:18px;
+  }
+  .hero-label{font-size:12px;color:var(--text-dim);font-weight:600;text-transform:none;margin-bottom:6px;}
+  .hero-value{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:clamp(26px,4vw,38px);
+    color:var(--fuel-color,var(--text));
+    letter-spacing:-.01em;
+    line-height:1.1;
+  }
+  .hero-sub{margin-top:8px;color:var(--text-dim);font-size:13px;}
+  .hero-empty{color:var(--text-dim);font-size:13.5px;padding:6px 0;}
+
+  /* --- fields --- */
+  .field-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:14px 16px;
+  }
+  label{display:block;font-size:12.5px;color:var(--text-dim);font-weight:600;}
+  label small{font-weight:500;color:var(--text-faint);}
+  label.span-2{grid-column:span 2;}
+  @media(max-width:560px){label.span-2{grid-column:span 1;}}
+
+  input,select{
+    font-family:var(--sans);
+    background:var(--bg-input);
+    border:1px solid var(--border);
+    color:var(--text);
+    border-radius:var(--radius-sm);
+    padding:8px 10px;
+    font-size:13.5px;
+    width:100%;
+    margin-top:6px;
+  }
+  input::placeholder{color:var(--text-faint);}
+  input:focus,select:focus,button:focus-visible{
+    outline:2px solid var(--accent);outline-offset:1px;
+  }
+  input[type=date]{color-scheme:dark;}
+
+  .input-suffix{
+    display:flex;align-items:center;gap:6px;
+    background:var(--bg-input);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    margin-top:6px;
+    padding:0 10px;
+  }
+  .input-suffix input{
+    border:none;background:transparent;margin:0;padding:8px 0;flex:1;min-width:0;
+  }
+  .input-suffix input:focus{outline:none;}
+  .input-suffix span{color:var(--text-faint);font-size:12.5px;white-space:nowrap;}
+
+  .field-grid > label[style*="--fuel-color"]{
+    border-left:3px solid var(--fuel-color);
+    padding-left:10px;
+  }
+  .preco-efetivo{display:block;margin-top:5px;font-weight:500;color:var(--good);font-size:11.5px;min-height:14px;}
+
+  .posto-select{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:13px;color:var(--text);font-weight:500;}
+  .posto-select label{display:flex;align-items:center;gap:6px;font-weight:500;color:var(--text);font-size:13px;}
+  .posto-select input[type=radio]{width:auto;margin:0;accent-color:var(--accent);}
+  .badge{
+    background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700;font-family:var(--mono);
+  }
+  .desconto-edit{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px dashed var(--border);
+  }
+
+  /* --- tables --- */
+  .table-wrap{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--border-soft);}
+  table{width:100%;border-collapse:collapse;font-size:12.8px;min-width:560px;}
+  thead th{
+    text-align:left;font-weight:600;color:var(--text-dim);
+    background:var(--bg-panel-2);
+    padding:9px 12px;white-space:nowrap;
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;
+  }
+  tbody td{padding:8px 12px;border-bottom:1px solid var(--border-soft);white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:rgba(255,255,255,.02);}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:12.3px;}
+  td.dim{color:var(--text-dim);white-space:normal;font-family:var(--sans);}
+  tr.row-highlight{background:var(--accent-soft);}
+
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px;vertical-align:middle;}
+
+  .tag{
+    display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;
+    letter-spacing:.01em;
+  }
+  .tag-good{background:var(--good-soft);color:var(--good);}
+  .tag-bad{background:var(--bad-soft);color:var(--bad);}
+  .tag-warn{background:var(--warn-soft);color:var(--warn);}
+  .tag-neutral{background:var(--neutral-soft);color:var(--text-dim);}
+
+  /* --- stat list --- */
+  .stat-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+  .stat-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--border-soft);}
+  .stat-list li:last-child{border-bottom:none;padding-bottom:0;}
+  .stat-list span{color:var(--text-dim);font-size:12.5px;}
+  .stat-list strong{font-family:var(--mono);font-size:13.5px;font-weight:600;}
+
+  .cond-stat{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border-soft);font-size:13px;}
+  .cond-stat:last-child{border-bottom:none;}
+  .cond-stat strong{font-family:var(--mono);}
+
+  /* --- buttons --- */
+  button{
+    font-family:var(--sans);font-weight:600;font-size:12.5px;
+    background:var(--accent);color:#08222a;border:none;
+    border-radius:var(--radius-sm);padding:9px 14px;cursor:pointer;
+  }
+  button:hover{filter:brightness(1.08);}
+  button.ghost{background:transparent;border:1px solid var(--border);color:var(--text-dim);}
+  button.ghost:hover{color:var(--text);border-color:var(--text-faint);}
+  button.ghost.danger:hover{color:var(--bad);border-color:var(--bad);}
+  .file-btn{
+    display:inline-flex;align-items:center;background:transparent;border:1px solid var(--border);
+    color:var(--text-dim);border-radius:var(--radius-sm);padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer;
+  }
+  .file-btn:hover{color:var(--text);border-color:var(--text-faint);}
+  .icon-btn{
+    background:transparent;border:none;color:var(--text-faint);cursor:pointer;padding:2px 6px;font-size:13px;
+  }
+  .icon-btn:hover{color:var(--bad);}
+
+  form#form-historico button[type=submit]{margin-top:14px;}
+
+  /* --- legendas / metodologia static --- */
+  .legend-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:6px;}
+  .legend-table th{text-align:left;color:var(--text-dim);padding:7px 10px;border-bottom:1px solid var(--border);}
+  .legend-table td{padding:7px 10px;border-bottom:1px solid var(--border-soft);}
+  .legend-note{color:var(--text-dim);font-size:12.5px;margin:0 0 14px;}
+  .changelog{background:var(--accent-soft);border:1px solid rgba(87,193,209,.3);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:18px;}
+  .changelog h3{margin:0 0 8px;font-size:13px;color:var(--accent);}
+  .changelog ul{margin:0;padding-left:18px;font-size:12.8px;color:var(--text);}
+  .changelog li{margin-bottom:6px;}
+
+  footer.foot{margin-top:30px;color:var(--text-faint);font-size:11.5px;text-align:center;}
+
+  @media (prefers-reduced-motion:reduce){
+    .tab-panel.active{animation:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow-row">
+      <div>
+        <h1>Calculadora de Combustível</h1>
+        <p class="sub">Versão independente, construída a partir da planilha Calculadora_Combustivel_Honda.xlsx — inclui Resultados atuais, Histórico, Simulação E25–E35, Análise por Condição, Legendas, Gasolina comum e descontos Baratão/Shell.</p>
+      </div>
+      <div class="veiculo">Honda City Hatchback · tanque 39,5&nbsp;L</div>
+    </div>
+    <div class="session-banner">
+      <span>⚠</span>
+      <span><strong>Os dados ficam salvos neste aparelho</strong> (histórico, cálculos salvos e configurações), mesmo fechando o app. Eles não saem daqui sozinhos — use "Baixar CSV" para ter uma cópia fora do aparelho (inclusive no Google Drive) e "Importar CSV" para trazer dados de volta.</span>
+    </div>
+    <div class="session-banner" id="restore-banner" style="display:none;">
+      <span>✓</span>
+      <span>Dados restaurados deste aparelho a partir da última vez que você usou o app.</span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="calculadora">Calculadora</button>
+    <button class="tab-btn" data-tab="resultados">Resultados atuais</button>
+    <button class="tab-btn" data-tab="historico">Histórico</button>
+    <button class="tab-btn" data-tab="simulacao">Simulação E25–E35</button>
+    <button class="tab-btn" data-tab="condicoes">Análise por Condição</button>
+    <button class="tab-btn" data-tab="legendas">Legendas</button>
+    <button class="tab-btn" data-tab="metodologia">Metodologia</button>
+  </nav>
+
+  <!-- ===================== CALCULADORA ===================== -->
+  <section id="tab-calculadora" class="tab-panel active">
+
+    <div class="hero-card" id="hero-decisao"></div>
+
+    <div class="grid-2col">
+      <div class="panel">
+        <h2>Entradas principais</h2>
+        <div class="field-grid">
+          <label>Etanol na gasolina atual
+            <div class="input-suffix"><input id="in-etanolAtual" type="number" step="0.1" min="0" max="100" value="32" oninput="updateEntradaPct('etanolAtual', this.value)"><span>%</span></div>
+          </label>
+          <label>Capacidade do tanque
+            <div class="input-suffix"><input id="in-capacidadeTanque" type="number" step="0.1" min="0" value="39.5" oninput="updateEntrada('capacidadeTanque', this.value)"><span>L</span></div>
+          </label>
+          <label>Distância mensal
+            <div class="input-suffix"><input id="in-distanciaMensal" type="number" step="1" min="0" value="660" oninput="updateEntrada('distanciaMensal', this.value)"><span>km</span></div>
+          </label>
+          <label>Margem de segurança
+            <div class="input-suffix"><input id="in-margemSeguranca" type="number" step="0.1" min="0" max="100" value="2" oninput="updateEntradaPct('margemSeguranca', this.value)"><span>%</span></div>
+          </label>
+          <label>Fator energético etanol anidro/gasolina <small>(só afeta a Simulação E25–E35)</small>
+            <div class="input-suffix"><input id="in-fatorEnergetico" type="number" step="1" min="0" max="100" value="70" oninput="updateEntradaPct('fatorEnergetico', this.value)"><span>%</span></div>
+          </label>
+          <label>Hodômetro de referência <small>opcional — só se ainda não tem um abastecimento anterior registrado</small>
+            <div class="input-suffix"><input id="in-hodometroBaseline" type="number" step="1" min="0" placeholder="ex.: 48200" oninput="updateHodometroBaseline(this.value)"><span>km</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Preços na bomba <small>desconto do posto aplicado a todos</small></h2>
+        <div class="posto-select">
+          <label><input type="radio" name="posto" value="nenhum" checked onchange="updateDesconto(this.value)"> Nenhum</label>
+          <label><input type="radio" name="posto" value="baratao" onchange="updateDesconto(this.value)"> Baratão <span class="badge" id="badge-baratao">4,93%</span></label>
+          <label><input type="radio" name="posto" value="shell" onchange="updateDesconto(this.value)"> Shell <span class="badge" id="badge-shell">5,45%</span></label>
+        </div>
+        <div class="desconto-edit">
+          <label>Desconto Baratão <div class="input-suffix"><input id="in-descontoBaratao" type="number" step="0.01" min="0" max="100" value="4.93" oninput="updateDescontoValor('baratao', this.value)"><span>%</span></div></label>
+          <label>Desconto Shell <div class="input-suffix"><input id="in-descontoShell" type="number" step="0.01" min="0" max="100" value="5.45" oninput="updateDescontoValor('shell', this.value)"><span>%</span></div></label>
+        </div>
+        <div class="field-grid">
+          <label style="--fuel-color:var(--c-gasolina-aditivada)">Gasolina aditivada
+            <div class="input-suffix"><span>R$</span><input id="in-preco-gasolina_aditivada" type="number" step="0.01" min="0" value="6.19" oninput="updatePrecoBomba('gasolina_aditivada', this.value)"></div>
+            <small class="preco-efetivo" id="efetivo-gasolina_aditivada"></small>
+          </label>
+          <label style="--fuel-color:var(--c-gasolina-comum)">Gasolina comum
+            <div class="input-suffix"><span>R$</span><input id="in-preco-gasolina_comum" type="number" step="0.01" min="0" value="5.99" oninput="updatePrecoBomba('gasolina_comum', this.value)"></div>
+            <small class="preco-efetivo" id="efetivo-gasolina_comum"></small>
+          </label>
+          <label style="--fuel-color:var(--c-etanol-comum)">Etanol comum
+            <div class="input-suffix"><span>R$</span><input id="in-preco-etanol_comum" type="number" step="0.01" min="0" value="3.80" oninput="updatePrecoBomba('etanol_comum', this.value)"></div>
+            <small class="preco-efetivo" id="efetivo-etanol_comum"></small>
+          </label>
+          <label style="--fuel-color:var(--c-etanol-aditivado)">Etanol aditivado
+            <div class="input-suffix"><span>R$</span><input id="in-preco-etanol_aditivado" type="number" step="0.01" min="0" value="4.34" oninput="updatePrecoBomba('etanol_aditivado', this.value)"></div>
+            <small class="preco-efetivo" id="efetivo-etanol_aditivado"></small>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Consumos manuais <small>usados apenas se não houver histórico válido</small></h2>
+      <div class="field-grid">
+        <label style="--fuel-color:var(--c-gasolina-aditivada)">Gasolina aditivada
+          <div class="input-suffix"><input id="in-consumo-gasolina_aditivada" type="number" step="0.01" min="0" value="11.54" oninput="updateConsumoManual('gasolina_aditivada', this.value)"><span>km/L</span></div>
+        </label>
+        <label style="--fuel-color:var(--c-gasolina-comum)">Gasolina comum <small>(opcional)</small>
+          <div class="input-suffix"><input id="in-consumo-gasolina_comum" type="number" step="0.01" min="0" placeholder="= gasolina aditivada" oninput="updateConsumoManual('gasolina_comum', this.value)"><span>km/L</span></div>
+        </label>
+        <label style="--fuel-color:var(--c-etanol-comum)">Etanol comum
+          <div class="input-suffix"><input id="in-consumo-etanol_comum" type="number" step="0.01" min="0" value="8.40" oninput="updateConsumoManual('etanol_comum', this.value)"><span>km/L</span></div>
+        </label>
+        <label style="--fuel-color:var(--c-etanol-aditivado)">Etanol aditivado <small>(opcional)</small>
+          <div class="input-suffix"><input id="in-consumo-etanol_aditivado" type="number" step="0.01" min="0" placeholder="= etanol comum" oninput="updateConsumoManual('etanol_aditivado', this.value)"><span>km/L</span></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="grid-2col">
+      <div class="panel">
+        <h2>Decisão automática</h2>
+        <div id="decisao-automatica"></div>
+      </div>
+      <div class="panel">
+        <h2>Faixa de preço para ser o mais econômico</h2>
+        <p class="note">Preço máximo mantendo os demais preços constantes.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Combustível</th><th>Preço atual</th><th>Preço máximo</th><th>Folga</th><th>Situação</th></tr></thead>
+          <tbody id="tbl-faixa-preco"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header-row">
+        <h2>Histórico de cálculos <small>fica salvo no aparelho, mesmo fechando o app</small></h2>
+        <div class="actions">
+          <button type="button" onclick="salvarCalculoAtual()">Salvar cálculo atual</button>
+          <button type="button" onclick="exportarCalcCSV()">Baixar CSV</button>
+          <button type="button" class="ghost danger" onclick="limparCalcHistorico()">Limpar</button>
+        </div>
+      </div>
+      <p class="note">Cada linha é uma "foto" dos preços e da decisão no momento em que você clicou em "Salvar cálculo atual" — útil para comparar como a decisão mudou ao longo do tempo.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Quando</th><th>Gas. aditivada</th><th>Gas. comum</th><th>Etanol comum</th><th>Etanol aditivado</th><th>Mais econômico</th><th>Custo/km</th><th></th></tr></thead>
+        <tbody id="tbl-calc-historico"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===================== RESULTADOS ATUAIS ===================== -->
+  <section id="tab-resultados" class="tab-panel">
+    <div class="panel">
+      <h2>Consumo efetivamente usado</h2>
+      <p class="note">Histórico válido substitui automaticamente o consumo manual, combustível por combustível.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Combustível</th><th>Histórico ponderado</th><th>Consumo usado</th><th>Fonte</th><th>Observação</th></tr></thead>
+        <tbody id="tbl-consumo-usado"></tbody>
+      </table></div>
+    </div>
+
+    <div class="panel">
+      <h2>Comparação econômica atual</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Combustível</th><th>Preço R$/L</th><th>Consumo km/L</th><th>Fonte</th><th>Eficiência vs gasolina</th><th>Custo R$/km</th><th>Custo R$/100km</th><th>Tanque cheio</th><th>Autonomia</th><th>Custo mensal</th></tr></thead>
+        <tbody id="tbl-comparacao"></tbody>
+      </table></div>
+    </div>
+
+    <div class="panel">
+      <h2>Regra dos 70% com margem de segurança <small>etanol vs. cada gasolina</small></h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Comparação</th><th>% limite (eficiência)</th><th>Preço-limite com margem</th><th>Preço atual do etanol</th><th>Diferença</th><th>Classificação</th></tr></thead>
+        <tbody id="tbl-regra-margem"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===================== HISTÓRICO ===================== -->
+  <section id="tab-historico" class="tab-panel">
+    <div class="panel">
+      <h2>Novo abastecimento</h2>
+      <form id="form-historico" onsubmit="addHistoricoEntry(event)">
+        <div class="field-grid">
+          <label>Data<input type="date" name="data" required></label>
+          <label>Hora <small>opcional</small><input type="time" name="hora"></label>
+          <label>Combustível
+            <select name="combustivel" required onchange="toggleEtanolField(this)">
+              <option value="gasolina_aditivada">Gasolina aditivada</option>
+              <option value="gasolina_comum">Gasolina comum</option>
+              <option value="etanol_comum">Etanol comum</option>
+              <option value="etanol_aditivado">Etanol aditivado</option>
+            </select>
+          </label>
+          <label id="campo-etanol-pct">Etanol na gasolina
+            <div class="input-suffix"><input type="number" name="etanolPct" step="0.1" min="0" max="100" placeholder="ex.: 32"><span>%</span></div>
+          </label>
+          <label>Preço pago
+            <div class="input-suffix"><span>R$</span><input type="number" name="preco" step="0.0001" min="0" required></div>
+          </label>
+          <label>Hodômetro <small>o que está no painel agora</small>
+            <div class="input-suffix"><input type="number" name="hodometro" step="1" min="0" required oninput="previewKmDelta(this)"><span>km</span></div>
+            <small class="preco-efetivo" id="preview-km-delta"></small>
+          </label>
+          <label>Litros consumidos<input type="number" name="litros" step="0.01" min="0" required></label>
+          <label>Congestionamento
+            <select name="congestionamento"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+          </label>
+          <label>Aclives
+            <select name="aclives"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+          </label>
+          <label>Ar-condicionado
+            <select name="arCondicionado"><option value="">—</option><option value="0">0%</option><option value="0.25">25%</option><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option></select>
+          </label>
+          <label>Incluir no cálculo principal?
+            <select name="incluir"><option value="Sim">Sim</option><option value="Não">Não</option></select>
+          </label>
+          <label class="span-2">Observações / motivo da exclusão<input type="text" name="obs" placeholder="opcional"></label>
+        </div>
+        <button type="submit">Adicionar abastecimento</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header-row">
+        <h2>Lançamentos <span id="contagem-historico" class="note" style="display:inline"></span></h2>
+        <div class="actions">
+          <button type="button" onclick="exportarCSV()">Baixar CSV (planilha)</button>
+          <button type="button" class="ghost" onclick="exportarCSVCompleto()">Baixar CSV completo</button>
+          <label class="file-btn">Importar CSV<input type="file" accept=".csv,text/csv" onchange="importarCSV(event)" hidden></label>
+          <button type="button" class="ghost" onclick="restaurarExemplo()">Restaurar exemplo</button>
+          <button type="button" class="ghost danger" onclick="limparHistorico()">Limpar tudo</button>
+        </div>
+      </div>
+      <p class="note">"CSV (planilha)" usa exatamente as 11 colunas da aba Historico da sua planilha (A–F e J–N; G, H, I, O, P são fórmulas e ficam de fora) — cole direto nela, sem quebrar nada. "CSV completo" traz tudo isso e mais Hodômetro, Hora e Valor total, para backup do app (não cole esse de volta na planilha).</p>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>Data/Hora</th><th>Combustível</th><th>Etanol%</th><th>Preço</th><th>Hodômetro</th><th>Km desde anterior</th><th>Litros</th><th>Consumo</th><th>Custo/km</th><th>Valor total</th><th>L. equiv. etanol</th><th>Congest.</th><th>Aclives</th><th>Ar-cond.</th><th>Incluir?</th><th>Condição</th><th>Obs.</th><th></th>
+        </tr></thead>
+        <tbody id="tbl-historico"></tbody>
+      </table></div>
+    </div>
+
+    <div class="panel">
+      <h2>Resumo por combustível <small>alimenta o "Consumo efetivamente usado" da Calculadora</small></h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Combustível</th><th>Registros válidos</th><th>Km totais</th><th>Litros totais</th><th>Consumo ponderado</th><th>Preço médio ponderado</th><th>Teor E ponderado</th></tr></thead>
+        <tbody id="tbl-resumo-historico"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===================== SIMULAÇÃO E ===================== -->
+  <section id="tab-simulacao" class="tab-panel">
+    <div class="panel">
+      <p class="note" style="margin-bottom:0;">A simulação estima como o consumo da gasolina variaria com o teor de etanol, mantendo constante a eficiência global do motor. O etanol comum e o etanol aditivado não dependem do teor de etanol na gasolina, então seu custo/km fica constante nos dois quadros abaixo.</p>
+    </div>
+
+    <div class="panel">
+      <h2 style="color:var(--c-gasolina-aditivada)">Cenários para Gasolina aditivada</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Cenário</th><th>Etanol na gasolina</th><th>Índice energético</th><th>Consumo estimado</th><th>Custo gasolina/km</th><th>Custo etanol comum/km</th><th>Custo etanol aditivado/km</th><th>Mais econômico</th><th>Preço-limite et. comum</th><th>% limite et. comum</th><th>Preço-limite et. aditivado</th><th>% limite et. aditivado</th></tr></thead>
+        <tbody id="tbl-sim-aditivada"></tbody>
+      </table></div>
+    </div>
+
+    <div class="panel">
+      <h2 style="color:var(--c-gasolina-comum)">Cenários para Gasolina comum</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Cenário</th><th>Etanol na gasolina</th><th>Índice energético</th><th>Consumo estimado</th><th>Custo gasolina/km</th><th>Custo etanol comum/km</th><th>Custo etanol aditivado/km</th><th>Mais econômico</th><th>Preço-limite et. comum</th><th>% limite et. comum</th><th>Preço-limite et. aditivado</th><th>% limite et. aditivado</th></tr></thead>
+        <tbody id="tbl-sim-comum"></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- ===================== ANÁLISE POR CONDIÇÃO ===================== -->
+  <section id="tab-condicoes" class="tab-panel">
+    <div class="panel">
+      <p class="note" style="margin-bottom:0;">Usa somente registros marcados "Sim" em "Incluir no cálculo principal?" e estratifica pela condição automática. Congestionamento, aclives e ar-condicionado não recebem fatores de correção — só definem grupos comparáveis. O consumo de cada grupo é ponderado por km totais ÷ litros totais.</p>
+    </div>
+    <div class="panel">
+      <h2>Consumo e custo real por condição de uso</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Condição</th><th>Combustível</th><th>Registros</th><th>Km totais</th><th>Litros totais</th><th>Consumo ponderado</th><th>Preço atual</th><th>Custo atual R$/km</th><th>Custo atual R$/100km</th></tr></thead>
+        <tbody id="tbl-condicoes"></tbody>
+      </table></div>
+    </div>
+    <div class="grid-2col">
+      <div class="panel">
+        <h2>Mais econômico por condição</h2>
+        <div id="mais-economico-condicao"></div>
+      </div>
+      <div class="panel">
+        <h2>Controle de qualidade</h2>
+        <div id="controle-qualidade"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LEGENDAS ===================== -->
+  <section id="tab-legendas" class="tab-panel">
+    <div class="panel">
+      <h2>Legendas para o Histórico de Abastecimentos</h2>
+      <p class="legend-note">Use estas referências de forma consistente em todos os abastecimentos. Congestionamento, aclives e ar-condicionado são usados para agrupar registros em condições Favorável, Intermediária e Severa; não alteram diretamente o consumo observado.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Congestionamento — escala 1 a 5</h2>
+      <table class="legend-table">
+        <thead><tr><th>Nível</th><th>Classificação</th><th>Referência prática</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Livre</td><td>Fluxo contínuo, praticamente sem retenção ou paradas além das normais.</td><td>Via fluindo; sem filas relevantes.</td></tr>
+          <tr><td>2</td><td>Leve</td><td>Algumas reduções, semáforos e pequenas retenções.</td><td>Trânsito urbano normal fora do pico.</td></tr>
+          <tr><td>3</td><td>Moderado</td><td>Paradas frequentes, trechos lentos e retenção perceptível.</td><td>Parte relevante do trajeto em baixa velocidade.</td></tr>
+          <tr><td>4</td><td>Intenso</td><td>Filas, muitas paradas e longos períodos em baixa velocidade.</td><td>Horário de pico com anda-e-para frequente.</td></tr>
+          <tr><td>5</td><td>Severo</td><td>Predomínio de anda-e-para, longas filas ou períodos parado.</td><td>Congestionamento pesado durante boa parte do trajeto.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h2>Aclives — escala 1 a 5</h2>
+      <table class="legend-table">
+        <thead><tr><th>Nível</th><th>Classificação</th><th>Referência prática</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Plano</td><td>Percurso praticamente plano; aclives raros e suaves.</td><td>Motor pouco exigido por inclinação.</td></tr>
+          <tr><td>2</td><td>Leve</td><td>Percurso levemente ondulado, com pequenas subidas.</td><td>Aclives curtos e pouco frequentes.</td></tr>
+          <tr><td>3</td><td>Moderado</td><td>Subidas regulares que exigem aceleração perceptivelmente maior.</td><td>Relevo ondulado durante parte relevante do percurso.</td></tr>
+          <tr><td>4</td><td>Acidentado</td><td>Muitas subidas ou aclives prolongados; maior carga do motor.</td><td>Trechos de subida frequentes ou longos.</td></tr>
+          <tr><td>5</td><td>Muito acidentado</td><td>Aclives fortes e/ou prolongados representam parcela significativa do percurso.</td><td>Relevo fortemente acidentado ou subida predominante.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h2>Ar-condicionado — percentual do percurso</h2>
+      <table class="legend-table">
+        <thead><tr><th>Valor</th><th>Referência</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr><td>0%</td><td>Desligado ou uso praticamente nulo.</td><td>Não considerar apenas ventilação sem compressor.</td></tr>
+          <tr><td>25%</td><td>Ligado em aproximadamente 1/4 do percurso.</td><td>Estimativa aproximada é suficiente.</td></tr>
+          <tr><td>50%</td><td>Ligado em aproximadamente metade do percurso.</td><td>Use o valor mais próximo do uso real.</td></tr>
+          <tr><td>75%</td><td>Ligado em aproximadamente 3/4 do percurso.</td><td>Entra no critério de condição Severa.</td></tr>
+          <tr><td>100%</td><td>Ligado durante praticamente todo o percurso.</td><td>Entra no critério de condição Severa.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h2>Classificação automática da condição de uso</h2>
+      <table class="legend-table">
+        <thead><tr><th>Classe</th><th>Critério</th></tr></thead>
+        <tbody>
+          <tr><td>Favorável</td><td>Congestionamento ≤2, aclives ≤2 e ar-condicionado ≤25%.</td></tr>
+          <tr><td>Intermediária</td><td>Combinações completas que não são Favorável nem Severa.</td></tr>
+          <tr><td>Severa</td><td>Congestionamento ≥4 OU aclives ≥4 OU ar-condicionado ≥75%.</td></tr>
+          <tr><td>Não classificado</td><td>Um ou dois dos três campos não foram preenchidos. Continua no cálculo geral se incluído, mas não entra na análise por condição.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h2>Incluir no cálculo principal?</h2>
+      <table class="legend-table">
+        <thead><tr><th>Resposta</th><th>Quando usar</th></tr></thead>
+        <tbody>
+          <tr><td>Sim</td><td>O registro representa adequadamente o consumo do combustível informado.</td></tr>
+          <tr><td>Não</td><td>Mistura relevante entre combustíveis, abastecimento parcial, quilometragem/volume incompletos, erro de registro ou condição excepcional (ex.: viagem atípica).</td></tr>
+        </tbody>
+      </table>
+      <p class="legend-note" style="margin-top:8px;">O registro permanece no histórico mesmo quando excluído — descreva o motivo em "Observações".</p>
+    </div>
+  </section>
+
+  <!-- ===================== METODOLOGIA ===================== -->
+  <section id="tab-metodologia" class="tab-panel">
+    <div class="changelog">
+      <h3>O que muda nesta versão</h3>
+      <ul>
+        <li><strong>Conteúdo incorporado ao APK:</strong> interface, regras, estilos, ícones e dados iniciais são carregados do próprio aplicativo, sem depender do GitHub Pages ou de conexão para funcionar.</li>
+        <li><strong>Resultados atuais em tela própria:</strong> Consumo efetivamente usado, Comparação econômica atual e Regra dos 70% com margem foram retirados da primeira tela e agrupados em uma aba dedicada.</li>
+        <li><strong>Gasolina comum</strong> foi adicionada como 4º combustível completo: entra no Histórico, na Comparação econômica, na Decisão automática, na Faixa de preço, na Simulação E25–E35 e na Análise por Condição. Ela usa o mesmo campo de "Etanol na gasolina atual" da gasolina aditivada (mesma mistura nacional). Se o consumo manual for deixado em branco, assume o mesmo valor usado para a gasolina aditivada — assim como o etanol aditivado já fazia em relação ao etanol comum na planilha original.</li>
+        <li><strong>Desconto Baratão/Shell</strong>: seleção única (Nenhum / Baratão / Shell) aplicada a todos os 4 preços informados na bomba ao mesmo tempo. O preço efetivo = preço da bomba × (1 − desconto do posto selecionado). As duas taxas (4,93% e 5,45%) são editáveis.</li>
+        <li><strong>Regra dos 70% com margem</strong> foi generalizada para 4 combinações (cada etanol vs. cada gasolina), já que agora existem duas gasolinas.</li>
+        <li><strong>Correção de um erro da planilha original:</strong> a tabela-resumo do Histórico (células Q5:Q7) que alimenta "histórico válido substitui consumo manual" tinha rótulos incorretos — duas linhas apontavam para "Etanol aditivado" e nenhuma para "Gasolina aditivada", e a linha de "Etanol comum" tinha um espaço extra que zerava a busca. Esta implementação calcula o resumo diretamente por combustível, sem esse problema.</li>
+        <li>O núcleo da calculadora permanece autônomo (HTML/CSS/JS, sem backend) e é executado localmente pelo aplicativo Android.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h2>Metodologia, premissas e fontes</h2>
+      <table class="legend-table">
+        <thead><tr><th>Item</th><th>Descrição</th></tr></thead>
+        <tbody>
+          <tr><td>Custo por km</td><td>Preço do combustível (R$/L) ÷ consumo efetivamente usado (km/L).</td></tr>
+          <tr><td>Consumo do histórico</td><td>Soma dos quilômetros válidos ÷ soma dos litros válidos, por combustível.</td></tr>
+          <tr><td>Prioridade dos dados</td><td>Se houver histórico válido, ele substitui automaticamente o consumo manual. Sem histórico, usa o consumo manual (ou o consumo usado do combustível de referência, no caso de gasolina comum e etanol aditivado).</td></tr>
+          <tr><td>Eficiência relativa do etanol</td><td>Consumo do etanol ÷ consumo da gasolina.</td></tr>
+          <tr><td>Preço-limite do etanol</td><td>Preço da gasolina × eficiência relativa do etanol.</td></tr>
+          <tr><td>Faixa para ser o mais econômico</td><td>Cada combustível é comparado simultaneamente aos outros três, mantendo os preços dos concorrentes constantes.</td></tr>
+          <tr><td>Autonomia teórica</td><td>Consumo usado (km/L) × capacidade do tanque (L).</td></tr>
+          <tr><td>Custo do tanque cheio</td><td>Preço por litro × capacidade do tanque.</td></tr>
+          <tr><td>Simulação E25–E35</td><td>Estimativa de engenharia; não representa ensaio oficial da Honda para cada mistura.</td></tr>
+          <tr><td>Índice energético da mistura</td><td>(1 − fração de etanol) + fator energético × fração de etanol.</td></tr>
+          <tr><td>Consumo simulado</td><td>Consumo da gasolina na mistura atual × índice energético da mistura simulada ÷ índice da mistura atual.</td></tr>
+          <tr><td>Fator energético</td><td>Premissa editável. O valor inicial de 70% é usado apenas na simulação de sensibilidade; os cálculos principais usam consumo real/ponderado.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h2>Honda City Hatchback — dados oficiais usados como valores iniciais</h2>
+      <table class="legend-table">
+        <thead><tr><th>Dado</th><th>Valor / Fonte</th></tr></thead>
+        <tbody>
+          <tr><td>Capacidade do tanque</td><td>39,5 L</td></tr>
+          <tr><td>Consumo urbano gasolina</td><td>13,2 km/L</td></tr>
+          <tr><td>Consumo urbano etanol</td><td>9,2 km/L</td></tr>
+          <tr><td>Fonte Honda</td><td><a href="https://www.honda.com.br/automoveis/sites/hab/files/catalogos/city_hb/index.html" target="_blank" rel="noopener">honda.com.br — catálogo City Hatchback</a></td></tr>
+        </tbody>
+      </table>
+      <p class="legend-note">A Honda informa 39,5 L para o City Hatchback; os 44 L às vezes citados correspondem ao City Sedan. A capacidade permanece editável para outros veículos.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Uso de congestionamento, aclives e ar-condicionado</h2>
+      <table class="legend-table">
+        <thead><tr><th>Item</th><th>Tratamento</th></tr></thead>
+        <tbody>
+          <tr><td>Congestionamento</td><td>Escala 1–5. Classifica a condição do percurso; não altera diretamente o km/L.</td></tr>
+          <tr><td>Aclives</td><td>Escala 1–5. Classifica a condição do percurso; não aplica penalização arbitrária.</td></tr>
+          <tr><td>Ar-condicionado</td><td>Percentual aproximado de uso no percurso: 0%, 25%, 50%, 75% ou 100%.</td></tr>
+        </tbody>
+      </table>
+      <p class="legend-note">Nenhuma das três variáveis entra em qualquer cálculo de custo por km — elas só agrupam registros comparáveis na Análise por Condição.</p>
+    </div>
+  </section>
+
+  <footer class="foot">Aplicativo local baseado em Calculadora_Combustivel_Honda.xlsx · dados armazenados neste aparelho.</footer>
+</div>
+
+<script>
+/* ============================================================
+   MODELO DE DADOS
+============================================================ */
+const FUELS = [
+  {key:'gasolina_aditivada', label:'Gasolina aditivada', group:'gasolina', color:'var(--c-gasolina-aditivada)'},
+  {key:'gasolina_comum',     label:'Gasolina comum',     group:'gasolina', color:'var(--c-gasolina-comum)'},
+  {key:'etanol_comum',       label:'Etanol comum',       group:'etanol',   color:'var(--c-etanol-comum)'},
+  {key:'etanol_aditivado',   label:'Etanol aditivado',   group:'etanol',   color:'var(--c-etanol-aditivado)'},
+];
+const FUEL_BY_KEY = Object.fromEntries(FUELS.map(f=>[f.key,f]));
+
+function genId(){ return 'r'+Math.random().toString(36).slice(2,9); }
+
+function seedHistorico(){
+  return [
+    {id:genId(), data:'2026-08-13', hora:'', combustivel:'etanol_aditivado', etanolPct:null, preco:110.71/25, hodometro:48281, km:281, litros:25, congestionamento:4, aclives:3, arCondicionado:0.25, incluir:'Sim', obs:''},
+    {id:genId(), data:'2026-08-19', hora:'', combustivel:'etanol_aditivado', etanolPct:null, preco:4.27, hodometro:48562, km:281, litros:25, congestionamento:4, aclives:3, arCondicionado:0.25, incluir:'Sim', obs:''},
+    {id:genId(), data:'2026-08-27', hora:'', combustivel:'etanol_comum', etanolPct:null, preco:3.9992, hodometro:48796, km:234, litros:25, congestionamento:4, aclives:3, arCondicionado:0.25, incluir:'Sim', obs:''},
+    {id:genId(), data:'2026-09-01', hora:'', combustivel:'etanol_aditivado', etanolPct:null, preco:4.289829302987197, hodometro:49032, km:236, litros:28.12, congestionamento:5, aclives:3, arCondicionado:0.25, incluir:'Sim', obs:''},
+  ];
+}
+
+let state = {
+  entradas:{ etanolAtual:0.32, capacidadeTanque:39.5, distanciaMensal:660, margemSeguranca:0.02, fatorEnergetico:0.7 },
+  desconto:{ posto:'nenhum', baratao:0.0493, shell:0.0545 },
+  precosBomba:{ gasolina_aditivada:6.19, gasolina_comum:5.99, etanol_comum:3.80, etanol_aditivado:4.34 },
+  consumoManual:{ gasolina_aditivada:11.54, gasolina_comum:null, etanol_comum:8.40, etanol_aditivado:null },
+  hodometroBaseline: 48000,
+  historico: seedHistorico(),
+  calcHistorico: [],
+};
+
+const STORAGE_KEYS = { config:'combustivel:config', historico:'combustivel:historico', calc:'combustivel:calcHistorico' };
+
+function persist(){
+  try{
+    localStorage.setItem(STORAGE_KEYS.config, JSON.stringify({
+      entradas: state.entradas, desconto: state.desconto, precosBomba: state.precosBomba,
+      consumoManual: state.consumoManual, hodometroBaseline: state.hodometroBaseline,
+    }));
+    localStorage.setItem(STORAGE_KEYS.historico, JSON.stringify(state.historico));
+    localStorage.setItem(STORAGE_KEYS.calc, JSON.stringify(state.calcHistorico));
+  }catch(e){ /* localStorage indisponível (ex.: pré-visualização em sandbox) — segue só na memória */ }
+}
+
+function loadPersisted(){
+  try{
+    const cfgRaw = localStorage.getItem(STORAGE_KEYS.config);
+    if(cfgRaw){
+      const cfg = JSON.parse(cfgRaw);
+      if(cfg.entradas) Object.assign(state.entradas, cfg.entradas);
+      if(cfg.desconto) Object.assign(state.desconto, cfg.desconto);
+      if(cfg.precosBomba) Object.assign(state.precosBomba, cfg.precosBomba);
+      if(cfg.consumoManual) Object.assign(state.consumoManual, cfg.consumoManual);
+      if(cfg.hodometroBaseline!=null) state.hodometroBaseline = cfg.hodometroBaseline;
+    }
+    const histRaw = localStorage.getItem(STORAGE_KEYS.historico);
+    if(histRaw){ const h = JSON.parse(histRaw); if(Array.isArray(h)) state.historico = h; }
+    const calcRaw = localStorage.getItem(STORAGE_KEYS.calc);
+    if(calcRaw){ const c = JSON.parse(calcRaw); if(Array.isArray(c)) state.calcHistorico = c; }
+    return !!(cfgRaw || histRaw);
+  }catch(e){ return false; }
+}
+
+function syncInputsFromState(){
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+  set('in-etanolAtual', state.entradas.etanolAtual*100);
+  set('in-capacidadeTanque', state.entradas.capacidadeTanque);
+  set('in-distanciaMensal', state.entradas.distanciaMensal);
+  set('in-margemSeguranca', state.entradas.margemSeguranca*100);
+  set('in-fatorEnergetico', state.entradas.fatorEnergetico*100);
+  set('in-hodometroBaseline', state.hodometroBaseline ?? '');
+  set('in-descontoBaratao', state.desconto.baratao*100);
+  set('in-descontoShell', state.desconto.shell*100);
+  FUELS.forEach(f=>{
+    set('in-preco-'+f.key, state.precosBomba[f.key]);
+    set('in-consumo-'+f.key, state.consumoManual[f.key] ?? '');
+  });
+  document.querySelectorAll('input[name=posto]').forEach(r=>{ r.checked = (r.value===state.desconto.posto); });
+}
+
+/* ============================================================
+   FORMATAÇÃO
+============================================================ */
+const fmtBRL = n => (n==null||isNaN(n)||!isFinite(n)) ? '—' : n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fmtNum = (n,d=2) => (n==null||isNaN(n)||!isFinite(n)) ? '—' : n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtPct = (n,d=1) => (n==null||isNaN(n)||!isFinite(n)) ? '—' : (n*100).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+'%';
+const fmtInt = n => (n==null||isNaN(n)||!isFinite(n)) ? '—' : Math.round(n).toLocaleString('pt-BR');
+function swatch(fuelKey){ return `<span class="dot" style="background:var(--c-${fuelKey.replace(/_/g,'-')})"></span>`; }
+
+/* ============================================================
+   ATUALIZAÇÃO DE ESTADO (inputs)
+============================================================ */
+function parseNum(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+
+function updateEntrada(campo, valor){ state.entradas[campo] = parseNum(valor); renderAll(); }
+function updateEntradaPct(campo, valor){ state.entradas[campo] = parseNum(valor)/100; renderAll(); }
+function updatePrecoBomba(fuel, valor){ state.precosBomba[fuel] = parseNum(valor); renderAll(); }
+function updateConsumoManual(fuel, valor){ state.consumoManual[fuel] = (valor==='' ? null : parseNum(valor)); renderAll(); }
+function updateDesconto(posto){ state.desconto.posto = posto; document.querySelectorAll('input[name=posto]').forEach(r=>{ r.checked = (r.value===posto); }); renderAll(); }
+function updateDescontoValor(posto, valor){ state.desconto[posto] = parseNum(valor)/100; renderAll(); }
+function updateHodometroBaseline(valor){ state.hodometroBaseline = (valor==='' ? null : parseNum(valor)); renderAll(); }
+
+// Deriva "km desde o abastecimento anterior" a partir do hodômetro de cada lançamento,
+// ordenando por hodômetro (não pela ordem de digitação) para tolerar lançamentos fora de ordem.
+function recomputeKmDeltas(){
+  const comHodometro = state.historico.filter(r=>r.hodometro!=null && !isNaN(r.hodometro));
+  comHodometro.sort((a,b)=>a.hodometro-b.hodometro);
+  let anterior = (state.hodometroBaseline!=null && !isNaN(state.hodometroBaseline)) ? state.hodometroBaseline : null;
+  comHodometro.forEach(r=>{
+    r.km = (anterior!=null && r.hodometro>=anterior) ? (r.hodometro-anterior) : null;
+    anterior = r.hodometro;
+  });
+}
+
+function previewKmDelta(inputEl){
+  const el = document.getElementById('preview-km-delta');
+  if(!el) return;
+  const hod = parseFloat(inputEl.value);
+  if(isNaN(hod)){ el.textContent=''; return; }
+  const maxExistente = state.historico.reduce((m,r)=> (r.hodometro!=null && r.hodometro>m) ? r.hodometro : m, (state.hodometroBaseline!=null?state.hodometroBaseline:-Infinity));
+  if(maxExistente===-Infinity){ el.textContent = 'Primeiro lançamento — km só será calculado a partir do próximo.'; return; }
+  const delta = hod-maxExistente;
+  el.textContent = delta>=0 ? ('km desde o último: '+fmtNum(delta,1)+' km') : 'Hodômetro menor que o último lançamento — confira o valor.';
+}
+
+function toggleEtanolField(sel){
+  const fuel = FUEL_BY_KEY[sel.value];
+  const campo = document.getElementById('campo-etanol-pct');
+  campo.style.display = fuel.group==='gasolina' ? '' : 'none';
+}
+
+/* ============================================================
+   HISTÓRICO — cálculos por linha
+============================================================ */
+function consumoRow(r){ return (r.km>0 && r.litros>0) ? r.km/r.litros : null; }
+function custoKmRow(r){ const c = consumoRow(r); return (c && r.preco!=null) ? r.preco/c : null; }
+function custoTotalRow(r){ return (r.preco!=null && r.litros!=null) ? r.preco*r.litros : null; }
+function litrosEquivEtanolRow(r){
+  const fuel = FUEL_BY_KEY[r.combustivel];
+  return (fuel.group==='gasolina' && r.etanolPct!=null && r.litros!=null) ? r.etanolPct*r.litros : 0;
+}
+function condicaoDeUso(r){
+  const c=r.congestionamento, a=r.aclives, ar=r.arCondicionado;
+  const vazio = v => v===null || v===undefined || v==='';
+  if (vazio(c) && vazio(a) && vazio(ar)) return '';
+  if (vazio(c) || vazio(a) || vazio(ar)) return 'Não classificado';
+  if (c<=2 && a<=2 && ar<=0.25) return 'Favorável';
+  if (c>=4 || a>=4 || ar>=0.75) return 'Severa';
+  return 'Intermediária';
+}
+
+function addHistoricoEntry(e){
+  e.preventDefault();
+  const f = e.target;
+  const el = f.elements;
+  const combustivel = el.combustivel.value;
+  const fuelInfo = FUEL_BY_KEY[combustivel];
+  const hodometro = parseFloat(el.hodometro.value);
+  if(isNaN(hodometro)){ alert('Informe o hodômetro.'); return; }
+  const jaExiste = state.historico.some(r=>r.hodometro===hodometro);
+  if(jaExiste && !confirm('Já existe um lançamento com esse hodômetro. Adicionar mesmo assim?')) return;
+  const entry = {
+    id: genId(),
+    data: el.data.value,
+    hora: el.hora.value || '',
+    combustivel,
+    etanolPct: (fuelInfo.group==='gasolina' && el.etanolPct.value!=='') ? parseFloat(el.etanolPct.value)/100 : null,
+    preco: parseFloat(el.preco.value)||0,
+    hodometro,
+    km: null, // recalculado por recomputeKmDeltas() a partir do hodômetro
+    litros: parseFloat(el.litros.value)||0,
+    congestionamento: el.congestionamento.value!=='' ? parseInt(el.congestionamento.value) : null,
+    aclives: el.aclives.value!=='' ? parseInt(el.aclives.value) : null,
+    arCondicionado: el.arCondicionado.value!=='' ? parseFloat(el.arCondicionado.value) : null,
+    incluir: el.incluir.value,
+    obs: el.obs.value,
+  };
+  state.historico.push(entry);
+  f.reset();
+  toggleEtanolField(el.combustivel);
+  const preview = document.getElementById('preview-km-delta'); if(preview) preview.textContent='';
+  renderAll();
+}
+function removeHistoricoEntry(id){ state.historico = state.historico.filter(r=>r.id!==id); renderAll(); }
+function limparHistorico(){ if(confirm('Remover todos os lançamentos do histórico deste aparelho? Essa ação não pode ser desfeita.')){ state.historico = []; renderAll(); } }
+function restaurarExemplo(){ if(confirm('Substituir o histórico atual pelos 4 lançamentos de exemplo da planilha original?')){ state.historico = seedHistorico(); renderAll(); } }
+
+/* ============================================================
+   CSV — exportar / importar
+============================================================ */
+// Esquema confirmado a partir do CSV real exportado da aba "Historico" de
+// Calculadora_Honda_v10_CORRIGIDA (Google Sheets). 11 colunas de entrada (A,B,C,D,E,F,J,K,L,M,N);
+// G,H,I,O,P são fórmulas na planilha e não entram aqui, para não sobrescrevê-las ao colar de volta.
+// Data vem no formato brasileiro DD/MM/AAAA — convertido para o formato ISO usado internamente pelo app.
+const HISTORICO_CSV_HEADERS = ['Data','Combustível','Etanol na gasolina (%)','Preço (R$/L)','Km percorridos','Litros consumidos','Congestionamento','Aclives','Ar-condicionado','Incluir no cálculo?','Observações'];
+// Colunas extras só no "CSV completo do app" (não fazem parte da planilha — não colar de volta nela).
+const HISTORICO_CSV_EXTRA_HEADERS = ['Hodômetro (km)','Hora','Valor total (R$)'];
+
+const HISTORICO_CSV_ALIASES = {
+  data: ['data'],
+  combustivel: ['combustivel'],
+  etanolPct: ['etanol na gasolina (%)','etanolnagasolina(%)','etanol'],
+  preco: ['preco (r$/l)','preco(r$/l)','preco'],
+  km: ['km percorridos','kmpercorridos','km'],
+  litros: ['litros consumidos','litrosconsumidos','litros'],
+  congestionamento: ['congestionamento'],
+  aclives: ['aclives'],
+  arCondicionado: ['ar-condicionado','arcondicionado','ar condicionado'],
+  incluir: ['incluir no calculo?','incluir no calculo principal?','incluir'],
+  obs: ['observacoes','observacoes / motivo da exclusao','obs'],
+  hodometro: ['hodometro (km)','hodometro(km)','hodometro','odometro'],
+  hora: ['hora'],
+};
+function normalizeHeader(h){
+  return String(h||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+function findColIndex(headerRow, aliases){
+  const norm = headerRow.map(normalizeHeader);
+  for(const alias of aliases){
+    const idx = norm.indexOf(normalizeHeader(alias));
+    if(idx!==-1) return idx;
+  }
+  return -1;
+}
+// Converte "13/08/2026" -> "2026-08-13"; deixa passar se já vier em ISO.
+function brDateToIso(s){
+  s = String(s||'').trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m){ return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0'); }
+  return s;
+}
+function isoDateToBr(s){
+  s = String(s||'').trim();
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(m){ return m[3]+'/'+m[2]+'/'+m[1]; }
+  return s;
+}
+// Interpreta números como a planilha os exporta: "32,0%" (percentual), "R$  4,33" (moeda),
+// "798 km" / "78,12 L" / "10,22 km/L" (com unidade) e "1.853,03" (milhar com ponto). Sempre
+// retorna o valor RAW (fração, não *100) — ex.: "32,0%" -> 0.32.
+function parseBRNum(raw){
+  if(raw==null) return NaN;
+  let s = String(raw).trim();
+  if(s==='') return NaN;
+  const isPercent = /%/.test(s);
+  s = s.replace(/r\$/gi,'').replace(/km\/l|km\/L|km|l\b|L\b/gi,'').replace(/%/g,'').trim();
+  s = s.replace(/[^\d.,-]/g,'');
+  if(s.includes(',') && s.includes('.')) s = s.replace(/\./g,'').replace(',', '.');
+  else if(s.includes(',')) s = s.replace(',', '.');
+  const n = parseFloat(s);
+  if(isNaN(n)) return NaN;
+  return isPercent ? n/100 : n;
+}
+
+function exportarCSV(){
+  const linhas = [...state.historico].sort((a,b)=>(a.data||'').localeCompare(b.data||'')).map(r=>[
+    isoDateToBr(r.data), FUEL_BY_KEY[r.combustivel].label,
+    r.etanolPct!=null ? String(r.etanolPct).replace('.',',') : '',
+    String(r.preco).replace('.',','),
+    r.km!=null ? String(r.km).replace('.',',') : '',
+    String(r.litros).replace('.',','),
+    r.congestionamento ?? '', r.aclives ?? '',
+    r.arCondicionado!=null ? String(r.arCondicionado).replace('.',',') : '',
+    r.incluir, (r.obs||''),
+  ]);
+  baixarCSV([HISTORICO_CSV_HEADERS, ...linhas], 'historico_planilha.csv');
+}
+
+// Exporta TODOS os campos do app (inclui hodômetro, hora e valor total) — para backup completo
+// do aparelho. Não colar este arquivo de volta na planilha original (colunas extras no fim).
+function exportarCSVCompleto(){
+  const headers = [...HISTORICO_CSV_HEADERS, ...HISTORICO_CSV_EXTRA_HEADERS];
+  const linhas = [...state.historico].sort((a,b)=>(a.data||'').localeCompare(b.data||'')).map(r=>{
+    const valorTotal = custoTotalRow(r);
+    return [
+      isoDateToBr(r.data), FUEL_BY_KEY[r.combustivel].label,
+      r.etanolPct!=null ? String(r.etanolPct).replace('.',',') : '',
+      String(r.preco).replace('.',','),
+      r.km!=null ? String(r.km).replace('.',',') : '',
+      String(r.litros).replace('.',','),
+      r.congestionamento ?? '', r.aclives ?? '',
+      r.arCondicionado!=null ? String(r.arCondicionado).replace('.',',') : '',
+      r.incluir, (r.obs||''),
+      r.hodometro!=null ? String(r.hodometro).replace('.',',') : '',
+      r.hora||'',
+      valorTotal!=null ? valorTotal.toFixed(2).replace('.',',') : '',
+    ];
+  });
+  baixarCSV([headers, ...linhas], 'historico_app_completo.csv');
+}
+
+function baixarCSV(rows, filename){
+  const csvRows = rows.map(cols=>cols.map(c=>{
+    const s = String(c);
+    return /[;,"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+  }).join(';'));
+  const csv = '\uFEFF'+csvRows.join('\r\n');
+  if(window.AndroidBridge && typeof window.AndroidBridge.saveText==='function'){
+    window.AndroidBridge.saveText(filename, 'text/csv', csv);
+    return;
+  }
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function parseCSVLine(line, delim){
+  const out=[]; let cur=''; let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(inQ){
+      if(ch==='"'){ if(line[i+1]==='"'){ cur+='"'; i++; } else inQ=false; }
+      else cur+=ch;
+    } else {
+      if(ch==='"') inQ=true;
+      else if(ch===delim){ out.push(cur); cur=''; }
+      else cur+=ch;
+    }
+  }
+  out.push(cur);
+  return out;
+}
+
+function importarCSV(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      const text = ev.target.result;
+      const linhas = text.split(/\r?\n/).filter(l=>l.trim()!=='');
+      if(linhas.length<2){ alert('CSV vazio ou sem linhas de dados.'); return; }
+      const delim = linhas[0].includes(';') ? ';' : ',';
+      let header = parseCSVLine(linhas[0], delim);
+      let startRow = 1;
+      // planilhas do Google às vezes exportam uma linha de título mesclada antes do cabeçalho de verdade
+      if(findColIndex(header, HISTORICO_CSV_ALIASES.combustivel)===-1 && linhas.length>2){
+        header = parseCSVLine(linhas[1], delim);
+        startRow = 2;
+      }
+      const col = {};
+      Object.keys(HISTORICO_CSV_ALIASES).forEach(campo=>{ col[campo] = findColIndex(header, HISTORICO_CSV_ALIASES[campo]); });
+      if(col.combustivel===-1 || col.preco===-1 || col.litros===-1){
+        alert('Não reconheci as colunas essenciais (Combustível, Preço, Litros) no cabeçalho do CSV. Confira se a primeira linha tem os nomes das colunas.');
+        return;
+      }
+      const novos = []; const erros = [];
+      for(let i=startRow;i<linhas.length;i++){
+        const cols = parseCSVLine(linhas[i], delim);
+        if(cols.every(c=>c.trim()==='')) continue; // linha em branco (comum em planilhas com muitas linhas vazias reservadas)
+        const g = (idx) => idx===-1 ? undefined : cols[idx];
+        const combustivelLabel = g(col.combustivel);
+        const fuel = FUELS.find(f=>f.label.toLowerCase()===String(combustivelLabel||'').trim().toLowerCase());
+        if(!fuel){ erros.push('Linha '+(i+1)+': combustível "'+combustivelLabel+'" não reconhecido.'); continue; }
+        const hodRaw = g(col.hodometro);
+        const kmRaw = g(col.km);
+        const hodometro = hodRaw!==undefined && hodRaw!=='' ? parseBRNum(hodRaw) : null;
+        const kmParsed = kmRaw!==undefined && kmRaw!=='' ? parseBRNum(kmRaw) : null;
+        novos.push({
+          id: genId(),
+          data: brDateToIso(g(col.data)),
+          hora: (g(col.hora)||'').trim(),
+          combustivel: fuel.key,
+          etanolPct: (fuel.group==='gasolina' && g(col.etanolPct)) ? parseBRNum(g(col.etanolPct)) : null,
+          preco: parseBRNum(g(col.preco))||0,
+          hodometro,
+          km: hodometro==null ? kmParsed : null, // se veio hodômetro, o km é recalculado por recomputeKmDeltas()
+          litros: parseBRNum(g(col.litros))||0,
+          congestionamento: g(col.congestionamento) ? parseInt(g(col.congestionamento)) : null,
+          aclives: g(col.aclives) ? parseInt(g(col.aclives)) : null,
+          arCondicionado: (g(col.arCondicionado)!==undefined && g(col.arCondicionado)!=='') ? parseBRNum(g(col.arCondicionado)) : null,
+          incluir: (g(col.incluir)||'Sim').trim() || 'Sim',
+          obs: (g(col.obs)||'').trim(),
+        });
+      }
+      state.historico.push(...novos);
+      renderAll();
+      let msg = novos.length+' lançamento(s) importado(s).';
+      if(erros.length) msg += '\n\nAvisos:\n'+erros.join('\n');
+      alert(msg);
+    }catch(err){
+      alert('Não foi possível importar o CSV: '+err.message);
+    }
+    evt.target.value='';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+/* ============================================================
+   HISTÓRICO DE CÁLCULOS — "fotos" da decisão ao longo do tempo
+============================================================ */
+function salvarCalculoAtual(){
+  const resumo = resumoHistorico();
+  const usado = consumoUsado(resumo);
+  const comp = comparacaoEconomica(usado);
+  const decisao = decisaoAutomatica(comp);
+  const snapshot = {
+    id: genId(),
+    timestamp: new Date().toISOString(),
+    precos: Object.fromEntries(FUELS.map(f=>[f.key, comp[f.key].preco])),
+    custosKm: Object.fromEntries(FUELS.map(f=>[f.key, comp[f.key].custoKm])),
+    melhor: decisao.completo ? decisao.melhor : null,
+    menorCusto: decisao.completo ? decisao.menorCusto : null,
+    posto: state.desconto.posto,
+  };
+  state.calcHistorico.unshift(snapshot);
+  renderAll();
+}
+function removeCalcEntry(id){ state.calcHistorico = state.calcHistorico.filter(c=>c.id!==id); renderAll(); }
+function limparCalcHistorico(){ if(confirm('Apagar todo o histórico de cálculos salvos?')){ state.calcHistorico = []; renderAll(); } }
+
+function exportarCalcCSV(){
+  const headers = ['DataHora','Posto','Gasolina aditivada (R$/km)','Gasolina comum (R$/km)','Etanol comum (R$/km)','Etanol aditivado (R$/km)','Mais econômico','Menor custo (R$/km)'];
+  const linhas = state.calcHistorico.map(c=>[
+    c.timestamp, c.posto,
+    c.custosKm.gasolina_aditivada!=null?String(c.custosKm.gasolina_aditivada).replace('.',','):'',
+    c.custosKm.gasolina_comum!=null?String(c.custosKm.gasolina_comum).replace('.',','):'',
+    c.custosKm.etanol_comum!=null?String(c.custosKm.etanol_comum).replace('.',','):'',
+    c.custosKm.etanol_aditivado!=null?String(c.custosKm.etanol_aditivado).replace('.',','):'',
+    c.melhor ? FUEL_BY_KEY[c.melhor].label : '',
+    c.menorCusto!=null?String(c.menorCusto).replace('.',','):'',
+  ]);
+  baixarCSV([headers, ...linhas], 'historico_calculos.csv');
+}
+
+/* ============================================================
+   CÁLCULOS — Histórico agregado
+============================================================ */
+function resumoHistorico(){
+  const out = {};
+  FUELS.forEach(f=>{
+    const validos = state.historico.filter(r=>r.combustivel===f.key && r.incluir==='Sim');
+    const kmTotal = validos.reduce((s,r)=>s+(Number(r.km)||0),0);
+    const litrosTotal = validos.reduce((s,r)=>s+(Number(r.litros)||0),0);
+    const consumoPonderado = litrosTotal>0 ? kmTotal/litrosTotal : 0;
+    const precoPonderado = litrosTotal>0 ? validos.reduce((s,r)=>s+(Number(r.preco)||0)*(Number(r.litros)||0),0)/litrosTotal : 0;
+    let teorEPonderado = 0;
+    if(f.group==='gasolina'){
+      const litrosEquiv = validos.reduce((s,r)=> s+(r.etanolPct!=null ? Number(r.etanolPct)*Number(r.litros||0) : 0), 0);
+      teorEPonderado = litrosTotal>0 ? litrosEquiv/litrosTotal : 0;
+    }
+    out[f.key] = {registros:validos.length, kmTotal, litrosTotal, consumoPonderado, precoPonderado, teorEPonderado};
+  });
+  return out;
+}
+
+function consumoUsado(resumo){
+  const out = {};
+  ['gasolina_aditivada','etanol_comum'].forEach(key=>{
+    const h = resumo[key];
+    const manual = state.consumoManual[key] || 0;
+    const usado = h.consumoPonderado>0 ? h.consumoPonderado : manual;
+    out[key] = {historico:h.consumoPonderado, usado, fonte:(h.consumoPonderado>0?'Histórico':'Manual'), registros:h.registros};
+  });
+  const pares = [['gasolina_comum','gasolina_aditivada'], ['etanol_aditivado','etanol_comum']];
+  pares.forEach(([key, anchorKey])=>{
+    const h = resumo[key];
+    const manual = state.consumoManual[key];
+    let usado, fonte;
+    if(h.consumoPonderado>0){ usado=h.consumoPonderado; fonte='Histórico'; }
+    else if(manual!=null && manual>0){ usado=manual; fonte='Manual'; }
+    else { usado = out[anchorKey].usado; fonte = FUEL_BY_KEY[anchorKey].label; }
+    out[key] = {historico:h.consumoPonderado, usado, fonte, registros:h.registros};
+  });
+  return out;
+}
+
+function descontoAtual(){
+  if(state.desconto.posto==='baratao') return state.desconto.baratao;
+  if(state.desconto.posto==='shell') return state.desconto.shell;
+  return 0;
+}
+function precoEfetivo(fuelKey){
+  const bruto = state.precosBomba[fuelKey] || 0;
+  return bruto * (1 - descontoAtual());
+}
+
+function comparacaoEconomica(usado){
+  const rows = {};
+  const baseConsumo = usado['gasolina_aditivada'].usado;
+  FUELS.forEach(f=>{
+    const preco = precoEfetivo(f.key);
+    const consumo = usado[f.key].usado;
+    const custoKm = (preco>0 && consumo>0) ? preco/consumo : null;
+    rows[f.key] = {
+      preco, consumo, fonte: usado[f.key].fonte,
+      eficienciaVsGasolina: (consumo>0 && baseConsumo>0) ? consumo/baseConsumo : null,
+      custoKm, custo100km: custoKm!=null ? custoKm*100 : null,
+      custoTanque: preco>0 ? preco*state.entradas.capacidadeTanque : null,
+      autonomia: consumo>0 ? consumo*state.entradas.capacidadeTanque : null,
+      custoMensal: custoKm!=null ? custoKm*state.entradas.distanciaMensal : null,
+    };
+  });
+  return rows;
+}
+
+function decisaoAutomatica(comp){
+  const custos = FUELS.map(f=>comp[f.key].custoKm);
+  const completo = custos.every(c=>c!=null);
+  if(!completo) return {completo:false};
+  let melhor = FUELS[0].key;
+  FUELS.forEach(f=>{ if(comp[f.key].custoKm < comp[melhor].custoKm) melhor = f.key; });
+  const menorCusto = comp[melhor].custoKm;
+  const custoGasAd = comp['gasolina_aditivada'].custoKm;
+  const economia100km = (custoGasAd - menorCusto)*100;
+  const economiaMensal = (custoGasAd - menorCusto)*state.entradas.distanciaMensal;
+  const economiaAnual = economiaMensal*12;
+  return {completo:true, melhor, menorCusto, economia100km, economiaMensal, economiaAnual};
+}
+
+function faixaPreco(comp){
+  const completo = FUELS.every(f=>comp[f.key].consumo>0);
+  const rows = {};
+  FUELS.forEach(f=>{
+    if(!completo){ rows[f.key]={completo:false}; return; }
+    let precoMax = Infinity;
+    FUELS.forEach(g=>{
+      if(g.key===f.key) return;
+      const cand = comp[g.key].preco * (comp[f.key].consumo/comp[g.key].consumo);
+      if(cand<precoMax) precoMax=cand;
+    });
+    const folga = precoMax - comp[f.key].preco;
+    rows[f.key] = {completo:true, precoAtual:comp[f.key].preco, precoMax, folga, situacao: comp[f.key].preco<=precoMax ? 'Dentro da faixa econômica':'Acima da faixa econômica'};
+  });
+  return rows;
+}
+
+function regraMargem(comp){
+  const pares = [
+    ['etanol_comum','gasolina_aditivada'], ['etanol_comum','gasolina_comum'],
+    ['etanol_aditivado','gasolina_aditivada'], ['etanol_aditivado','gasolina_comum'],
+  ];
+  return pares.map(([ek,gk])=>{
+    const eC = comp[ek].consumo, gC = comp[gk].consumo;
+    const precoGas = comp[gk].preco, precoEt = comp[ek].preco;
+    if(!(eC>0 && gC>0)) return {etanol:ek, gasolina:gk, completo:false};
+    const percentualLimite = eC/gC;
+    const precoLimiteComMargem = precoGas*Math.max(0, percentualLimite-state.entradas.margemSeguranca);
+    return {
+      etanol:ek, gasolina:gk, completo:true, percentualLimite, precoLimiteComMargem,
+      precoAtualEtanol:precoEt, diferenca: precoLimiteComMargem-precoEt,
+      classificacao: precoEt<=precoLimiteComMargem ? 'Vantagem clara' : 'Fora da margem',
+    };
+  });
+}
+
+/* ============================================================
+   SIMULAÇÃO E25–E35
+============================================================ */
+function indiceEnergetico(b){ return (1-b) + state.entradas.fatorEnergetico*b; }
+
+function simulacaoParaGasolina(gasKey, usado, comp){
+  const cenarios = [
+    {nome:'E25', b:0.25}, {nome:'E27', b:0.27}, {nome:'E30', b:0.30},
+    {nome:'E32', b:0.32}, {nome:'E35', b:0.35}, {nome:'Atual', b:state.entradas.etanolAtual},
+  ];
+  const indiceAtual = indiceEnergetico(state.entradas.etanolAtual);
+  const consumoAtualGas = usado[gasKey].usado;
+  const precoGas = precoEfetivo(gasKey);
+  const custoEtComum = comp['etanol_comum'].custoKm;
+  const custoEtAditivado = comp['etanol_aditivado'].custoKm;
+  const consumoEtComumAtual = usado['etanol_comum'].usado;
+  const consumoEtAditivadoAtual = usado['etanol_aditivado'].usado;
+  return cenarios.map(c=>{
+    const idx = indiceEnergetico(c.b);
+    const consumoEstimado = (consumoAtualGas>0 && indiceAtual>0) ? consumoAtualGas*(idx/indiceAtual) : null;
+    const custoGasKm = (consumoEstimado>0 && precoGas>0) ? precoGas/consumoEstimado : null;
+    let maisEconomico = null;
+    if(custoGasKm!=null && custoEtComum!=null && custoEtAditivado!=null){
+      if(custoGasKm<=custoEtComum && custoGasKm<=custoEtAditivado) maisEconomico = FUEL_BY_KEY[gasKey].label;
+      else if(custoEtComum<=custoEtAditivado) maisEconomico = 'Etanol comum';
+      else maisEconomico = 'Etanol aditivado';
+    }
+    const precoLimiteEtComum = (consumoEstimado>0 && consumoEtComumAtual!=null) ? precoGas*(consumoEtComumAtual/consumoEstimado) : null;
+    const pctLimiteEtComum = (consumoEstimado>0 && consumoEtComumAtual!=null) ? consumoEtComumAtual/consumoEstimado : null;
+    const precoLimiteEtAditivado = (consumoEstimado>0 && consumoEtAditivadoAtual!=null) ? precoGas*(consumoEtAditivadoAtual/consumoEstimado) : null;
+    const pctLimiteEtAditivado = (consumoEstimado>0 && consumoEtAditivadoAtual!=null) ? consumoEtAditivadoAtual/consumoEstimado : null;
+    return {...c, indice:idx, consumoEstimado, custoGasKm, custoEtComum, custoEtAditivado, maisEconomico, precoLimiteEtComum, pctLimiteEtComum, precoLimiteEtAditivado, pctLimiteEtAditivado};
+  });
+}
+
+/* ============================================================
+   ANÁLISE POR CONDIÇÃO
+============================================================ */
+function analiseCondicoes(){
+  const condicoes = ['Favorável','Intermediária','Severa'];
+  const grid = {};
+  condicoes.forEach(cond=>{
+    grid[cond] = {};
+    FUELS.forEach(f=>{
+      const validos = state.historico.filter(r=>r.combustivel===f.key && r.incluir==='Sim' && condicaoDeUso(r)===cond);
+      const kmTotal = validos.reduce((s,r)=>s+(Number(r.km)||0),0);
+      const litrosTotal = validos.reduce((s,r)=>s+(Number(r.litros)||0),0);
+      const consumoPonderado = litrosTotal>0 ? kmTotal/litrosTotal : 0;
+      const precoAtual = precoEfetivo(f.key);
+      const custoAtualKm = consumoPonderado>0 ? precoAtual/consumoPonderado : null;
+      grid[cond][f.key] = {registros:validos.length, kmTotal, litrosTotal, consumoPonderado, precoAtual, custoAtualKm, custo100km: custoAtualKm!=null?custoAtualKm*100:null};
+    });
+    const custos = FUELS.map(f=>grid[cond][f.key].custoAtualKm);
+    const completo = custos.every(c=>c!=null);
+    if(completo){
+      let melhor = FUELS[0].key;
+      FUELS.forEach(f=>{ if(grid[cond][f.key].custoAtualKm < grid[cond][melhor].custoAtualKm) melhor=f.key; });
+      grid[cond]._maisEconomico = melhor;
+    } else grid[cond]._maisEconomico = null;
+  });
+  const semClassificacao = state.historico.filter(r=>r.incluir==='Sim' && condicaoDeUso(r)==='Não classificado').length;
+  return {grid, semClassificacao};
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function renderEfetivos(){
+  FUELS.forEach(f=>{
+    const el = document.getElementById('efetivo-'+f.key);
+    if(!el) return;
+    if(state.desconto.posto==='nenhum'){ el.textContent=''; return; }
+    const bruto = state.precosBomba[f.key]||0;
+    const efetivo = precoEfetivo(f.key);
+    el.textContent = 'efetivo: '+fmtBRL(efetivo)+' (–'+fmtBRL(bruto-efetivo)+')';
+  });
+  const bB = document.getElementById('badge-baratao'); if(bB) bB.textContent = fmtPct(state.desconto.baratao,2);
+  const bS = document.getElementById('badge-shell'); if(bS) bS.textContent = fmtPct(state.desconto.shell,2);
+}
+
+function renderConsumoUsado(usado){
+  const tbody = document.getElementById('tbl-consumo-usado');
+  tbody.innerHTML = FUELS.map(f=>{
+    const u = usado[f.key];
+    const obs = u.registros>0 ? (u.registros+' registro(s) válido(s)') : 'Sem histórico válido';
+    return `<tr><td>${swatch(f.key)}${f.label}</td><td class="num">${u.historico>0?fmtNum(u.historico)+' km/L':'—'}</td><td class="num">${fmtNum(u.usado)} km/L</td><td><span class="tag ${u.fonte==='Histórico'?'tag-good':'tag-neutral'}">${u.fonte}</span></td><td class="dim">${obs}</td></tr>`;
+  }).join('');
+}
+
+function renderComparacao(comp){
+  const tbody = document.getElementById('tbl-comparacao');
+  tbody.innerHTML = FUELS.map(f=>{
+    const r = comp[f.key];
+    return `<tr><td>${swatch(f.key)}${f.label}</td><td class="num">${fmtBRL(r.preco)}</td><td class="num">${r.consumo>0?fmtNum(r.consumo):'—'}</td><td><span class="tag ${r.fonte==='Histórico'?'tag-good':'tag-neutral'}">${r.fonte}</span></td><td class="num">${r.eficienciaVsGasolina!=null?fmtNum(r.eficienciaVsGasolina*100,1)+'%':'—'}</td><td class="num">${fmtBRL(r.custoKm)}</td><td class="num">${fmtBRL(r.custo100km)}</td><td class="num">${fmtBRL(r.custoTanque)}</td><td class="num">${r.autonomia!=null?fmtNum(r.autonomia,0)+' km':'—'}</td><td class="num">${fmtBRL(r.custoMensal)}</td></tr>`;
+  }).join('');
+}
+
+function renderHero(decisao){
+  const el = document.getElementById('hero-decisao');
+  if(!decisao.completo){
+    el.innerHTML = `<div class="hero-label">Mais econômico agora</div><div class="hero-empty">Preencha os consumos dos 4 combustíveis (histórico ou manual) para ver a decisão automática.</div>`;
+    return;
+  }
+  const f = FUEL_BY_KEY[decisao.melhor];
+  el.innerHTML = `
+    <div class="hero-label">Mais econômico agora</div>
+    <div class="hero-value" style="--fuel-color:${f.color}">${f.label}</div>
+    <div class="hero-sub">${fmtBRL(decisao.menorCusto)}/km · economia de ${fmtBRL(decisao.economiaMensal)}/mês vs. gasolina aditivada</div>
+  `;
+}
+
+function renderDecisaoPanel(decisao){
+  const el = document.getElementById('decisao-automatica');
+  if(!decisao.completo){ el.innerHTML = '<p class="note" style="margin:0;">Preencha os consumos dos 4 combustíveis para calcular.</p>'; return; }
+  el.innerHTML = `<ul class="stat-list">
+    <li><span>Combustível mais econômico</span><strong>${FUEL_BY_KEY[decisao.melhor].label}</strong></li>
+    <li><span>Menor custo por km</span><strong>${fmtBRL(decisao.menorCusto)}</strong></li>
+    <li><span>Economia por 100 km vs. gasolina aditivada</span><strong>${fmtBRL(decisao.economia100km)}</strong></li>
+    <li><span>Economia mensal vs. gasolina aditivada</span><strong>${fmtBRL(decisao.economiaMensal)}</strong></li>
+    <li><span>Economia anual vs. gasolina aditivada</span><strong>${fmtBRL(decisao.economiaAnual)}</strong></li>
+  </ul>`;
+}
+
+function renderFaixaPreco(faixa){
+  const tbody = document.getElementById('tbl-faixa-preco');
+  tbody.innerHTML = FUELS.map(f=>{
+    const r = faixa[f.key];
+    if(!r.completo) return `<tr><td>${swatch(f.key)}${f.label}</td><td colspan="4" class="dim">Preencha consumos</td></tr>`;
+    const okClass = r.situacao.startsWith('Dentro') ? 'tag-good':'tag-bad';
+    return `<tr><td>${swatch(f.key)}${f.label}</td><td class="num">${fmtBRL(r.precoAtual)}</td><td class="num">${fmtBRL(r.precoMax)}</td><td class="num">${fmtBRL(r.folga)}</td><td><span class="tag ${okClass}">${r.situacao}</span></td></tr>`;
+  }).join('');
+}
+
+function renderRegraMargem(rows){
+  const tbody = document.getElementById('tbl-regra-margem');
+  tbody.innerHTML = rows.map(r=>{
+    const label = FUEL_BY_KEY[r.etanol].label+' vs '+FUEL_BY_KEY[r.gasolina].label;
+    if(!r.completo) return `<tr><td>${label}</td><td colspan="5" class="dim">Preencha consumos</td></tr>`;
+    const cls = r.classificacao==='Vantagem clara' ? 'tag-good':'tag-bad';
+    return `<tr><td>${label}</td><td class="num">${fmtPct(r.percentualLimite)}</td><td class="num">${fmtBRL(r.precoLimiteComMargem)}</td><td class="num">${fmtBRL(r.precoAtualEtanol)}</td><td class="num">${fmtBRL(r.diferenca)}</td><td><span class="tag ${cls}">${r.classificacao}</span></td></tr>`;
+  }).join('');
+}
+
+function renderHistoricoTable(){
+  const tbody = document.getElementById('tbl-historico');
+  const rows = [...state.historico].sort((a,b)=>{
+    const d = (a.data||'').localeCompare(b.data||'');
+    if(d!==0) return d;
+    return (a.hodometro??0)-(b.hodometro??0);
+  });
+  tbody.innerHTML = rows.map(r=>{
+    const fuel = FUEL_BY_KEY[r.combustivel];
+    const consumo = consumoRow(r);
+    const custoKm = custoKmRow(r);
+    const valorTotal = custoTotalRow(r);
+    const litrosEquiv = litrosEquivEtanolRow(r);
+    const cond = condicaoDeUso(r);
+    const condTag = cond==='Favorável'?'tag-good': cond==='Severa'?'tag-bad': cond==='Intermediária'?'tag-warn': cond==='Não classificado'?'tag-neutral':'';
+    const dataHora = r.data ? (r.data.split('-').reverse().join('/') + (r.hora?(' '+r.hora):'')) : '—';
+    return `<tr>
+      <td>${dataHora}</td>
+      <td>${swatch(r.combustivel)}${fuel.label}</td>
+      <td class="num">${r.etanolPct!=null?fmtPct(r.etanolPct):'—'}</td>
+      <td class="num">${fmtBRL(r.preco)}</td>
+      <td class="num">${r.hodometro!=null?fmtInt(r.hodometro):'—'}</td>
+      <td class="num">${r.km!=null?fmtInt(r.km):'—'}</td>
+      <td class="num">${fmtNum(r.litros)}</td>
+      <td class="num">${consumo!=null?fmtNum(consumo):'—'}</td>
+      <td class="num">${custoKm!=null?fmtBRL(custoKm):'—'}</td>
+      <td class="num">${valorTotal!=null?fmtBRL(valorTotal):'—'}</td>
+      <td class="num">${litrosEquiv?fmtNum(litrosEquiv):'—'}</td>
+      <td class="num">${r.congestionamento ?? '—'}</td>
+      <td class="num">${r.aclives ?? '—'}</td>
+      <td class="num">${r.arCondicionado!=null?fmtPct(r.arCondicionado,0):'—'}</td>
+      <td><span class="tag ${r.incluir==='Sim'?'tag-good':'tag-neutral'}">${r.incluir}</span></td>
+      <td>${cond?`<span class="tag ${condTag}">${cond}</span>`:'—'}</td>
+      <td class="dim">${r.obs||''}</td>
+      <td><button class="icon-btn" onclick="removeHistoricoEntry('${r.id}')" title="Remover">✕</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('contagem-historico').textContent = '('+state.historico.length+')';
+}
+
+function renderCalcHistorico(){
+  const tbody = document.getElementById('tbl-calc-historico');
+  if(!tbody) return;
+  const postoLabel = {nenhum:'—', baratao:'Baratão', shell:'Shell'};
+  tbody.innerHTML = state.calcHistorico.map(c=>{
+    const quando = new Date(c.timestamp).toLocaleString('pt-BR');
+    return `<tr>
+      <td class="dim">${quando}<br><span class="tag tag-neutral">${postoLabel[c.posto]||c.posto}</span></td>
+      <td class="num">${fmtBRL(c.precos.gasolina_aditivada)}</td>
+      <td class="num">${fmtBRL(c.precos.gasolina_comum)}</td>
+      <td class="num">${fmtBRL(c.precos.etanol_comum)}</td>
+      <td class="num">${fmtBRL(c.precos.etanol_aditivado)}</td>
+      <td>${c.melhor?swatch(c.melhor)+FUEL_BY_KEY[c.melhor].label:'—'}</td>
+      <td class="num">${c.menorCusto!=null?fmtBRL(c.menorCusto):'—'}</td>
+      <td><button class="icon-btn" onclick="removeCalcEntry('${c.id}')" title="Remover">✕</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" class="dim">Nenhum cálculo salvo ainda.</td></tr>';
+}
+
+function renderResumoHistoricoTable(resumo){
+  const tbody = document.getElementById('tbl-resumo-historico');
+  tbody.innerHTML = FUELS.map(f=>{
+    const r = resumo[f.key];
+    return `<tr><td>${swatch(f.key)}${f.label}</td><td class="num">${r.registros}</td><td class="num">${fmtInt(r.kmTotal)}</td><td class="num">${fmtNum(r.litrosTotal)}</td><td class="num">${r.consumoPonderado>0?fmtNum(r.consumoPonderado):'—'}</td><td class="num">${r.precoPonderado>0?fmtBRL(r.precoPonderado):'—'}</td><td class="num">${f.group==='gasolina'?(r.teorEPonderado>0?fmtPct(r.teorEPonderado):'—'):'—'}</td></tr>`;
+  }).join('');
+}
+
+function renderSimulacaoTable(containerId, gasKey, usado, comp){
+  const tbody = document.getElementById(containerId);
+  const rows = simulacaoParaGasolina(gasKey, usado, comp);
+  tbody.innerHTML = rows.map(r=>`<tr class="${r.nome==='Atual'?'row-highlight':''}"><td>${r.nome}</td><td class="num">${fmtPct(r.b)}</td><td class="num">${fmtNum(r.indice,3)}</td><td class="num">${r.consumoEstimado!=null?fmtNum(r.consumoEstimado):'—'}</td><td class="num">${fmtBRL(r.custoGasKm)}</td><td class="num">${fmtBRL(r.custoEtComum)}</td><td class="num">${fmtBRL(r.custoEtAditivado)}</td><td>${r.maisEconomico||'—'}</td><td class="num">${r.precoLimiteEtComum!=null?fmtBRL(r.precoLimiteEtComum):'—'}</td><td class="num">${r.pctLimiteEtComum!=null?fmtPct(r.pctLimiteEtComum):'—'}</td><td class="num">${r.precoLimiteEtAditivado!=null?fmtBRL(r.precoLimiteEtAditivado):'—'}</td><td class="num">${r.pctLimiteEtAditivado!=null?fmtPct(r.pctLimiteEtAditivado):'—'}</td></tr>`).join('');
+}
+
+function renderCondicoes(){
+  const {grid, semClassificacao} = analiseCondicoes();
+  const tbody = document.getElementById('tbl-condicoes');
+  const condicoes = ['Favorável','Intermediária','Severa'];
+  let html='';
+  condicoes.forEach(cond=>{
+    FUELS.forEach((f,i)=>{
+      const r = grid[cond][f.key];
+      html += `<tr>${i===0?`<td rowspan="${FUELS.length}">${cond}</td>`:''}<td>${swatch(f.key)}${f.label}</td><td class="num">${r.registros}</td><td class="num">${fmtInt(r.kmTotal)}</td><td class="num">${fmtNum(r.litrosTotal)}</td><td class="num">${r.consumoPonderado>0?fmtNum(r.consumoPonderado):'—'}</td><td class="num">${fmtBRL(r.precoAtual)}</td><td class="num">${r.custoAtualKm!=null?fmtBRL(r.custoAtualKm):'—'}</td><td class="num">${r.custo100km!=null?fmtBRL(r.custo100km):'—'}</td></tr>`;
+    });
+  });
+  tbody.innerHTML = html;
+
+  document.getElementById('mais-economico-condicao').innerHTML = condicoes.map(cond=>{
+    const m = grid[cond]._maisEconomico;
+    return `<div class="cond-stat"><span>${cond}</span><strong>${m?FUEL_BY_KEY[m].label:'Dados insuficientes'}</strong></div>`;
+  }).join('');
+
+  document.getElementById('controle-qualidade').innerHTML = `<p style="margin:0 0 8px;">Registros válidos sem classificação: <strong>${semClassificacao}</strong></p><p class="note" style="margin:0;">Registros "Não classificado" continuam no cálculo geral, mas não entram nesta análise.</p>`;
+}
+
+function renderAll(){
+  recomputeKmDeltas();
+  persist();
+
+  const resumo = resumoHistorico();
+  const usado = consumoUsado(resumo);
+  const comp = comparacaoEconomica(usado);
+  const decisao = decisaoAutomatica(comp);
+  const faixa = faixaPreco(comp);
+  const margem = regraMargem(comp);
+
+  renderEfetivos();
+  renderConsumoUsado(usado);
+  renderComparacao(comp);
+  renderHero(decisao);
+  renderDecisaoPanel(decisao);
+  renderFaixaPreco(faixa);
+  renderRegraMargem(margem);
+
+  renderHistoricoTable();
+  renderResumoHistoricoTable(resumo);
+  renderCalcHistorico();
+
+  renderSimulacaoTable('tbl-sim-aditivada','gasolina_aditivada', usado, comp);
+  renderSimulacaoTable('tbl-sim-comum','gasolina_comum', usado, comp);
+
+  renderCondicoes();
+}
+
+/* ============================================================
+   NAVEGAÇÃO POR ABAS
+============================================================ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo(0,0);
+  });
+});
+
+/* ============================================================
+   INIT
+============================================================ */
+const tinhaDadosSalvos = loadPersisted();
+syncInputsFromState();
+toggleEtanolField(document.querySelector('#form-historico select[name=combustivel]'));
+if(tinhaDadosSalvos){
+  const banner = document.getElementById('restore-banner');
+  if(banner) banner.style.display = 'flex';
+}
+renderAll();
+
+if ((location.protocol==='https:' || location.protocol==='http:') && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

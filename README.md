@@ -1,56 +1,36 @@
-# Calculadora de Combustível — v2 (offline-first + hodômetro + Drive manual)
+# Calculadora de Combustível — APK com conteúdo embutido
 
-## O que mudou nesta versão
+Projeto Android nativo que abre a calculadora diretamente dos arquivos incluídos no APK. O aplicativo não depende do GitHub Pages, de CDN, de fontes externas nem de conexão com a internet para iniciar ou calcular.
 
-- **Offline de verdade.** O service worker antigo usava `cache.addAll()` (tudo-ou-nada) e dependia do
-  Google Fonts (externo). Reescrevi para cachear cada arquivo individualmente e removi a dependência
-  de fontes externas — agora usa as fontes do sistema. Depois de abrir o app UMA VEZ com internet, ele
-  deve continuar funcionando sem internet daí em diante.
-- **Dados ficam salvos no aparelho** (localStorage): histórico de abastecimentos, configurações da
-  calculadora e histórico de cálculos agora sobrevivem a fechar o app — antes, sumiam a cada sessão.
-- **Hodômetro.** Em vez de digitar "km percorridos" de cabeça, você digita o hodômetro do painel e o
-  app calcula sozinho a distância desde o abastecimento anterior (ordenando pelos hodômetros salvos,
-  não pela ordem em que você digitou). Tem um campo opcional de "hodômetro de referência" nas
-  Entradas principais, pra funcionar mesmo no primeiro lançamento.
-- **Histórico de cálculos**: um botão "Salvar cálculo atual" na Calculadora grava uma foto dos preços
-  e da decisão automática naquele momento — dá pra ver como a decisão mudou ao longo do tempo, e
-  exportar isso em CSV separado.
-- **CSV compatível com a planilha real.** Confirmei a estrutura da aba Historico da
-  `Calculadora_Honda_v10_CORRIGIDA` (seu CSV real) e ajustei para bater exatamente: mesmas 11 colunas
-  de entrada (`Data, Combustível, Etanol na gasolina (%), Preço (R$/L), Km percorridos, Litros
-  consumidos, Congestionamento, Aclives, Ar-condicionado, Incluir no cálculo?, Observações`), mesmos
-  nomes de cabeçalho, data em `DD/MM/AAAA`. O botão **"Baixar CSV (planilha)"** gera exatamente isso —
-  pode colar direto na aba Historico sem quebrar as fórmulas de G a P. O botão **"Baixar CSV completo"**
-  traz tudo isso mais Hodômetro/Hora/Valor total, para backup do próprio app (não colar esse na planilha).
-- Importar aceita os dois formatos acima E o CSV exportado direto do Google Sheets (reconhece "R$",
-  "%", "km/L" etc. e ignora linhas em branco).
+## O que está incluído
 
-## Ainda não mexi em
+- Interface, estilos, fórmulas, ícones e dados iniciais em `app/src/main/assets/www/`.
+- Histórico, configurações e cálculos persistidos localmente pelo WebView.
+- Importação de CSV pelo seletor de arquivos do Android.
+- Exportação de CSV pelo seletor de destino do Android, permitindo escolher Arquivos, Google Drive ou outro provedor instalado.
+- Nenhuma permissão `INTERNET` no manifesto do aplicativo.
 
-As abas **Config** e **Controle** da sua planilha v10 — não sei o que elas contêm exatamente. Se
-quiser que eu espelhe isso no app também, me diga o que tem lá (ou exporte como CSV, igual fez com o
-Historico) que eu ajusto.
+## Organização das telas
 
-## Google Drive
+- **Calculadora:** decisão resumida, entradas principais, preços, descontos, consumos manuais, decisão automática, faixa de preço e histórico de cálculos.
+- **Resultados atuais:** consumo efetivamente usado, comparação econômica atual e regra dos 70% com margem de segurança.
+- Demais telas: Histórico, Simulação E25–E35, Análise por Condição, Legendas e Metodologia.
 
-Continua sendo só um destino de arquivo: os botões de CSV abrem o seletor de salvar/compartilhar do
-Android, onde o Google Drive aparece como opção — sem integração via API, sem login, exatamente como
-você já vinha usando.
+## Descontos
 
-## O que fazer agora
+- Baratão: **4,93%**.
+- Shell: **5,45%**.
+- A seleção é exclusiva: Nenhum, Baratão ou Shell.
+- O desconto selecionado é aplicado aos quatro preços informados na bomba.
+- Fórmula: `preço efetivo = preço da bomba × (1 − desconto)`.
+- Os dois percentuais continuam editáveis no aplicativo e são armazenados no aparelho.
 
-1. Suba estes arquivos para o repositório (substituindo os antigos): `index.html`, `service-worker.js`,
-   `manifest.json`, `icon-192.png`, `icon-512.png`.
-2. Abra `https://km20197.github.io/Fuel/` no celular **com internet** pelo menos uma vez — isso deixa o
-   novo service worker se instalar e cachear tudo.
-3. Ative o modo avião e abra o app de novo (ou o APK já instalado). Deve funcionar normalmente.
-4. **Você provavelmente NÃO precisa gerar um novo APK.** Se o app instalado é do tipo Trusted Web
-   Activity (o que o PWABuilder gera por padrão), ele abre a mesma URL de sempre — assim que o service
-   worker novo estiver instalado, o app existente passa a funcionar offline sozinho.
-5. Se mesmo assim continuar falhando sem internet, aí sim vale migrar para Capacitor (empacota os
-   arquivos DENTRO do APK, zero dependência do GitHub Pages a partir daí) — me avise que eu preparo
-   esse projeto.
+## Gerar o APK
 
-## Passo a passo original (GitHub Pages + APK)
+1. Abra esta pasta no Android Studio.
+2. Aguarde a sincronização do Gradle. O projeto usa Android Gradle Plugin 8.7.3, JDK 17 e SDK 35.
+3. Para teste, use **Build > Build Bundle(s) / APK(s) > Build APK(s)**.
+4. O APK de teste será criado em `app/build/outputs/apk/debug/app-debug.apk`.
+5. Para distribuição, configure sua chave e gere um APK ou Android App Bundle assinado pelo menu **Build > Generate Signed Bundle / APK**.
 
-Veja a seção correspondente na entrega anterior — nada mudou nesse processo, só o conteúdo dos arquivos.
+O acesso à internet pode ser necessário na primeira sincronização do projeto para baixar ferramentas de compilação. Depois de gerado, o APK funciona sem internet porque todo o conteúdo de execução está incorporado.

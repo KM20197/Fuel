@@ -1,0 +1,28 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'br.com.combustivel.hondacity'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'br.com.combustivel.hondacity'
+        minSdk 24
+        targetSdk 35
+        versionCode 3
+        versionName '3.0.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
