@@ -888,9 +888,9 @@ function parseDateForStorage(raw){
 
 function findHistoricoHeader(lines, delim){
   const required = [
-    'data','combustivel','preco r/l','preco (r$/l)','hodometro',
-    'litros consumidos','congestionamento','aclives','arcondicionado',
-    'incluir no calculo principal','observacoes motivo da exclusao'
+    'data','combustivel','preco (r$/l)','km percorridos',
+    'litros consumidos','congestionamento','aclives','ar-condicionado',
+    'incluir no calculo?','observacoes'
   ].map(normalizeHeader);
   for(let i=0;i<Math.min(lines.length,30);i++){
     if(!lines[i].trim()) continue;
@@ -909,27 +909,27 @@ function exportarCSV(){
   // ser exportados como dados, para não sobrescrever as fórmulas ao colar/importar.
   const headers = [
     'Data','Combustível','Etanol na gasolina (%)','Preço (R$/L)','Km percorridos','Litros consumidos',
-    'Congestionamento','Aclives','Ar-condicionado (%)','Incluir no cálculo principal?',
-    'Observações / motivo da exclusão'
+    'Congestionamento','Aclives','Ar-condicionado','Incluir no cálculo?',
+    'Observações'
   ];
+  const brNum = v => (v==null || v==='' || isNaN(v)) ? '' : String(v).replace('.',',');
   const linhas = state.historico.map(r=>{
     const data = formatDateDDMMYYYY(r.data);
-    const arPct = r.arCondicionado!=null ? r.arCondicionado*100 : '';
     return [
       data,
       FUEL_BY_KEY[r.combustivel]?.label || r.combustivel,
-      r.etanolPct!=null ? r.etanolPct*100 : '',
-      r.preco,
-      r.km,
-      r.litros,
-      r.congestionamento,
-      r.aclives,
-      arPct,
+      brNum(r.etanolPct),   // fração crua (0,32), igual à célula real da planilha — não *100
+      brNum(r.preco),
+      brNum(r.km),
+      brNum(r.litros),
+      r.congestionamento ?? '',
+      r.aclives ?? '',
+      brNum(r.arCondicionado), // fração crua (0,25), não *100
       r.incluir,
       r.obs
     ].map(csvEscape).join(';');
   });
-  baixarArquivo('\uFEFF'+headers.map(csvEscape).join(';')+'\r\n'+linhas.join('\r\n'), 'historico.csv', 'text/csv');
+  baixarArquivo('\uFEFF'+headers.map(csvEscape).join(';')+'\r\n'+linhas.join('\r\n'), 'historico_planilha.csv', 'text/csv');
 }
 
 function importarCSV(evt){
@@ -960,9 +960,9 @@ function importarCSV(evt){
         litros: idx('Litros consumidos','Litros'),
         congestionamento: idx('Congestionamento'),
         aclives: idx('Aclives'),
-        arCondicionado: idx('Ar-condicionado (%)','Ar-condicionado','Ar cond.'),
-        incluir: idx('Incluir no cálculo principal?','Incluir'),
-        obs: idx('Observações / motivo da exclusão','Observações','Obs.')
+        arCondicionado: idx('Ar-condicionado','Ar-condicionado (%)','Ar cond.'),
+        incluir: idx('Incluir no cálculo?','Incluir no cálculo principal?','Incluir'),
+        obs: idx('Observações','Observações / motivo da exclusão','Obs.')
       };
       const required = ['data','combustivel','preco','km','litros','congestionamento','aclives','arCondicionado','incluir'];
       if(required.some(k=>cols[k]<0)) throw new Error('O CSV não contém todas as 11 colunas esperadas da aba Historico.');
