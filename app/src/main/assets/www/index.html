@@ -271,13 +271,6 @@
       <button class="close-overlay-btn" onclick="closeOverlay('screen-resultados')">✕</button>
     </div>
     <div class="panel">
-      <h2>Consumo efetivamente usado</h2>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Combustível</th><th>Último abastecimento</th><th>Consumo usado</th><th>Fonte</th><th>Observação</th></tr></thead>
-        <tbody id="tbl-consumo-usado"></tbody>
-      </table></div>
-    </div>
-    <div class="panel">
       <h2>Comparação econômica atual</h2>
       <!-- CORRIGIDO: nota dinâmica quando desconto ativo -->
       <div class="desconto-ativo-nota" id="comp-desconto-nota" role="note" aria-live="polite"></div>
@@ -286,18 +279,11 @@
           <th>Combustível</th>
           <!-- CORRIGIDO: "Preço R$/L" → "Preço efetivo R$/L" -->
           <th title="Preço efetivo pago após desconto do posto selecionado (= preço da bomba quando nenhum posto está selecionado)">Preço efetivo R$/L</th>
-          <th>Consumo km/L</th><th>Fonte</th><th>Eficiência vs gasolina</th>
+          <th>Consumo km/L</th>
           <th>Custo R$/km</th><th>Custo R$/100km</th><th>Tanque cheio</th>
           <th>Autonomia</th><th>Custo mensal</th>
         </tr></thead>
         <tbody id="tbl-comparacao"></tbody>
-      </table></div>
-    </div>
-    <div class="panel">
-      <h2>Regra dos 70% com margem de segurança</h2>
-      <div class="table-wrap"><table>
-        <thead><tr><th>Comparação</th><th>% limite</th><th>Preço-limite com margem</th><th>Preço atual</th><th>Diferença</th><th>Classificação</th></tr></thead>
-        <tbody id="tbl-regra-margem"></tbody>
       </table></div>
     </div>
   </div>
@@ -1186,7 +1172,7 @@ function renderComparacao(comp){
   if(!tbody) return;
   tbody.innerHTML = FUELS.map(f=>{
     const r = comp[f.key];
-    return `<tr><td>${swatch(f.key)}${f.label}</td><td class="num">${fmtBRL(r.preco)}</td><td class="num">${r.consumo>0?fmtNum(r.consumo):'—'}</td><td><span class="tag ${r.fonte==='Último abastecimento'?'tag-good':'tag-neutral'}">${r.fonte}</span></td><td class="num">${r.eficienciaVsGasolina!=null?fmtNum(r.eficienciaVsGasolina*100,1)+'%':'—'}</td><td class="num">${fmtBRL(r.custoKm)}</td><td class="num">${fmtBRL(r.custo100km)}</td><td class="num">${fmtBRL(r.custoTanque)}</td><td class="num">${r.autonomia!=null?fmtNum(r.autonomia,0)+' km':'—'}</td><td class="num">${r.custoMensal!=null?fmtBRL(r.custoMensal):'—'}</td></tr>`;
+    return `<tr><td>${swatch(f.key)}${f.label}</td><td class="num">${fmtBRL(r.preco)}</td><td class="num">${r.consumo>0?fmtNum(r.consumo):'—'}</td><td class="num">${fmtBRL(r.custoKm)}</td><td class="num">${fmtBRL(r.custo100km)}</td><td class="num">${fmtBRL(r.custoTanque)}</td><td class="num">${r.autonomia!=null?fmtNum(r.autonomia,0)+' km':'—'}</td><td class="num">${r.custoMensal!=null?fmtBRL(r.custoMensal):'—'}</td></tr>`;
   }).join('');
 }
 
@@ -1241,7 +1227,8 @@ function renderHistoricoTable(){
     return `<tr>
       <td>${dataHora}</td><td>${swatch(fuelKey)}${escapeHTML(fuel.label)}</td>
       <td class="num">${r.etanolPct!=null?fmtPct(r.etanolPct):'—'}</td><td class="num">${fmtBRL(r.preco)}</td>
-      <td class="num">${r.hodometro!=null?fmtInt(r.hodometro):'—'}</td><td class="num">${r.km!=null?fmtInt(r.km):'—'}</td>
+      <td class="num">${r.hodometro!=null?fmtInt(r.hodometro):'—'}</td>
+      <td class="num">${r.km!=null?(fmtInt(r.km)+(r.hodometro==null?' <span class="tag tag-neutral" title="Km importado direto do CSV, sem hodômetro — não participa da cadeia de hodômetro dos outros lançamentos.">CSV</span>':'')):'—'}</td>
       <td class="num">${fmtNum(r.litros)}</td><td class="num">${consumo!=null?fmtNum(consumo):'—'}</td>
       <td class="num">${custoKm!=null?fmtBRL(custoKm):'—'}</td><td class="num">${valorTotal!=null?fmtBRL(valorTotal):'—'}</td>
       <td class="num">${r.congestionamento ?? '—'}</td><td class="num">${r.aclives ?? '—'}</td><td class="num">${r.arCondicionado!=null?fmtPct(r.arCondicionado,0):'—'}</td>
