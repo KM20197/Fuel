@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -12,56 +12,27 @@
 <meta name="description" content="Calculadora de custo por km para gasolina aditivada, gasolina comum, etanol comum e etanol aditivado.">
 <style>
   :root{
-    --bg:#0f131a;
-    --bg-panel:#161c25;
-    --bg-panel-2:#1c2431;
-    --bg-input:#10151d;
-    --border:#2a3242;
-    --border-soft:#212938;
-    --text:#e8ecf3;
-    --text-dim:#94a1b5;
-    --text-faint:#5c6879;
-    --accent:#57c1d1;
-    --accent-soft:rgba(87,193,209,.12);
-    --good:#4caf7d;
-    --good-soft:rgba(76,175,125,.14);
-    --warn:#e0a13a;
-    --warn-soft:rgba(224,161,58,.14);
-    --bad:#e0605a;
-    --bad-soft:rgba(224,96,90,.14);
+    --bg:#0f131a;--bg-panel:#161c25;--bg-panel-2:#1c2431;--bg-input:#10151d;
+    --border:#2a3242;--border-soft:#212938;--text:#e8ecf3;--text-dim:#94a1b5;
+    --text-faint:#5c6879;--accent:#57c1d1;--accent-soft:rgba(87,193,209,.12);
+    --good:#4caf7d;--good-soft:rgba(76,175,125,.14);--warn:#e0a13a;
+    --warn-soft:rgba(224,161,58,.14);--bad:#e0605a;--bad-soft:rgba(224,96,90,.14);
     --neutral-soft:rgba(148,161,181,.14);
-
-    --c-gasolina-aditivada:#e8974a;
-    --c-gasolina-comum:#d8bb3e;
-    --c-etanol-comum:#4caf7d;
-    --c-etanol-aditivado:#3fb6c4;
-
-    --radius:10px;
-    --radius-sm:6px;
+    --c-gasolina-aditivada:#e8974a;--c-gasolina-comum:#d8bb3e;
+    --c-etanol-comum:#4caf7d;--c-etanol-aditivado:#3fb6c4;
+    --radius:10px;--radius-sm:6px;
     --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
     --mono:ui-monospace,'Roboto Mono',SFMono-Regular,Menlo,Consolas,monospace;
   }
-
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;width:100%;overflow-x:hidden;}
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:var(--sans);
-    font-size:14px;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    font-variant-numeric:tabular-nums;
-  }
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;}
   a{color:var(--accent);}
-
   ::selection{background:var(--accent-soft);}
-
-  .wrap{width:100%;max-width:100%;margin:0 auto;padding:20px 16px 80px;}
-  .wrap{min-width:0;}
+  .wrap{width:100%;max-width:100%;margin:0 auto;padding:20px 16px 80px;min-width:0;}
   .overlay-screen{width:100%;min-width:0;box-sizing:border-box;}
   .panel,.hero-card,header.top,.side-menu{min-width:0;}
-  input,select,button{max-width:100%;} 
+  input,select,button{max-width:100%;}
   .field-grid > label{min-width:0;}
   @media(max-width:420px){
     .wrap{padding-left:12px;padding-right:12px;}
@@ -71,234 +42,106 @@
     .panel-header-row .actions{width:100%;}
     .panel-header-row .actions > button,.panel-header-row .actions > .file-btn{flex:1 1 auto;}
   }
-
   header.top{margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;}
   header.top h1{font-size:20px;font-weight:800;letter-spacing:-.01em;margin:0;}
-
-  .hamburger-btn{
-    background:var(--bg-panel);
-    border:1px solid var(--border);
-    color:var(--text);
-    font-size:20px;
-    padding:6px 12px;
-    border-radius:var(--radius-sm);
-    cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-  }
+  .hamburger-btn{background:var(--bg-panel);border:1px solid var(--border);color:var(--text);font-size:20px;padding:6px 12px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .hamburger-btn:hover{border-color:var(--accent);}
-
-  .side-menu-overlay{
-    position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.6);
-    z-index:999;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;
-  }
+  .side-menu-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.6);z-index:999;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
   .side-menu-overlay.open{opacity:1;visibility:visible;}
-  .side-menu{
-    position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100vh;background:var(--bg-panel);
-    border-left:1px solid var(--border);z-index:1000;display:flex;flex-direction:column;
-    transform:translateX(100%);transition:transform .3s cubic-bezier(.1,.9,.2,1);padding:20px;overflow-y:auto;
-  }
+  .side-menu{position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100vh;background:var(--bg-panel);border-left:1px solid var(--border);z-index:1000;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.1,.9,.2,1);padding:20px;overflow-y:auto;}
   .side-menu.open{transform:translateX(0);}
   .side-menu-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px;}
   .side-menu-header h3{margin:0;font-size:16px;}
   .side-menu nav{display:flex;flex-direction:column;gap:8px;}
-  .side-menu-btn{
-    background:transparent;border:none;color:var(--text);text-align:left;padding:10px 12px;
-    border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:600;
-  }
+  .side-menu-btn{background:transparent;border:none;color:var(--text);text-align:left;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:600;}
   .side-menu-btn:hover{background:var(--accent-soft);color:var(--accent);}
-
-  .side-menu-footer{
-    margin-top:auto;padding-top:16px;border-top:1px solid var(--border);
-    font-size:11px;color:var(--text-faint);line-height:1.4;
-  }
-
-  .session-banner{
-    margin-top:10px;margin-bottom:16px;
-    display:flex;align-items:flex-start;gap:10px;
-    background:var(--warn-soft);
-    border:1px solid rgba(224,161,58,.35);
-    border-radius:var(--radius-sm);
-    padding:10px 12px;
-    font-size:12px;
-    color:#f0cd8f;
-  }
+  .side-menu-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-faint);line-height:1.4;}
+  .session-banner{margin-top:10px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;background:var(--warn-soft);border:1px solid rgba(224,161,58,.35);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:#f0cd8f;}
   .session-banner strong{color:#f6dfab;}
-
-  .overlay-screen{
-    position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--bg);
-    z-index:900;display:none;flex-direction:column;overflow-y:auto;padding:16px;
-  }
+  .overlay-screen{position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--bg);z-index:900;display:none;flex-direction:column;overflow-y:auto;padding:16px;}
   .overlay-screen.active{display:flex;}
   .overlay-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:10px;}
   .overlay-header h2{margin:0;font-size:16px;}
-  .back-btn, .close-overlay-btn{
-    background:transparent;border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);
-    padding:6px 12px;cursor:pointer;font-weight:600;font-size:13px;
-  }
-  .back-btn:hover, .close-overlay-btn:hover{border-color:var(--accent);color:var(--accent);}
-
-  .action-banner-btn{
-    width:100%;background:var(--accent);color:#08222a;font-weight:700;font-size:15px;
-    padding:14px;border-radius:var(--radius);border:none;cursor:pointer;margin-bottom:16px;text-align:center;
-    box-shadow:0 4px 12px rgba(87,193,209,0.2);
-  }
+  .back-btn,.close-overlay-btn{background:transparent;border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:6px 12px;cursor:pointer;font-weight:600;font-size:13px;}
+  .back-btn:hover,.close-overlay-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .action-banner-btn{width:100%;background:var(--accent);color:#08222a;font-weight:700;font-size:15px;padding:14px;border-radius:var(--radius);border:none;cursor:pointer;margin-bottom:16px;text-align:center;box-shadow:0 4px 12px rgba(87,193,209,0.2);}
   .action-banner-btn:hover{filter:brightness(1.08);}
-
-  .panel{
-    background:var(--bg-panel);
-    border:1px solid var(--border-soft);
-    border-radius:var(--radius);
-    padding:16px;
-    margin-bottom:16px;
-  }
+  .panel{background:var(--bg-panel);border:1px solid var(--border-soft);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
   .panel h2{font-size:14.5px;font-weight:700;margin:0 0 4px;letter-spacing:-.005em;}
   .panel h2 small{font-weight:500;color:var(--text-faint);font-size:11.5px;margin-left:6px;}
   .panel > .note{color:var(--text-dim);font-size:12px;margin:0 0 12px;}
-
+  /* NOVA: nota de desconto ativo */
+  .desconto-ativo-nota{display:none;align-items:center;gap:6px;background:var(--warn-soft);border:1px solid rgba(224,161,58,.30);border-radius:var(--radius-sm);padding:6px 10px;margin-bottom:10px;font-size:11.5px;color:#f0cd8f;line-height:1.4;}
+  .desconto-ativo-nota.visible{display:flex;}
+  .desconto-ativo-nota strong{color:#f6dfab;}
   .panel-header-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:2px;}
   .panel-header-row .actions{display:flex;gap:8px;flex-wrap:wrap;}
-
-  .hero-card{
-    background:linear-gradient(160deg,var(--bg-panel-2),var(--bg-panel));
-    border:1px solid var(--border-soft);
-    border-radius:var(--radius);
-    padding:18px 20px;
-    margin-bottom:16px;
-    text-align:center;
-  }
+  .hero-card{background:linear-gradient(160deg,var(--bg-panel-2),var(--bg-panel));border:1px solid var(--border-soft);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;text-align:center;}
   .hero-label{font-size:12px;color:var(--text-dim);font-weight:600;margin-bottom:4px;}
-  .hero-value{
-    font-family:var(--mono);
-    font-weight:600;
-    font-size:clamp(24px, 6vw, 34px);
-    color:var(--fuel-color,var(--text));
-    letter-spacing:-.01em;
-    line-height:1.1;
-  }
-
-  .field-grid{
-    display:grid;grid-template-columns:1fr;
-    gap:12px;
-  }
+  .hero-value{font-family:var(--mono);font-weight:600;font-size:clamp(24px,6vw,34px);color:var(--fuel-color,var(--text));letter-spacing:-.01em;line-height:1.1;}
+  .field-grid{display:grid;grid-template-columns:1fr;gap:12px;}
   @media(min-width:480px){.field-grid{grid-template-columns:1fr 1fr;}}
   label{display:block;font-size:12px;color:var(--text-dim);font-weight:600;}
   label small{font-weight:500;color:var(--text-faint);}
   label.span-2{grid-column:1 / -1;}
-
-  input,select{
-    font-family:var(--sans);
-    background:var(--bg-input);
-    border:1px solid var(--border);
-    color:var(--text);
-    border-radius:var(--radius-sm);
-    padding:10px;
-    font-size:14px;
-    width:100%;
-    margin-top:4px;
-  }
+  input,select{font-family:var(--sans);background:var(--bg-input);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:10px;font-size:14px;width:100%;margin-top:4px;}
   input::placeholder{color:var(--text-faint);}
-  input:focus,select:focus,button:focus-visible{
-    outline:2px solid var(--accent);outline-offset:1px;
-  }
-  input[type=date], input[type=time]{color-scheme:dark;}
-
-  .input-suffix{
-    display:flex;align-items:center;gap:6px;
-    background:var(--bg-input);
-    border:1px solid var(--border);
-    border-radius:var(--radius-sm);
-    margin-top:4px;
-    padding:0 10px;
-  }
-  .input-suffix input{
-    border:none;background:transparent;margin:0;padding:10px 0;flex:1;min-width:0;
-  }
+  input:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  input[type=date],input[type=time]{color-scheme:dark;}
+  .input-suffix{display:flex;align-items:center;gap:6px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:4px;padding:0 10px;}
+  .input-suffix input{border:none;background:transparent;margin:0;padding:10px 0;flex:1;min-width:0;}
   .input-suffix input:focus{outline:none;}
   .input-suffix span{color:var(--text-faint);font-size:12px;white-space:nowrap;}
-
   .preco-efetivo{display:block;margin-top:4px;font-weight:500;color:var(--good);font-size:11px;min-height:14px;}
-
   .posto-select{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:13px;color:var(--text);font-weight:500;}
   .posto-select label{display:flex;align-items:center;gap:6px;font-weight:500;color:var(--text);font-size:13px;}
   .posto-select input[type=radio]{width:auto;margin:0;accent-color:var(--accent);}
-  .badge{
-    background:var(--accent-soft);color:var(--accent);
-    border-radius:999px;padding:1px 6px;font-size:10.5px;font-weight:700;font-family:var(--mono);
-  }
-  .desconto-edit{
-    display:grid;grid-template-columns:1fr;
-    gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--border);
-  }
+  .badge{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 6px;font-size:10.5px;font-weight:700;font-family:var(--mono);}
+  .desconto-edit{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--border);}
   @media(min-width:480px){.desconto-edit{grid-template-columns:1fr 1fr;}}
-
   .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius-sm);border:1px solid var(--border-soft);margin-bottom:10px;}
   table{width:100%;border-collapse:collapse;font-size:12px;min-width:500px;}
-  thead th{
-    text-align:left;font-weight:600;color:var(--text-dim);
-    background:var(--bg-panel-2);
-    padding:8px 10px;white-space:nowrap;
-    border-bottom:1px solid var(--border);
-    position:sticky;top:0;
-  }
+  thead th{text-align:left;font-weight:600;color:var(--text-dim);background:var(--bg-panel-2);padding:8px 10px;white-space:nowrap;border-bottom:1px solid var(--border);position:sticky;top:0;}
   tbody td{padding:8px 10px;border-bottom:1px solid var(--border-soft);white-space:nowrap;}
   tbody tr:last-child td{border-bottom:none;}
   tbody tr:hover{background:rgba(255,255,255,.02);}
   td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:11.5px;}
   td.dim{color:var(--text-dim);white-space:normal;font-family:var(--sans);}
-
   .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle;}
   .tag{display:inline-block;padding:2px 6px;border-radius:999px;font-size:10.5px;font-weight:700;}
   .tag-good{background:var(--good-soft);color:var(--good);}
   .tag-bad{background:var(--bad-soft);color:var(--bad);}
   .tag-neutral{background:var(--neutral-soft);color:var(--text-dim);}
-
-  button{
-    font-family:var(--sans);font-weight:600;font-size:12px;
-    background:var(--accent);color:#08222a;border:none;
-    border-radius:var(--radius-sm);padding:10px 14px;cursor:pointer;
-  }
+  button{font-family:var(--sans);font-weight:600;font-size:12px;background:var(--accent);color:#08222a;border:none;border-radius:var(--radius-sm);padding:10px 14px;cursor:pointer;}
   button:hover{filter:brightness(1.08);}
   button.ghost{background:transparent;border:1px solid var(--border);color:var(--text-dim);}
   button.ghost:hover{color:var(--text);border-color:var(--text-faint);}
   button.ghost.danger:hover{color:var(--bad);border-color:var(--bad);}
-  .file-btn{
-    display:inline-flex;align-items:center;background:transparent;border:1px solid var(--border);
-    color:var(--text-dim);border-radius:var(--radius-sm);padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;
-  }
+  .file-btn{display:inline-flex;align-items:center;background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:var(--radius-sm);padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;}
   .file-btn:hover{color:var(--text);border-color:var(--text-faint);}
   .icon-btn{background:transparent;border:none;color:var(--text-faint);cursor:pointer;padding:2px 6px;font-size:12px;}
   .icon-btn:hover{color:var(--bad);}
-
   form#form-historico button[type=submit]{margin-top:14px;width:100%;padding:12px;font-size:14px;}
-
   .legend-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px;}
   .legend-table th{text-align:left;color:var(--text-dim);padding:7px 8px;border-bottom:1px solid var(--border);}
   .legend-table td{padding:7px 8px;border-bottom:1px solid var(--border-soft);}
   .legend-note{color:var(--text-dim);font-size:12px;margin:0 0 12px;}
-
   footer.foot{margin-top:24px;color:var(--text-faint);font-size:11px;text-align:center;}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <header class="top">
-    <div>
-      <h1>Calculadora de Combustível</h1>
-    </div>
+    <div><h1>Calculadora de Combustível</h1></div>
     <button class="hamburger-btn" onclick="toggleSideMenu()" aria-label="Abrir menu">≡</button>
   </header>
-
   <div class="session-banner" id="restore-banner" style="display:none;">
-    <span>✓</span>
-    <span>Dados restaurados deste aparelho a partir da última vez que você usou o app.</span>
+    <span>✓</span><span>Dados restaurados deste aparelho a partir da última vez que você usou o app.</span>
   </div>
-
   <button class="action-banner-btn" onclick="openOverlay('screen-novo-abastecimento')">+ Registrar Novo Abastecimento</button>
 
   <section id="screen-principal">
     <div class="hero-card" id="hero-decisao"></div>
-
     <div class="panel">
       <h2>Preços na bomba <small>desconto do posto aplicado a todos</small></h2>
       <div class="posto-select">
@@ -326,11 +169,21 @@
       </div>
     </div>
 
+    <!-- FAIXA DE PRECO - CORRIGIDO -->
     <div class="panel">
       <h2>Faixa de preço para ser o mais econômico</h2>
-      <p class="note">Preço máximo mantendo os demais preços constantes.</p>
+      <!-- Nota dinâmica: aparece somente quando Baratão/Shell está ativo -->
+      <div class="desconto-ativo-nota" id="faixa-desconto-nota" role="note" aria-live="polite"></div>
+      <p class="note">Preço máximo mantendo os demais preços constantes. Só o combustível mais econômico do momento tende a mostrar um preço máximo acima do que ele custa hoje — os outros, por definição, custam mais do que precisariam para assumir a liderança.</p>
       <div class="table-wrap"><table>
-        <thead><tr><th>Combustível</th><th>Preço atual</th><th>Preço máximo</th><th>Folga</th><th>Situação</th></tr></thead>
+        <thead><tr>
+          <th>Combustível</th>
+          <!-- CORRIGIDO: "Preço atual" → "Preço efetivo"
+               Com posto=Nenhum é idêntico ao bruto; com desconto ativo é menor.
+               O atributo title explica o significado ao passar o cursor. -->
+          <th title="Preço efetivo pago após desconto do posto selecionado (= preço da bomba quando nenhum posto está selecionado)">Preço efetivo</th>
+          <th>Preço máximo</th>
+        </tr></thead>
         <tbody id="tbl-faixa-preco"></tbody>
       </table></div>
     </div>
@@ -347,15 +200,13 @@
       <button class="side-menu-btn" onclick="openOverlay('screen-historico')">Histórico</button>
       <button class="side-menu-btn" onclick="openOverlay('screen-calc-historico')">Cálculos</button>
       <button class="side-menu-btn" onclick="openOverlay('screen-metodologia')">Metodologia</button>
-      <button class="side-menu-btn" onclick="openOverlay('screen-backup')">Backup e Restauração (Drive)</button>
+      <button class="side-menu-btn" onclick="openOverlay('screen-backup')">Backup e Restauração</button>
       <button class="side-menu-btn" onclick="openOverlay('screen-legendas')">Legendas</button>
     </nav>
-    <div class="side-menu-footer">
-      Idealizado por KM20197<br>Licença: Creative Commons BY-NC (Uso não comercial proibido para fins lucrativos)
-    </div>
+    <div class="side-menu-footer">Idealizado por KM20197<br>Licença: Creative Commons BY-NC (Uso não comercial proibido para fins lucrativos)</div>
   </aside>
 
-  <!-- ===================== TELAS SOBREPOSTAS ===================== -->
+  <!-- TELAS SOBREPOSTAS -->
 
   <div id="screen-novo-abastecimento" class="overlay-screen">
     <div class="overlay-header">
@@ -387,7 +238,6 @@
           <label>Valor total pago <small>preenche um, calcula o outro</small>
             <div class="input-suffix"><span>R$</span><input type="number" name="valorTotalPago" step="0.01" min="0" oninput="sincronizarValorLitros('valor')"></div>
           </label>
-          
           <label>Congestionamento
             <select name="congestionamento">
               <option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option>
@@ -403,7 +253,6 @@
               <option value="0">0%</option><option value="0.25" selected>25%</option><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option>
             </select>
           </label>
-
           <label>Incluir no cálculo principal?
             <select name="incluir"><option value="Sim">Sim</option><option value="Não">Não</option></select>
           </label>
@@ -414,6 +263,7 @@
     </div>
   </div>
 
+  <!-- RESULTADOS ATUAIS - CORRIGIDO -->
   <div id="screen-resultados" class="overlay-screen">
     <div class="overlay-header">
       <button class="back-btn" onclick="closeOverlay('screen-resultados')">← Voltar</button>
@@ -429,8 +279,17 @@
     </div>
     <div class="panel">
       <h2>Comparação econômica atual</h2>
+      <!-- CORRIGIDO: nota dinâmica quando desconto ativo -->
+      <div class="desconto-ativo-nota" id="comp-desconto-nota" role="note" aria-live="polite"></div>
       <div class="table-wrap"><table>
-        <thead><tr><th>Combustível</th><th>Preço R$/L</th><th>Consumo km/L</th><th>Fonte</th><th>Eficiência vs gasolina</th><th>Custo R$/km</th><th>Custo R$/100km</th><th>Tanque cheio</th><th>Autonomia</th><th>Custo mensal</th></tr></thead>
+        <thead><tr>
+          <th>Combustível</th>
+          <!-- CORRIGIDO: "Preço R$/L" → "Preço efetivo R$/L" -->
+          <th title="Preço efetivo pago após desconto do posto selecionado (= preço da bomba quando nenhum posto está selecionado)">Preço efetivo R$/L</th>
+          <th>Consumo km/L</th><th>Fonte</th><th>Eficiência vs gasolina</th>
+          <th>Custo R$/km</th><th>Custo R$/100km</th><th>Tanque cheio</th>
+          <th>Autonomia</th><th>Custo mensal</th>
+        </tr></thead>
         <tbody id="tbl-comparacao"></tbody>
       </table></div>
     </div>
@@ -477,8 +336,6 @@
         <h2>Cálculos salvos</h2>
         <div class="actions">
           <button type="button" onclick="salvarCalculoAtual()">Salvar cálculo atual</button>
-          <button type="button" onclick="exportarCalcCSV()">Baixar CSV</button>
-          <label class="file-btn">Importar CSV<input type="file" accept=".csv,text/csv" onchange="importarCalcCSV(event)" hidden></label>
           <button type="button" class="ghost danger" onclick="limparCalcHistorico()">Limpar</button>
         </div>
       </div>
@@ -496,11 +353,19 @@
       <button class="close-overlay-btn" onclick="closeOverlay('screen-backup')">✕</button>
     </div>
     <div class="panel">
-      <h2>Google Drive (Arquivo JSON)</h2>
+      <h2>Backup de dados (Arquivo JSON)</h2>
       <p class="note">Salve uma cópia de segurança completa de todos os seus dados ou importe um backup anterior.</p>
       <div class="actions" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;">
-        <button type="button" onclick="exportarBackupJSON()">Salvar no Google Drive (Backup)</button>
-        <label class="file-btn">Restaurar do Google Drive<input type="file" accept=".json" onchange="importarBackupJSON(event)" hidden></label>
+        <button type="button" onclick="exportarBackupJSON()">Baixar arquivo de backup</button>
+        <label class="file-btn">Restaurar arquivo de backup<input type="file" accept=".json" onchange="importarBackupJSON(event)" hidden></label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Cálculos (CSV)</h2>
+      <p class="note">Exporta ou importa só o histórico de cálculos salvos, separado do backup completo acima.</p>
+      <div class="actions" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;">
+        <button type="button" onclick="exportarCalcCSV()">Exportar Cálculos (CSV)</button>
+        <label class="file-btn">Importar Cálculos (CSV)<input type="file" accept=".csv,text/csv" onchange="importarCalcCSV(event)" hidden></label>
       </div>
     </div>
   </div>
@@ -657,7 +522,46 @@ function persist(){
     }));
     localStorage.setItem(STORAGE_KEYS.historico, JSON.stringify(state.historico));
     localStorage.setItem(STORAGE_KEYS.calc, JSON.stringify(state.calcHistorico));
-  }catch(e){}
+    return true;
+  }catch(e){
+    console.warn('Não foi possível salvar os dados localmente.', e);
+    return false;
+  }
+}
+
+function numOrNull(value){
+  if(value==null || String(value).trim()==='') return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+function nonNegative(value, fallback=0){
+  const n = Number(value);
+  return Number.isFinite(n) && n>=0 ? n : fallback;
+}
+function clamp01(value, fallback=0){
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.min(1,Math.max(0,n)) : fallback;
+}
+
+function normalizeStoredHistorico(rows){
+  if(!Array.isArray(rows)) return [];
+  const labels = new Set(FUELS.map(f=>f.key));
+  return rows.filter(r=>r && typeof r==='object').map(r=>({
+    id: String(r.id || genId()),
+    data: String(r.data ?? ''),
+    hora: String(r.hora ?? ''),
+    combustivel: labels.has(r.combustivel) ? r.combustivel : null,
+    etanolPct: numOrNull(r.etanolPct),
+    preco: nonNegative(r.preco),
+    hodometro: numOrNull(r.hodometro),
+    km: numOrNull(r.km),
+    litros: nonNegative(r.litros),
+    congestionamento: numOrNull(r.congestionamento),
+    aclives: numOrNull(r.aclives),
+    arCondicionado: numOrNull(r.arCondicionado),
+    incluir: String(r.incluir ?? 'Sim').trim().toLowerCase()==='não' ? 'Não' : 'Sim',
+    obs: String(r.obs ?? ''),
+  })).filter(r=>r.combustivel);
 }
 
 function loadPersisted(){
@@ -665,18 +569,38 @@ function loadPersisted(){
     const cfgRaw = localStorage.getItem(STORAGE_KEYS.config);
     if(cfgRaw){
       const cfg = JSON.parse(cfgRaw);
-      if(cfg.entradas) Object.assign(state.entradas, cfg.entradas);
-      if(cfg.desconto) Object.assign(state.desconto, cfg.desconto);
-      if(cfg.precosBomba) Object.assign(state.precosBomba, cfg.precosBomba);
-      if(cfg.consumoManual) Object.assign(state.consumoManual, cfg.consumoManual);
-      if(cfg.hodometroBaseline!=null) state.hodometroBaseline = cfg.hodometroBaseline;
+      if(cfg && typeof cfg==='object'){
+        if(cfg.entradas && typeof cfg.entradas==='object') Object.assign(state.entradas, cfg.entradas);
+        if(cfg.desconto && typeof cfg.desconto==='object') Object.assign(state.desconto, cfg.desconto);
+        if(cfg.precosBomba && typeof cfg.precosBomba==='object') Object.assign(state.precosBomba, cfg.precosBomba);
+        if(cfg.consumoManual && typeof cfg.consumoManual==='object') Object.assign(state.consumoManual, cfg.consumoManual);
+        if(cfg.hodometroBaseline!=null && Number.isFinite(Number(cfg.hodometroBaseline))) state.hodometroBaseline = Number(cfg.hodometroBaseline);
+      }
     }
+    // Sanitiza configurações persistidas para impedir valores impossíveis de
+    // contaminarem os cálculos caso um armazenamento antigo esteja corrompido.
+    state.entradas.etanolAtual = clamp01(state.entradas.etanolAtual,0.32);
+    state.entradas.margemSeguranca = clamp01(state.entradas.margemSeguranca,0.02);
+    state.entradas.capacidadeTanque = nonNegative(state.entradas.capacidadeTanque,39.5);
+    state.entradas.distanciaMensal = nonNegative(state.entradas.distanciaMensal,660);
+    state.desconto.baratao = clamp01(state.desconto.baratao,0.0493);
+    state.desconto.shell = clamp01(state.desconto.shell,0.0545);
+    state.desconto.posto = ['nenhum','baratao','shell'].includes(state.desconto.posto) ? state.desconto.posto : 'nenhum';
+    FUELS.forEach(f=>{ state.precosBomba[f.key] = nonNegative(state.precosBomba[f.key],0); });
+    state.consumoManual.gasolina = nonNegative(state.consumoManual.gasolina,11.54);
+    state.consumoManual.etanol = nonNegative(state.consumoManual.etanol,8.24);
     const histRaw = localStorage.getItem(STORAGE_KEYS.historico);
-    if(histRaw){ const h = JSON.parse(histRaw); if(Array.isArray(h)) state.historico = h; }
+    if(histRaw){
+      const parsedHist = JSON.parse(histRaw);
+      if(Array.isArray(parsedHist)) state.historico = normalizeStoredHistorico(parsedHist);
+    }
     const calcRaw = localStorage.getItem(STORAGE_KEYS.calc);
     if(calcRaw){ const c = JSON.parse(calcRaw); if(Array.isArray(c)) state.calcHistorico = c; }
     return !!(cfgRaw || histRaw);
-  }catch(e){ return false; }
+  }catch(e){
+    console.warn('Não foi possível restaurar todos os dados locais.', e);
+    return false;
+  }
 }
 
 function syncInputsFromState(){
@@ -696,12 +620,20 @@ function syncInputsFromState(){
 }
 
 function toggleSideMenu(){
-  document.getElementById('side-menu').classList.toggle('open');
-  document.getElementById('side-menu-overlay').classList.toggle('open');
+  const menu = document.getElementById('side-menu');
+  const overlay = document.getElementById('side-menu-overlay');
+  if(menu) menu.classList.toggle('open');
+  if(overlay) overlay.classList.toggle('open');
+}
+function closeSideMenu(){
+  const menu = document.getElementById('side-menu');
+  const overlay = document.getElementById('side-menu-overlay');
+  if(menu) menu.classList.remove('open');
+  if(overlay) overlay.classList.remove('open');
 }
 
 function openOverlay(screenId){
-  toggleSideMenu();
+  closeSideMenu();
   document.getElementById(screenId).classList.add('active');
   if(screenId === 'screen-novo-abastecimento'){
     preencherDataHoraAtual();
@@ -711,17 +643,16 @@ function openOverlay(screenId){
   }
   window.scrollTo(0,0);
 }
-
-function closeOverlay(screenId){
-  document.getElementById(screenId).classList.remove('active');
-}
+function closeOverlay(screenId){ document.getElementById(screenId).classList.remove('active'); }
 
 const fmtBRL = n => (n==null||isNaN(n)||!isFinite(n)) ? '—' : n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const fmtNum = (n,d=2) => (n==null||isNaN(n)||!isFinite(n)) ? '—' : n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fmtPct = (n,d=1) => (n==null||isNaN(n)||!isFinite(n)) ? '—' : (n*100).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+'%';
 const fmtInt = n => (n==null||isNaN(n)||!isFinite(n)) ? '—' : Math.round(n).toLocaleString('pt-BR');
 function swatch(fuelKey){ return `<span class="dot" style="background:var(--c-${fuelKey.replace(/_/g,'-')})"></span>`; }
-
+function escapeHTML(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
 function parseNum(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
 function parseBRNum(raw){
   if(raw==null) return NaN;
@@ -744,23 +675,29 @@ function updateDesconto(posto){ state.desconto.posto = posto; document.querySele
 function updateDescontoValor(posto, valor){ state.desconto[posto] = parseNum(valor)/100; renderAll(); renderEfetivos(); }
 
 function recomputeKmDeltas(){
-  // Ordena pelo HODÔMETRO (não pela data digitada): o hodômetro só cresce de verdade, então é a
-  // referência mais confiável para encadear "km desde o abastecimento anterior" — mesmo que datas
-  // fiquem iguais, sem hora, ou fora de ordem por causa de um lançamento retroativo/importado.
-  const comHodometro = state.historico.filter(r=>r.hodometro!=null && !isNaN(r.hodometro));
-  comHodometro.sort((a,b)=>a.hodometro-b.hodometro);
-  let anterior = state.hodometroBaseline;
+  // Mantém a regra definida para o aplicativo: cada abastecimento é calculado
+  // contra o abastecimento anterior de qualquer combustível.
+  // Registros abaixo da referência atual não podem rebaixar a cadeia, pois isso
+  // criaria quilômetros artificialmente válidos em lançamentos inconsistentes.
+  const comHodometro = state.historico.filter(r=>r.hodometro!=null && Number.isFinite(Number(r.hodometro)));
+  comHodometro.sort((a,b)=>Number(a.hodometro)-Number(b.hodometro));
+  let anterior = Number(state.hodometroBaseline);
   comHodometro.forEach(r=>{
-    r.km = (anterior!=null && r.hodometro>=anterior) ? (r.hodometro-anterior) : null;
-    anterior = r.hodometro;
+    const hod = Number(r.hodometro);
+    if(hod>=anterior){
+      r.km = hod-anterior;
+      anterior = hod;
+    }else{
+      r.km = null;
+    }
   });
 }
 
 function getUltimoHodometro(){
   const rows = state.historico
-    .filter(r=>r.hodometro!=null && !isNaN(r.hodometro))
-    .sort((a,b)=>a.hodometro-b.hodometro);
-  return rows.length ? rows[rows.length-1].hodometro : state.hodometroBaseline;
+    .filter(r=>r.hodometro!=null && Number.isFinite(Number(r.hodometro)))
+    .sort((a,b)=>Number(a.hodometro)-Number(b.hodometro));
+  return rows.length ? Number(rows[rows.length-1].hodometro) : Number(state.hodometroBaseline);
 }
 
 function previewKmDelta(inputEl){
@@ -782,13 +719,11 @@ function atualizarPrecoPagoModal(){
   }
 }
 
-// Preço por litro + (Litros OU Valor total) -> calcula o campo que faltar. Bidirecional:
-// preencher Valor total calcula Litros; preencher Litros calcula Valor total (conferência visual).
 function sincronizarValorLitros(origem){
   const form = document.getElementById('form-historico');
   if(!form) return;
   const preco = parseFloat(form.elements['preco'].value);
-  if(!(preco>0)) return; // precisa do preço por litro na tela antes de calcular
+  if(!(preco>0)) return;
   const litrosEl = form.elements['litros'];
   const valorEl = form.elements['valorTotalPago'];
   if(origem==='valor'){
@@ -811,30 +746,30 @@ function addHistoricoEntry(e){
   const combustivel = el.combustivel.value;
   const fuelInfo = FUEL_BY_KEY[combustivel];
   const hodometro = parseFloat(el.hodometro.value);
-  if(isNaN(hodometro)){ alert('Informe o hodômetro.'); return; }
-
+  if(!fuelInfo){ alert('Selecione um combustível válido.'); return; }
+  if(!Number.isFinite(hodometro) || hodometro<0){ alert('Informe um hodômetro válido.'); return; }
   const odometroAnterior = getUltimoHodometro();
-  const kmPercorridos = (hodometro>=odometroAnterior) ? (hodometro-odometroAnterior) : null;
-
+  if(hodometro < odometroAnterior){
+    alert('O hodômetro informado é menor que a referência atual ('+fmtInt(odometroAnterior)+' km). Corrija o valor antes de salvar o abastecimento.');
+    return;
+  }
+  const preco = parseFloat(el.preco.value);
+  const litros = parseFloat(el.litros.value);
+  if(!(preco>0)){ alert('Informe um preço por litro maior que zero.'); return; }
+  if(!(litros>0)){ alert('Informe uma quantidade de litros maior que zero.'); return; }
   const entry = {
-    id: genId(),
-    data: el.data.value,
-    hora: el.hora.value || '',
+    id: genId(), data: el.data.value, hora: el.hora.value || '',
     combustivel,
     etanolPct: (fuelInfo.group==='gasolina') ? state.entradas.etanolAtual : null,
-    preco: parseFloat(el.preco.value)||0,
-    hodometro,
-    km: kmPercorridos,
-    litros: parseFloat(el.litros.value)||0,
+    preco,
+    hodometro, km: hodometro-odometroAnterior,
+    litros,
     congestionamento: parseInt(el.congestionamento.value),
     aclives: parseInt(el.aclives.value),
     arCondicionado: parseFloat(el.arCondicionado.value),
-    incluir: el.incluir.value,
-    obs: el.obs.value,
+    incluir: el.incluir.value, obs: el.obs.value,
   };
   state.historico.push(entry);
-  // Não mover a referência inicial para o novo hodômetro. A próxima referência
-  // é obtida dinamicamente do último abastecimento.
   f.reset();
   preencherDataHoraAtual();
   renderAll();
@@ -888,9 +823,9 @@ function parseDateForStorage(raw){
 
 function findHistoricoHeader(lines, delim){
   const required = [
-    'data','combustivel','preco r/l','preco (r$/l)','hodometro',
-    'litros consumidos','congestionamento','aclives','arcondicionado',
-    'incluir no calculo principal','observacoes motivo da exclusao'
+    'data','combustivel','preco (r$/l)','km percorridos',
+    'litros consumidos','congestionamento','aclives','ar-condicionado',
+    'incluir no calculo?','observacoes'
   ].map(normalizeHeader);
   for(let i=0;i<Math.min(lines.length,30);i++){
     if(!lines[i].trim()) continue;
@@ -904,32 +839,21 @@ function findHistoricoHeader(lines, delim){
 }
 
 function exportarCSV(){
-  // Compatibilidade exata com as 11 colunas de entrada da aba Historico:
-  // A-F e J-N. G-I e O-P são derivados por fórmula na planilha e não devem
-  // ser exportados como dados, para não sobrescrever as fórmulas ao colar/importar.
   const headers = [
     'Data','Combustível','Etanol na gasolina (%)','Preço (R$/L)','Km percorridos','Litros consumidos',
-    'Congestionamento','Aclives','Ar-condicionado (%)','Incluir no cálculo principal?',
-    'Observações / motivo da exclusão'
+    'Congestionamento','Aclives','Ar-condicionado','Incluir no cálculo?','Observações'
   ];
+  const brNum = v => (v==null || v==='' || isNaN(v)) ? '' : String(v).replace('.',',');
   const linhas = state.historico.map(r=>{
     const data = formatDateDDMMYYYY(r.data);
-    const arPct = r.arCondicionado!=null ? r.arCondicionado*100 : '';
     return [
-      data,
-      FUEL_BY_KEY[r.combustivel]?.label || r.combustivel,
-      r.etanolPct!=null ? r.etanolPct*100 : '',
-      r.preco,
-      r.km,
-      r.litros,
-      r.congestionamento,
-      r.aclives,
-      arPct,
-      r.incluir,
-      r.obs
+      data, FUEL_BY_KEY[r.combustivel]?.label || r.combustivel,
+      brNum(r.etanolPct), brNum(r.preco), brNum(r.km), brNum(r.litros),
+      r.congestionamento ?? '', r.aclives ?? '', brNum(r.arCondicionado),
+      r.incluir, r.obs
     ].map(csvEscape).join(';');
   });
-  baixarArquivo('\uFEFF'+headers.map(csvEscape).join(';')+'\r\n'+linhas.join('\r\n'), 'historico.csv', 'text/csv');
+  baixarArquivo('\uFEFF'+headers.map(csvEscape).join(';')+'\r\n'+linhas.join('\r\n'), 'historico_planilha.csv', 'text/csv');
 }
 
 function importarCSV(evt){
@@ -942,31 +866,23 @@ function importarCSV(evt){
       const delim = (linhas.find(l=>l.trim()!=='')||'').includes(';') ? ';' : ',';
       const headerInfo = findHistoricoHeader(linhas,delim);
       if(!headerInfo) throw new Error('Cabeçalho da aba Historico não localizado.');
-
       const cab = headerInfo.cols;
       const idx = (...names) => {
-        for(const name of names){
-          const i = cab.indexOf(normalizeHeader(name));
-          if(i>=0) return i;
-        }
+        for(const name of names){ const i = cab.indexOf(normalizeHeader(name)); if(i>=0) return i; }
         return -1;
       };
       const cols = {
-        data: idx('Data'),
-        combustivel: idx('Combustível'),
+        data: idx('Data'), combustivel: idx('Combustível'),
         etanolPct: idx('Etanol na gasolina (%)'),
         preco: idx('Preço (R$/L)','Preço R$/L','Preço'),
-        km: idx('Km percorridos','Km'),
-        litros: idx('Litros consumidos','Litros'),
-        congestionamento: idx('Congestionamento'),
-        aclives: idx('Aclives'),
-        arCondicionado: idx('Ar-condicionado (%)','Ar-condicionado','Ar cond.'),
-        incluir: idx('Incluir no cálculo principal?','Incluir'),
-        obs: idx('Observações / motivo da exclusão','Observações','Obs.')
+        km: idx('Km percorridos','Km'), litros: idx('Litros consumidos','Litros'),
+        congestionamento: idx('Congestionamento'), aclives: idx('Aclives'),
+        arCondicionado: idx('Ar-condicionado','Ar-condicionado (%)','Ar cond.'),
+        incluir: idx('Incluir no cálculo?','Incluir no cálculo principal?','Incluir'),
+        obs: idx('Observações','Observações / motivo da exclusão','Obs.')
       };
       const required = ['data','combustivel','preco','km','litros','congestionamento','aclives','arCondicionado','incluir'];
       if(required.some(k=>cols[k]<0)) throw new Error('O CSV não contém todas as 11 colunas esperadas da aba Historico.');
-
       const novos=[];
       for(let i=headerInfo.row+1;i<linhas.length;i++){
         if(!linhas[i].trim()) continue;
@@ -975,33 +891,22 @@ function importarCSV(evt){
         const lbl=String(c[cols.combustivel]??'').trim();
         const fuelKey=Object.keys(FUEL_BY_KEY).find(k=>FUEL_BY_KEY[k].label===lbl);
         if(!fuelKey) continue;
-
         const arRaw=parseBRNum(c[cols.arCondicionado]);
         const ar=Number.isFinite(arRaw) ? (arRaw>1 ? arRaw/100 : arRaw) : null;
         const pctRaw=cols.etanolPct>=0 ? parseBRNum(c[cols.etanolPct]) : NaN;
         const pct=Number.isFinite(pctRaw) ? (pctRaw>1 ? pctRaw/100 : pctRaw) : null;
-
         novos.push({
-          id:genId(),
-          data:parseDateForStorage(c[cols.data]||''),
-          hora:'',
-          combustivel:fuelKey,
-          etanolPct:pct,
-          preco:parseBRNum(c[cols.preco]),
-          hodometro:null,
-          km:parseBRNum(c[cols.km]),
-          litros:parseBRNum(c[cols.litros]),
+          id:genId(), data:parseDateForStorage(c[cols.data]||''), hora:'',
+          combustivel:fuelKey, etanolPct:pct, preco:parseBRNum(c[cols.preco]),
+          hodometro:null, km:parseBRNum(c[cols.km]), litros:parseBRNum(c[cols.litros]),
           congestionamento:parseInt(c[cols.congestionamento])||null,
-          aclives:parseInt(c[cols.aclives])||null,
-          arCondicionado:ar,
+          aclives:parseInt(c[cols.aclives])||null, arCondicionado:ar,
           incluir:c[cols.incluir]?String(c[cols.incluir]).trim():'Sim',
           obs:cols.obs>=0 ? (c[cols.obs]||'') : ''
         });
       }
-      // O CSV compatível A-F/J-N não possui hodômetro. Portanto, ele é útil
-      // apenas para os lançamentos em que a planilha também trabalha com km
-      // percorridos; não inventamos hodômetro ausente.
-      // Mantemos os registros e deixamos o consumo ser derivado de km/litros.
+      // O CSV compatível A-F/J-N não possui hodômetro. Portanto, não inventamos
+      // hodômetro ausente — mantemos os registros com km derivado de km/litros.
       state.historico.push(...novos);
       renderAll();
       alert(novos.length+' registros importados com sucesso.');
@@ -1011,6 +916,52 @@ function importarCSV(evt){
   reader.readAsText(file, 'UTF-8');
 }
 
+function exportarCalcCSV(){
+  const headers = ['DataHora','Gas. aditivada','Gas. comum','Etanol comum','Etanol aditivado','Mais econômico','Custo/km'];
+  const linhas = state.calcHistorico.map(c=>[c.timestamp, c.precos.gasolina_aditivada, c.precos.gasolina_comum, c.precos.etanol_comum, c.precos.etanol_aditivado, c.melhor?FUEL_BY_KEY[c.melhor].label:'', c.menorCusto]);
+  baixarArquivo('\uFEFF'+headers.join(';')+'\r\n'+linhas.map(cols=>cols.join(';')).join('\r\n'), 'historico_calculos.csv', 'text/csv');
+}
+
+function importarCalcCSV(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      const linhas = ev.target.result.split(/\r?\n/).filter(l=>l.trim()!=='');
+      if(linhas.length<2){ alert('CSV vazio.'); return; }
+      const delim = linhas[0].includes(';') ? ';' : ',';
+      let headerRow = -1;
+      for(let i=0;i<Math.min(linhas.length,10);i++){
+        const cols = parseCSVLine(linhas[i], delim).map(normalizeHeader);
+        if(cols.includes(normalizeHeader('DataHora')) || cols.includes(normalizeHeader('Mais econômico'))){
+          headerRow = i; break;
+        }
+      }
+      if(headerRow===-1) headerRow = 0;
+      const novos = [];
+      for(let i=headerRow+1;i<linhas.length;i++){
+        const cols = parseCSVLine(linhas[i], delim);
+        if(cols.every(c=>c.trim()==='')) continue;
+        if(!/^\d/.test(cols[0]||'')) continue;
+        novos.push({
+          id: genId(), timestamp: cols[0],
+          precos: {
+            gasolina_aditivada: parseBRNum(cols[1]), gasolina_comum: parseBRNum(cols[2]),
+            etanol_comum: parseBRNum(cols[3]), etanol_aditivado: parseBRNum(cols[4])
+          },
+          melhor: Object.keys(FUEL_BY_KEY).find(k=> FUEL_BY_KEY[k].label === String(cols[5]).trim()) || null,
+          menorCusto: parseBRNum(cols[6])
+        });
+      }
+      state.calcHistorico.push(...novos);
+      renderAll();
+      alert(novos.length+' cálculos importados com sucesso.');
+    }catch(err){ alert('Erro ao importar CSV de Cálculos: '+err.message); }
+    evt.target.value='';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
 
 function exportarBackupJSON(){
   const data = JSON.stringify(state, null, 2);
@@ -1064,47 +1015,6 @@ function salvarCalculoAtual(){
 function removeCalcEntry(id){ state.calcHistorico = state.calcHistorico.filter(c=>c.id!==id); renderAll(); }
 function limparCalcHistorico(){ if(confirm('Remover cálculos?')){ state.calcHistorico = []; renderAll(); } }
 
-function exportarCalcCSV(){
-  const headers = ['DataHora','Gas. aditivada','Gas. comum','Etanol comum','Etanol aditivado','Mais econômico','Custo/km'];
-  const linhas = state.calcHistorico.map(c=>[c.timestamp, c.precos.gasolina_aditivada, c.precos.gasolina_comum, c.precos.etanol_comum, c.precos.etanol_aditivado, c.melhor?FUEL_BY_KEY[c.melhor].label:'', c.menorCusto]);
-  baixarArquivo('\uFEFF'+headers.join(';')+'\r\n'+linhas.map(cols=>cols.join(';')).join('\r\n'), 'historico_calculos.csv', 'text/csv');
-}
-
-function importarCalcCSV(evt){
-  const file = evt.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev){
-    try{
-      const linhas = ev.target.result.split(/\r?\n/).filter(l=>l.trim()!=='');
-      if(linhas.length<2){ alert('CSV vazio.'); return; }
-      const delim = linhas[0].includes(';') ? ';' : ',';
-      const novos = [];
-      for(let i=1;i<linhas.length;i++){
-        const cols = parseCSVLine(linhas[i], delim);
-        if(cols.every(c=>c.trim()==='')) continue;
-        novos.push({
-          id: genId(),
-          timestamp: cols[0],
-          precos: {
-            gasolina_aditivada: parseBRNum(cols[1]),
-            gasolina_comum: parseBRNum(cols[2]),
-            etanol_comum: parseBRNum(cols[3]),
-            etanol_aditivado: parseBRNum(cols[4])
-          },
-          melhor: Object.keys(FUEL_BY_KEY).find(k=> FUEL_BY_KEY[k].label === String(cols[5]).trim()) || null,
-          menorCusto: parseBRNum(cols[6])
-        });
-      }
-      state.calcHistorico.push(...novos);
-      renderAll();
-      alert(novos.length+' cálculos importados com sucesso.');
-    }catch(err){ alert('Erro ao importar CSV de Cálculos: '+err.message); }
-    evt.target.value='';
-  };
-  reader.readAsText(file, 'UTF-8');
-}
-
 function classifyUsageCondition(r){
   const c = Number(r.congestionamento);
   const h = Number(r.aclives);
@@ -1115,22 +1025,13 @@ function classifyUsageCondition(r){
   return 'Intermediária';
 }
 
-function equivalentEthanolLiters(r){
-  if(!r || !(r.litros>0)) return null;
-  if(FUEL_BY_KEY[r.combustivel]?.group!=='gasolina') return 0;
-  return r.litros * (r.etanolPct==null ? state.entradas.etanolAtual : r.etanolPct);
-}
-
 function consumoDinamico(){
   const validos = [...state.historico].filter(r=>r.incluir==='Sim' && r.km>0 && r.litros>0);
   validos.sort((a,b)=>(b.data||'').localeCompare(a.data||'') || (b.hodometro||0)-(a.hodometro||0));
-
-  const validGas = validos.filter(r=>FUEL_BY_KEY[r.combustivel].group==='gasolina');
+  const validGas = validos.filter(r=>FUEL_BY_KEY[r.combustivel]?.group==='gasolina');
   const latestGas = validGas.length > 0 ? (validGas[0].km / validGas[0].litros) : null;
-
-  const validEt = validos.filter(r=>FUEL_BY_KEY[r.combustivel].group==='etanol');
+  const validEt = validos.filter(r=>FUEL_BY_KEY[r.combustivel]?.group==='etanol');
   const latestEt = validEt.length > 0 ? (validEt[0].km / validEt[0].litros) : null;
-
   const out = {};
   FUELS.forEach(f=>{
     const isGas = f.group==='gasolina';
@@ -1176,23 +1077,28 @@ function decisaoAutomatica(comp){
   if(!completo) return {completo:false};
   let melhor = FUELS[0].key;
   FUELS.forEach(f=>{ if(comp[f.key].custoKm < comp[melhor].custoKm) melhor = f.key; });
-  const menorCusto = comp[melhor].custoKm;
-  return {completo:true, melhor, menorCusto};
+  return {completo:true, melhor, menorCusto: comp[melhor].custoKm};
 }
 
 function faixaPreco(comp){
-  const completo = FUELS.every(f=>comp[f.key].consumo>0);
   const rows = {};
   FUELS.forEach(f=>{
-    if(!completo){ rows[f.key]={completo:false}; return; }
+    const precoAtual = Number(comp[f.key]?.preco);
+    const consumo = Number(comp[f.key]?.consumo);
+    if(!(precoAtual>0 && consumo>0)){ rows[f.key]={completo:false}; return; }
     let precoMax = Infinity;
+    let encontrouConcorrente = false;
     FUELS.forEach(g=>{
       if(g.key===f.key) return;
-      const cand = comp[g.key].preco * (comp[f.key].consumo/comp[g.key].consumo);
-      if(cand<precoMax) precoMax=cand;
+      const precoConcorrente = Number(comp[g.key]?.preco);
+      const consumoConcorrente = Number(comp[g.key]?.consumo);
+      if(!(precoConcorrente>0 && consumoConcorrente>0)) return;
+      const candidato = precoConcorrente * (consumo / consumoConcorrente);
+      if(Number.isFinite(candidato)){ precoMax = Math.min(precoMax, candidato); encontrouConcorrente = true; }
     });
-    const folga = precoMax - comp[f.key].preco;
-    rows[f.key] = {completo:true, precoAtual:comp[f.key].preco, precoMax, folga, situacao: comp[f.key].preco<=precoMax ? 'Dentro da faixa econômica':'Acima da faixa'};
+    rows[f.key] = encontrouConcorrente && Number.isFinite(precoMax)
+      ? {completo:true, precoAtual, precoMax}
+      : {completo:false};
   });
   return rows;
 }
@@ -1206,21 +1112,23 @@ function regraMargem(comp){
     const precoGas = comp[gk].preco, precoEt = comp[ek].preco;
     if(!(precoGas>0 && precoEt>=0 && comp[ek].consumo>0 && comp[gk].consumo>0))
       return {etanol:ek, gasolina:gk, completo:false};
-
     const percentualLimite = 0.70;
     const limiteAjustado = percentualLimite * (1 - state.entradas.margemSeguranca);
     const precoLimiteComMargem = precoGas * limiteAjustado;
-
     return {
-      etanol:ek, gasolina:gk, completo:true,
-      percentualLimite, limiteAjustado, precoLimiteComMargem,
-      precoAtualEtanol:precoEt,
+      etanol:ek, gasolina:gk, completo:true, percentualLimite, limiteAjustado,
+      precoLimiteComMargem, precoAtualEtanol:precoEt,
       diferenca: precoLimiteComMargem-precoEt,
       classificacao: precoEt<=precoLimiteComMargem ? 'Dentro do limite seguro' : 'Acima do limite seguro',
     };
   });
 }
 
+// =============================================================================
+// CORRIGIDO: renderEfetivos atualiza as notas de desconto ativo nas tabelas de
+// Faixa e Comparação econômica, deixando explícito que os valores exibidos são
+// o preço efetivo (pós-desconto) — diferente dos preços brutos em "Preços na bomba".
+// =============================================================================
 function renderEfetivos(){
   FUELS.forEach(f=>{
     const el = document.getElementById('efetivo-'+f.key);
@@ -1232,6 +1140,22 @@ function renderEfetivos(){
   });
   const bB = document.getElementById('badge-baratao'); if(bB) bB.textContent = fmtPct(state.desconto.baratao,2);
   const bS = document.getElementById('badge-shell'); if(bS) bS.textContent = fmtPct(state.desconto.shell,2);
+
+  // Notas de desconto ativo na Faixa e na Comparação econômica
+  const faixaNota  = document.getElementById('faixa-desconto-nota');
+  const compNota   = document.getElementById('comp-desconto-nota');
+  const postoAtivo = state.desconto.posto;
+
+  if(postoAtivo !== 'nenhum'){
+    const postoLabel = postoAtivo === 'baratao' ? 'Baratão' : 'Shell';
+    const pct        = postoAtivo === 'baratao' ? state.desconto.baratao : state.desconto.shell;
+    const msg = `⚠ Posto <strong>${postoLabel}</strong> selecionado: os preços abaixo são o preço efetivo após desconto de ${fmtPct(pct,2)} — e diferem dos valores brutos digitados em "Preços na bomba".`;
+    if(faixaNota) { faixaNota.innerHTML = msg; faixaNota.classList.add('visible');  }
+    if(compNota)  { compNota.innerHTML  = msg; compNota.classList.add('visible');   }
+  } else {
+    if(faixaNota) { faixaNota.innerHTML = ''; faixaNota.classList.remove('visible'); }
+    if(compNota)  { compNota.innerHTML  = ''; compNota.classList.remove('visible');  }
+  }
 }
 
 function renderConsumoUsado(usado){
@@ -1243,8 +1167,6 @@ function renderConsumoUsado(usado){
   }).join('');
 }
 
-// Mostra, ao lado do valor manual (Metodologia), qual valor está REALMENTE em uso agora e de onde
-// veio — o manual só é usado como referência inicial até existir abastecimento válido do grupo.
 function renderValorEmUsoMetodologia(usado){
   const map = { gasolina: usado['gasolina_aditivada'], etanol: usado['etanol_comum'] };
   Object.keys(map).forEach(grupo=>{
@@ -1276,10 +1198,7 @@ function renderHero(decisao){
     return;
   }
   const f = FUEL_BY_KEY[decisao.melhor];
-  el.innerHTML = `
-    <div class="hero-label">Melhor Combustível</div>
-    <div class="hero-value" style="--fuel-color:${f.color}">${f.label}</div>
-  `;
+  el.innerHTML = `<div class="hero-label">Melhor Combustível</div><div class="hero-value" style="--fuel-color:${f.color}">${f.label}</div>`;
 }
 
 function renderFaixaPreco(faixa){
@@ -1287,9 +1206,8 @@ function renderFaixaPreco(faixa){
   if(!tbody) return;
   tbody.innerHTML = FUELS.map(f=>{
     const r = faixa[f.key];
-    if(!r || !r.completo) return `<tr><td>${swatch(f.key)}${f.label}</td><td colspan="4" class="dim">Preencha consumos</td></tr>`;
-    const okClass = r.situacao.startsWith('Dentro') ? 'tag-good':'tag-bad';
-    return `<tr><td>${swatch(f.key)}${f.label}</td><td class="num">${fmtBRL(r.precoAtual)}</td><td class="num">${fmtBRL(r.precoMax)}</td><td class="num">${fmtBRL(r.folga)}</td><td><span class="tag ${okClass}">${r.situacao}</span></td></tr>`;
+    if(!r || !r.completo) return `<tr><td>${swatch(f.key)}${f.label}</td><td colspan="2" class="dim">Preencha os consumos válidos</td></tr>`;
+    return `<tr><td>${swatch(f.key)}${f.label}</td><td class="num">${fmtBRL(r.precoAtual)}</td><td class="num">${fmtBRL(r.precoMax)}</td></tr>`;
   }).join('');
 }
 
@@ -1307,24 +1225,30 @@ function renderRegraMargem(rows){
 function renderHistoricoTable(){
   const tbody = document.getElementById('tbl-historico');
   if(!tbody) return;
-  const rows = [...state.historico].sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+  const rows = [...state.historico].sort((a,b)=>{
+    const da = String(a.data||''), db = String(b.data||'');
+    return db.localeCompare(da) || String(b.hora||'').localeCompare(String(a.hora||''));
+  });
   tbody.innerHTML = rows.map(r=>{
     const fuel = FUEL_BY_KEY[r.combustivel];
+    if(!fuel) return '';
     const consumo = consumoRow(r);
     const custoKm = custoKmRow(r);
     const valorTotal = custoTotalRow(r);
-    const dataHora = r.data ? (r.data.split('-').reverse().join('/') + (r.hora?(' '+r.hora):'')) : '—';
+    const condicao = classifyUsageCondition(r);
+    const dataHora = r.data ? (escapeHTML(r.data.split('-').reverse().join('/')) + (r.hora?(' '+escapeHTML(r.hora)):'')) : '—';
+    const fuelKey = escapeHTML(r.combustivel);
     return `<tr>
-      <td>${dataHora}</td><td>${swatch(r.combustivel)}${fuel.label}</td>
+      <td>${dataHora}</td><td>${swatch(fuelKey)}${escapeHTML(fuel.label)}</td>
       <td class="num">${r.etanolPct!=null?fmtPct(r.etanolPct):'—'}</td><td class="num">${fmtBRL(r.preco)}</td>
       <td class="num">${r.hodometro!=null?fmtInt(r.hodometro):'—'}</td><td class="num">${r.km!=null?fmtInt(r.km):'—'}</td>
       <td class="num">${fmtNum(r.litros)}</td><td class="num">${consumo!=null?fmtNum(consumo):'—'}</td>
       <td class="num">${custoKm!=null?fmtBRL(custoKm):'—'}</td><td class="num">${valorTotal!=null?fmtBRL(valorTotal):'—'}</td>
       <td class="num">${r.congestionamento ?? '—'}</td><td class="num">${r.aclives ?? '—'}</td><td class="num">${r.arCondicionado!=null?fmtPct(r.arCondicionado,0):'—'}</td>
-      <td><span class="tag ${classifyUsageCondition(r)==='Severa'?'tag-bad':classifyUsageCondition(r)==='Favorável'?'tag-good':'tag-neutral'}">${classifyUsageCondition(r)||'—'}</span></td>
-      <td><span class="tag ${r.incluir==='Sim'?'tag-good':'tag-neutral'}">${r.incluir}</span></td>
-      <td class="dim">${r.obs||''}</td>
-      <td><button class="icon-btn" onclick="removeHistoricoEntry('${r.id}')">✕</button></td>
+      <td><span class="tag ${condicao==='Severa'?'tag-bad':condicao==='Favorável'?'tag-good':'tag-neutral'}">${condicao||'—'}</span></td>
+      <td><span class="tag ${r.incluir==='Sim'?'tag-good':'tag-neutral'}">${escapeHTML(r.incluir)}</span></td>
+      <td class="dim">${escapeHTML(r.obs||'')}</td>
+      <td><button class="icon-btn" onclick="removeHistoricoEntry('${escapeHTML(r.id)}')">✕</button></td>
     </tr>`;
   }).join('');
   const cont = document.getElementById('contagem-historico');
@@ -1335,19 +1259,22 @@ function renderCalcHistorico(){
   const tbody = document.getElementById('tbl-calc-historico');
   if(!tbody) return;
   tbody.innerHTML = state.calcHistorico.map(c=>{
-    let quando = c.timestamp;
-    if(c.timestamp && c.timestamp.includes('T')) {
-      quando = new Date(c.timestamp).toLocaleString('pt-BR');
+    const precos = c.precos && typeof c.precos==='object' ? c.precos : {};
+    let quando = String(c.timestamp ?? '');
+    if(quando.includes('T')) {
+      const d = new Date(c.timestamp);
+      if(!Number.isNaN(d.getTime())) quando = d.toLocaleString('pt-BR');
     }
+    const melhorFuel = c.melhor ? FUEL_BY_KEY[c.melhor] : null;
     return `<tr>
-      <td class="dim">${quando}</td>
-      <td class="num">${fmtBRL(c.precos.gasolina_aditivada)}</td>
-      <td class="num">${fmtBRL(c.precos.gasolina_comum)}</td>
-      <td class="num">${fmtBRL(c.precos.etanol_comum)}</td>
-      <td class="num">${fmtBRL(c.precos.etanol_aditivado)}</td>
-      <td>${c.melhor?swatch(c.melhor)+FUEL_BY_KEY[c.melhor].label:'—'}</td>
+      <td class="dim">${escapeHTML(quando)}</td>
+      <td class="num">${fmtBRL(precos.gasolina_aditivada)}</td>
+      <td class="num">${fmtBRL(precos.gasolina_comum)}</td>
+      <td class="num">${fmtBRL(precos.etanol_comum)}</td>
+      <td class="num">${fmtBRL(precos.etanol_aditivado)}</td>
+      <td>${melhorFuel?swatch(c.melhor)+escapeHTML(melhorFuel.label):'—'}</td>
       <td class="num">${c.menorCusto!=null?fmtBRL(c.menorCusto):'—'}</td>
-      <td><button class="icon-btn" onclick="removeCalcEntry('${c.id}')">✕</button></td>
+      <td><button class="icon-btn" onclick="removeCalcEntry('${escapeHTML(c.id)}')">✕</button></td>
     </tr>`;
   }).join('') || '<tr><td colspan="8" class="dim">Nenhum cálculo salvo.</td></tr>';
 }
@@ -1356,8 +1283,11 @@ function preencherDataHoraAtual(){
   const agora = new Date();
   const elData = document.querySelector('#form-historico input[name=data]');
   const elHora = document.querySelector('#form-historico input[name=hora]');
-  if(elData) elData.value = agora.toISOString().split('T')[0];
-  if(elHora) elHora.value = agora.toTimeString().slice(0,5);
+  const pad2 = n => String(n).padStart(2,'0');
+  const dataLocal = agora.getFullYear()+'-'+pad2(agora.getMonth()+1)+'-'+pad2(agora.getDate());
+  const horaLocal = pad2(agora.getHours())+':'+pad2(agora.getMinutes());
+  if(elData) elData.value = dataLocal;
+  if(elHora) elHora.value = horaLocal;
   const lblRef = document.getElementById('lbl-hodometro-ref');
   if(lblRef) lblRef.textContent = getUltimoHodometro();
 }
@@ -1365,24 +1295,20 @@ function preencherDataHoraAtual(){
 function renderAll(){
   recomputeKmDeltas();
   persist();
-
   const usado = consumoDinamico();
   const comp = comparacaoEconomica(usado);
   const decisao = decisaoAutomatica(comp);
   const faixa = faixaPreco(comp);
   const margem = regraMargem(comp);
-
   renderEfetivos();
   renderConsumoUsado(usado);
   renderComparacao(comp);
   renderHero(decisao);
   renderFaixaPreco(faixa);
   renderRegraMargem(margem);
-
   renderHistoricoTable();
   renderCalcHistorico();
   renderValorEmUsoMetodologia(usado);
-
   const lblRef = document.getElementById('lbl-hodometro-ref');
   if(lblRef) lblRef.textContent = getUltimoHodometro();
 }
@@ -1390,7 +1316,6 @@ function renderAll(){
 const tinhaDadosSalvos = loadPersisted();
 syncInputsFromState();
 preencherDataHoraAtual();
-
 if(tinhaDadosSalvos){
   const banner = document.getElementById('restore-banner');
   if(banner) banner.style.display = 'flex';
