@@ -1,6 +1,3 @@
-Aqui está o código completo com a correção rigorosa apenas nos dois trechos da documentação da **Camada 3**, harmonizando as explicações da estimativa inconclusiva com o comportamento real do algoritmo, mantendo todo o resto inalterado.
-
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -297,7 +294,7 @@ Aqui está o código completo com a correção rigorosa apenas nos dois trechos 
           <!-- CORRIGIDO: "Preço R$/L" → "Preço efetivo R$/L" -->
           <th title="Preço efetivo pago após desconto do posto selecionado (= preço efetivo do cenário selecionado)">Preço efetivo R$/L</th>
           <th>Consumo km/L</th>
-          <th>Custo R$/km</th><th>Custo R$/100km</th><th>Tanque cheio</th>
+          <th>Custo R$/km</th><th>Custo R$/100km</th><th title="Custo para encher o tanque a esse preço">Tanque cheio (R$)</th>
           <th>Autonomia</th><th>Custo mensal</th>
         </tr></thead>
         <tbody id="tbl-comparacao"></tbody>
@@ -368,7 +365,7 @@ Aqui está o código completo com a correção rigorosa apenas nos dois trechos 
     </div>
     <div class="panel">
       <h2>Congestionamento — escala 1 a 5</h2>
-      <table class="legend-table">
+      <div class="table-wrap"><table class="legend-table">
         <thead><tr><th>Nível</th><th>Classificação</th><th>Referência prática</th><th>Exemplo</th></tr></thead>
         <tbody>
           <tr><td>1</td><td>Livre</td><td>Fluxo contínuo, praticamente sem retenção ou paradas além das normais.</td><td>Via fluindo; sem filas relevantes.</td></tr>
@@ -377,11 +374,11 @@ Aqui está o código completo com a correção rigorosa apenas nos dois trechos 
           <tr><td>4</td><td>Intenso</td><td>Filas, muitas paradas e longos períodos em baixa velocidade.</td><td>Horário de pico com anda-e-para frequente.</td></tr>
           <tr><td>5</td><td>Severo</td><td>Predomínio de anda-e-para, longas filas ou períodos parado.</td><td>Congestionamento pesado durante boa parte do trajeto.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <div class="panel">
       <h2>Aclives — escala 1 a 5</h2>
-      <table class="legend-table">
+      <div class="table-wrap"><table class="legend-table">
         <thead><tr><th>Nível</th><th>Classificação</th><th>Referência prática</th><th>Exemplo</th></tr></thead>
         <tbody>
           <tr><td>1</td><td>Plano</td><td>Percurso praticamente plano; aclives raros e suaves.</td><td>Motor pouco exigido por inclinação.</td></tr>
@@ -390,11 +387,11 @@ Aqui está o código completo com a correção rigorosa apenas nos dois trechos 
           <tr><td>4</td><td>Acidentado</td><td>Muitas subidas ou aclives prolongados; maior carga do motor.</td><td>Trechos de subida frequentes ou longos.</td></tr>
           <tr><td>5</td><td>Muito acidentado</td><td>Aclives fortes e/ou prolongados representam parcela significativa do percurso.</td><td>Relevo fortemente acidentado ou subida predominante.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <div class="panel">
       <h2>Ar-condicionado — percentual do percurso</h2>
-      <table class="legend-table">
+      <div class="table-wrap"><table class="legend-table">
         <thead><tr><th>Valor</th><th>Referência</th><th>Observação</th></tr></thead>
         <tbody>
           <tr><td>0%</td><td>Desligado ou uso praticamente nulo.</td><td>Não considerar apenas ventilação sem compressor.</td></tr>
@@ -403,49 +400,49 @@ Aqui está o código completo com a correção rigorosa apenas nos dois trechos 
           <tr><td>75%</td><td>Ligado em aproximadamente 3/4 do percurso.</td><td>Aumenta o índice de condição de uso (peso 25%).</td></tr>
           <tr><td>100%</td><td>Ligado durante praticamente todo o percurso.</td><td>Aumenta o índice de condição de uso (peso 25%).</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <div class="panel">
       <h2>Condição de uso e influência estimada</h2>
       <p class="legend-note"><strong>Camada 1 — consumo observado:</strong> km ÷ litros do intervalo. É o dado primário e alimenta a comparação, a faixa de preço e a indicação; nunca é alterado.</p>
       <p class="legend-note"><strong>Camada 2 — condição de uso:</strong> índice IC = 100 × (0,40·C + 0,35·A + 0,25·AC), em que C (congestionamento) e A (aclives) são normalizados de 1–5 para 0–1 e AC é a fração do percurso com ar-condicionado. Favorável: IC &lt; 33,33; Intermediária: de 33,33 a 66,67; Severa: IC ≥ 66,67. Os pesos 40%/35%/25% são uma parametrização heurística do índice, usada apenas para classificar a condição; não representam coeficientes físicos estimados para o veículo. Não há penalização fixa de consumo associada a esses níveis.</p>
-      <p class="legend-note"><strong>Camada 3 — influência estimada:</strong> consumo por condição = Σ km ÷ Σ litros dos intervalos de cada condição, separadamente para gasolina e etanol. Cada condição comparada é avaliada separadamente em relação à Favorável. Penalidade = 1 − consumo da condição ÷ consumo Favorável. Quando o consumo da condição comparada é superior ao da Favorável (penalidade negativa), a estimativa para essa condição é considerada inconclusiva e nenhum ajuste é aplicado a ela. O consumo ajustado (referência: Favorável) = consumo observado ÷ (1 − penalidade) e só é calculado com dados suficientes.</p>
-      <table class="legend-table">
+      <p class="legend-note"><strong>Camada 3 — influência estimada:</strong> consumo por condição = Σ km ÷ Σ litros dos intervalos de cada condição, separadamente para gasolina e etanol. Cada condição comparada é avaliada separadamente em relação à Favorável. Penalidade = 1 − consumo da condição ÷ consumo Favorável. Quando o consumo da condição comparada é maior que o da Favorável, a estimativa é considerada inconclusiva e nenhum ajuste é aplicado a essa condição. O consumo ajustado (referência: Favorável) = consumo observado ÷ (1 − penalidade) e só é calculado com dados suficientes.</p>
+      <div class="table-wrap"><table class="legend-table">
         <thead><tr><th>Avaliação</th><th>Critério</th></tr></thead>
         <tbody>
           <tr><td>Dados insuficientes para estimar a influência da condição.</td><td>Menos de 3 consumos válidos na condição ou na Favorável (referência).</td></tr>
           <tr><td>Estimativa exploratória baseada no histórico.</td><td>Ao menos 3 consumos válidos em cada condição comparada, sem os critérios da linha seguinte.</td></tr>
           <tr><td>Estimativa baseada no histórico do veículo.</td><td>Ao menos 5 consumos válidos em cada condição comparada, ao menos 12 consumos com condição informada no grupo e nenhuma condição com mais de 70% do total.</td></tr>
-          <tr><td>Estimativa inconclusiva.</td><td>O consumo na condição comparada foi superior ao da Favorável (penalidade negativa); nenhum ajuste é aplicado a essa condição.</td></tr>
+          <tr><td>Estimativa inconclusiva.</td><td>O consumo da condição comparada é maior que o da Favorável; nenhum ajuste é aplicado a essa condição (avaliado condição a condição, não apenas para a Severa).</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <p class="legend-note" style="margin-top:8px;">Trata-se de associação observada, não de causalidade: congestionamento, aclives e ar-condicionado costumam variar juntos e seus efeitos não são separados nesta versão. Os limites (3, 5, 12 e 70%) são salvaguardas operacionais do aplicativo, não garantias estatísticas de precisão. Mesmo nas faixas classificadas como exploratória ou baseada no histórico, a estimativa pode ser instável, sobretudo próxima aos limites mínimos de observações, e não representa um intervalo de confiança.</p>
     </div>
     <div class="panel">
       <h2>Incluir no cálculo?</h2>
-      <table class="legend-table">
+      <div class="table-wrap"><table class="legend-table">
         <thead><tr><th>Resposta</th><th>Quando usar</th></tr></thead>
         <tbody>
           <tr><td>Sim</td><td>O intervalo medido por este abastecimento (km desde o lançamento anterior ÷ litros deste) representa adequadamente o consumo.</td></tr>
           <tr><td>Não</td><td>Quilometragem ou volume incompletos, erro de registro ou condição excepcional (ex.: viagem atípica). Abastecimento parcial deve ser marcado em "Tanque cheio?".</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <p class="legend-note" style="margin-top:8px;">O botão Sim/Não da coluna "Incluir?" no Histórico alterna a resposta. O registro permanece no histórico mesmo quando excluído — descreva o motivo em "Observações".</p>
     </div>
     <div class="panel">
       <h2>Tanque cheio?</h2>
-      <table class="legend-table">
+      <div class="table-wrap"><table class="legend-table">
         <thead><tr><th>Resposta</th><th>Quando usar</th></tr></thead>
         <tbody>
           <tr><td>Sim</td><td>O tanque foi completado (corte automático da bomba). É necessário para medir o consumo do intervalo.</td></tr>
           <tr><td>Não</td><td>Abastecimento parcial (valor ou volume fixo, "completar" sem encher). O intervalo que termina neste abastecimento e o seguinte não geram consumo.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <div class="panel">
       <h2>Consumo por intervalo — atribuição e exclusões</h2>
       <p class="legend-note">Os km entre dois abastecimentos são percorridos com o combustível do abastecimento anterior. A coluna "Consumo" do Histórico mostra o consumo do intervalo que termina naquela linha, com o combustível ao qual ele é atribuído; o custo/km usa o preço pago nesse combustível. Quando o intervalo não é medido, o rótulo abaixo do traço indica o motivo.</p>
-      <table class="legend-table">
+      <div class="table-wrap"><table class="legend-table">
         <thead><tr><th>Rótulo</th><th>Significado</th></tr></thead>
         <tbody>
           <tr><td>sem ref.</td><td>Primeiro lançamento: o combustível usado no intervalo anterior é desconhecido.</td></tr>
@@ -457,7 +454,7 @@ Aqui está o código completo com a correção rigorosa apenas nos dois trechos 
           <tr><td>km inválido</td><td>Hodômetro menor que o do abastecimento anterior (ordem por data e hora) ou que o hodômetro de referência.</td></tr>
           <tr><td>sem litros</td><td>Litros ausentes ou inválidos.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   </div>
 
@@ -1315,16 +1312,30 @@ function formatDateDDMMYYYY(value){
   return s;
 }
 
+function dataValida(ano,mes,dia){
+  ano=Number(ano); mes=Number(mes); dia=Number(dia);
+  if(!(mes>=1 && mes<=12)) return false;
+  const bissexto = ano%4===0 && (ano%100!==0 || ano%400===0);
+  const diasNoMes = [31, bissexto?29:28, 31,30,31,30,31,31,30,31,30,31][mes-1];
+  return dia>=1 && dia<=diasNoMes;
+}
+// Converte para o formato de armazenamento (AAAA-MM-DD) só quando a data é válida (mês 01–12, dia dentro do
+// mês, considerando anos bissextos); caso contrário retorna '' em vez de repassar a string original — uma
+// data '' é rejeitada mais adiante (importarCSV), em vez de entrar na cadeia cronológica sem sentido.
 function parseDateForStorage(raw){
   const s = String(raw??'').trim();
   let m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-  if(m) return `${m[3]}-${m[2]}-${m[1]}`;
+  if(m) return dataValida(m[3],m[2],m[1]) ? `${m[3]}-${m[2]}-${m[1]}` : '';
   m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  return m ? s : s;
+  if(m) return dataValida(m[1],m[2],m[3]) ? s : '';
+  return '';
 }
+// Só aceita hora dentro do intervalo válido (00–23:00–59); fora disso, trata como ausente ('').
 function normalizarHora(v){
   const m = String(v ?? '').trim().match(/^(\d{1,2}):(\d{2})/);
-  return m ? m[1].padStart(2,'0')+':'+m[2] : '';
+  if(!m) return '';
+  const h = Number(m[1]), mi = Number(m[2]);
+  return (h>=0 && h<=23 && mi>=0 && mi<=59) ? String(h).padStart(2,'0')+':'+m[2] : '';
 }
 
 function findHistoricoHeader(rows){
@@ -1399,13 +1410,17 @@ function importarCSV(evt){
       const faltando = Object.keys(obrigatorias).filter(k=>cols[k]<0).map(k=>obrigatorias[k]);
       if(faltando.length) throw new Error('Colunas obrigatórias ausentes: '+faltando.join(', ')+'.');
       const novos = [];
-      let ignoradas = 0;
+      let ignoradas = 0, ignoradasData = 0;
       for(let i=headerInfo.row+1;i<linhas.length;i++){
         const c = linhas[i];
         if(c.every(x=>String(x).trim()==='')) continue;
         const lbl = String(c[cols.combustivel]??'').trim();
         const fuelKey = Object.keys(FUEL_BY_KEY).find(k=>FUEL_BY_KEY[k].label===lbl);
         if(!fuelKey){ ignoradas++; continue; }
+        // Data ausente, fora dos formatos aceitos (DD/MM/AAAA ou AAAA-MM-DD) ou com mês/dia inexistente
+        // (ex.: 32/13/2026): a linha é rejeitada, em vez de entrar na cadeia cronológica com uma data vazia.
+        const dataConvertida = parseDateForStorage(c[cols.data]||'');
+        if(!dataConvertida){ ignoradasData++; continue; }
         const arRaw = parseBRNum(c[cols.arCondicionado]);
         const ar = Number.isFinite(arRaw) ? (arRaw>1 ? arRaw/100 : arRaw) : null;
         const pctRaw = cols.etanolPct>=0 ? parseBRNum(c[cols.etanolPct]) : NaN;
@@ -1416,7 +1431,7 @@ function importarCSV(evt){
         const cenTxt = cols.cenario>=0 ? String(c[cols.cenario]??'').trim() : '';
         const cen = CENARIOS.find(x=>normalizeHeader(x.label)===normalizeHeader(cenTxt) || x.key===cenTxt);
         novos.push({
-          id:genId(), data:parseDateForStorage(c[cols.data]||''), hora: cols.hora>=0 ? normalizarHora(c[cols.hora]) : '',
+          id:genId(), data:dataConvertida, hora: cols.hora>=0 ? normalizarHora(c[cols.hora]) : '',
           combustivel:fuelKey, etanolPct:pct, preco:parseBRNum(c[cols.preco]),
           // Com hodômetro, o km é recalculado pela cadeia; sem ele, mantém-se o km do CSV.
           hodometro:hod, km: hod!=null ? null : (Number.isFinite(kmRaw) ? kmRaw : null),
@@ -1430,7 +1445,10 @@ function importarCSV(evt){
         });
       }
       const normalizados = normalizeStoredHistorico(novos);
-      const sufixoIgn = ignoradas ? ' '+ignoradas+' linha(s) ignorada(s) (combustível não reconhecido).' : '';
+      const motivos = [];
+      if(ignoradas) motivos.push(ignoradas+' por combustível não reconhecido');
+      if(ignoradasData) motivos.push(ignoradasData+' por data inválida ou ausente');
+      const sufixoIgn = motivos.length ? ' '+motivos.join('; ')+'.' : '';
       if(!normalizados.length){
         alert('Nenhum registro válido encontrado no CSV.'+sufixoIgn);
       } else {
@@ -1522,14 +1540,14 @@ function classifyUsageCondition(r){
 // A condição de um intervalo é a do registro que o encerra. Penalidade = 1 − consumo da condição ÷ consumo Favorável.
 // É associação observada, não causalidade, e só é usada para ajuste quando há dados suficientes.
 const MIN_CONSUMOS_CONDICAO = 3;             // abaixo disso: dados insuficientes
-const MIN_CONSUMOS_CONDICAO_CONFIAVEL = 5;   // por condition comparada, para "baseada no histórico"
+const MIN_CONSUMOS_CONDICAO_CONFIAVEL = 5;   // por condição comparada, para "baseada no histórico"
 const MIN_CONSUMOS_TOTAL_CONFIAVEL = 12;     // consumos com condição informada, no grupo
 const MAX_PARTICIPACAO_CONDICAO = 0.70;      // nenhuma condição pode concentrar mais que isso do total
 const AVALIACAO_CONDICAO = {
   insuficiente: 'Dados insuficientes para estimar a influência da condição.',
   exploratoria: 'Estimativa exploratória baseada no histórico.',
   baseada: 'Estimativa baseada no histórico do veículo.',
-  inconclusiva: 'Estimativa inconclusiva: o consumo nesta condição não foi menor que o da condição Favorável.',
+  inconclusiva: 'Estimativa inconclusiva: o consumo desta condição é maior que o da condição Favorável.',
 };
 function estimarInfluenciaCondicao(med){
   const porId = new Map(state.historico.map(r=>[r.id,r]));
@@ -2002,4 +2020,3 @@ if ((location.protocol==='https:' || location.protocol==='http:') && 'serviceWor
 </script>
 </body>
 </html>
-```
