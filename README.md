@@ -1,4 +1,5 @@
 # Fuel — Calculadora de Combustível com histórico de abastecimentos
+
 <img width="193" height="20" alt="image" src="https://github.com/user-attachments/assets/4f120d1e-a290-40e4-bb92-da011e34560c" />
 
 
@@ -10,14 +11,14 @@
 | **Versão** | 1.1.0 (código interno: versionCode 3 / versionName 3.0.0) |
 | **Licença** | [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/) |
 | **Repositório** | https://github.com/KM20197/Fuel |
-| **DOI** | [*10.5281/zenodo.22918209*])|
+| **DOI** | 10.5281/zenodo.22918209|
 | **Idiomas** | Português (BR) / interface em pt-BR |
 
 > **English abstract.** Native Android application and PWA for refuelling-history-based estimation of fuel operating cost per kilometre: longitudinal acquisition and treatment of refuelling records, tank-to-tank consumption estimation under interval-consistency rules (full-tank intervals, partial refuelling, gasoline/ethanol switch, invalid odometer, manual exclusion), and an economic decision by lowest effective cost per km using observed consumption, parametrized prices across station/payment scenarios (Baratão Pix as reference, with Shell, Baratão Cartão and Outros derived from discount factors), a maximum-price band, and a usage-condition index (congestion, gradients, air conditioning — weights 0.40/0.35/0.25) whose estimated influence is applied only when historical data are sufficient (≥3/≥5/≥12 observations and ≤70% concentration). The APK embeds the full UI, logic, styles, icons and initial data and runs offline with local persistence (localStorage) and CSV/JSON interchange.
 
 ## Finalidade e diferenciação
 
-O aplicativo não compara apenas preços por litro. Ele integra três componentes:
+O aplicativo integra três componentes:
 
 1. **Aquisição e tratamento longitudinal de abastecimentos** — histórico ordenado por data/hora (com desempate por hodômetro), tanque cheio opcional, condições de uso por registro e manutenção integral do histórico mesmo quando um intervalo é excluído do cálculo.
 2. **Estimação do consumo por regras de consistência dos intervalos** — método tanque a tanque: o intervalo é atribuído ao combustível do abastecimento anterior; abastecimentos parciais, trocas entre gasolina e etanol, hodômetro inválido, falta de litros e exclusões manuais são tratados como rótulos explícitos (`sem ref.`, `parcial`, `ref. parcial`, `troca comb.`, `excluído`, `sem km`, `km inválido`, `sem litros`).
