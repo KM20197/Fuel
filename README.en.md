@@ -8,7 +8,7 @@
 | **Version** | 1.1.0 (internal: versionCode 3 / versionName 3.0.0) |
 | **License** | [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/) |
 | **Repository** | https://github.com/KM20197/Fuel |
-| **DOI** | *(to be filled after publishing the v1.1.0 release on Zenodo)* |
+| **DOI** | *10.5281/zenodo.22918209* |
 | **Languages** | UI in Brazilian Portuguese |
 
 This is a Portuguese-language application; the current document is the English abstract and reference.
