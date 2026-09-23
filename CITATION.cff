@@ -42,13 +42,13 @@ type: software
 url: https://github.com/KM20197/Fuel
 repository-code: https://github.com/KM20197/Fuel
 repository: https://github.com/KM20197/Fuel
-# DOI da release (preencha após a publicação no Zenodo), ex.:
-# identifiers:
-#   - type: doi
-#     value: 10.5281/zenodo.0000000
-#   - type: doi
-#     description: DOI conceitual (todos os versionamentos do software)
-#     value: 10.5281/zenodo.0000000
+DOI da release:
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22918209
+   - type: doi
+     description: DOI conceitual (todos os versionamentos do software)
+     value: 10.5281/zenodo.22918209
 preferred-citation:
   type: software
   title: "Fuel — Calculadora de Combustível com histórico de abastecimentos"
