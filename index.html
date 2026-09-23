@@ -618,12 +618,29 @@ function serializarConfig(){
   };
 }
 function persist(){
+  let prevConfig = null, prevHistorico = null, tinhaEstadoAnterior = false;
+  try{
+    prevConfig = localStorage.getItem(STORAGE_KEYS.config);
+    prevHistorico = localStorage.getItem(STORAGE_KEYS.historico);
+    tinhaEstadoAnterior = true;
+  }catch(e){ /* leitura do estado anterior indisponível: segue sem tentativa de reversão */ }
   try{
     localStorage.setItem(STORAGE_KEYS.config, JSON.stringify(serializarConfig()));
     localStorage.setItem(STORAGE_KEYS.historico, JSON.stringify(state.historico));
     if(armazenamentoComFalha){ armazenamentoComFalha = false; esconderAviso('aviso-armazenamento'); }
     return true;
   }catch(e){
+    // Se a gravação de configuração e histórico for parcial (uma das duas chaves falhar), tenta reverter
+    // ambas ao último estado consistente salvo, para não deixar as duas chaves de instantes diferentes.
+    // Falha na leitura anterior ou na própria reversão não deve impedir o aviso ao usuário nem propagar.
+    if(tinhaEstadoAnterior){
+      try{
+        if(prevConfig===null) localStorage.removeItem(STORAGE_KEYS.config); else localStorage.setItem(STORAGE_KEYS.config, prevConfig);
+        if(prevHistorico===null) localStorage.removeItem(STORAGE_KEYS.historico); else localStorage.setItem(STORAGE_KEYS.historico, prevHistorico);
+      }catch(rollbackError){
+        console.warn('Falha também ao restaurar o estado anterior do armazenamento.', rollbackError);
+      }
+    }
     console.warn('Não foi possível salvar os dados localmente.', e);
     if(!armazenamentoComFalha){
       armazenamentoComFalha = true;
@@ -653,6 +670,12 @@ function clampDesconto(value, fallback=0){
 function naoNegativoOuNull(value){
   const n = numOrNull(value);
   return (n!=null && n>=0) ? n : null;
+}
+// Inteiro dentro de [min,max], ou null fora da faixa/ilegível — usado na importação de CSV para
+// Congestionamento e Aclives (escala 1–5, a mesma oferecida no formulário de novo abastecimento).
+function intNaFaixa(raw, min, max){
+  const n = parseInt(raw, 10);
+  return (Number.isInteger(n) && n>=min && n<=max) ? n : null;
 }
 
 function idSeguro(v){
@@ -1436,8 +1459,8 @@ function importarCSV(evt){
           // Com hodômetro, o km é recalculado pela cadeia; sem ele, mantém-se o km do CSV.
           hodometro:hod, km: hod!=null ? null : (Number.isFinite(kmRaw) ? kmRaw : null),
           litros:parseBRNum(c[cols.litros]),
-          congestionamento:parseInt(c[cols.congestionamento])||null,
-          aclives:parseInt(c[cols.aclives])||null, arCondicionado:ar,
+          congestionamento:intNaFaixa(c[cols.congestionamento],1,5),
+          aclives:intNaFaixa(c[cols.aclives],1,5), arCondicionado:ar,
           incluir:c[cols.incluir]?String(c[cols.incluir]).trim():'Sim',
           tanqueCheio: cols.tanqueCheio>=0 ? c[cols.tanqueCheio] : undefined,
           cenario: cen ? cen.key : 'outros',
