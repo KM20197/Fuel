@@ -68,7 +68,7 @@ Ou use a Action **Android CI** do repositório (artefato `app-debug`).
   year = {2026},
   version = {1.1.0},
   url = {https://github.com/KM20197/Fuel},
-  note = {Licença CC BY-NC 4.0; DOI Zenodo em <DOI>}
+  note = {Licença CC BY-NC 4.0; DOI Zenodo em 10.5281/zenodo.10.5281/zenodo.22918209}
 }
 ```
 Consulte também `CITATION.cff` (formato Citation File Format v1.2.0).
