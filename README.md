@@ -1,4 +1,6 @@
 # Fuel — Calculadora de Combustível com histórico de abastecimentos
+<img width="193" height="20" alt="image" src="https://github.com/user-attachments/assets/4f120d1e-a290-40e4-bb92-da011e34560c" />
+
 
 **Sistema computacional para estimativa e comparação do custo operacional de combustíveis a partir de histórico de abastecimentos, condições de uso e preços efetivos parametrizados.**
 
@@ -8,7 +10,7 @@
 | **Versão** | 1.1.0 (código interno: versionCode 3 / versionName 3.0.0) |
 | **Licença** | [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/) |
 | **Repositório** | https://github.com/KM20197/Fuel |
-| **DOI** | *10.5281/zenodo.22918209* |
+| **DOI** | [*10.5281/zenodo.22918209*])|
 | **Idiomas** | Português (BR) / interface em pt-BR |
 
 > **English abstract.** Native Android application and PWA for refuelling-history-based estimation of fuel operating cost per kilometre: longitudinal acquisition and treatment of refuelling records, tank-to-tank consumption estimation under interval-consistency rules (full-tank intervals, partial refuelling, gasoline/ethanol switch, invalid odometer, manual exclusion), and an economic decision by lowest effective cost per km using observed consumption, parametrized prices across station/payment scenarios (Baratão Pix as reference, with Shell, Baratão Cartão and Outros derived from discount factors), a maximum-price band, and a usage-condition index (congestion, gradients, air conditioning — weights 0.40/0.35/0.25) whose estimated influence is applied only when historical data are sufficient (≥3/≥5/≥12 observations and ≤70% concentration). The APK embeds the full UI, logic, styles, icons and initial data and runs offline with local persistence (localStorage) and CSV/JSON interchange.
