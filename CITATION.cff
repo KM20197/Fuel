@@ -1,0 +1,61 @@
+cff-version: 1.2.0
+message: "Se utilizar este software em pesquisa, trabalho ou publicação, cite-o da seguinte forma:"
+title: "Fuel — Sistema computacional para estimativa e comparação do custo operacional de combustíveis a partir de histórico de abastecimentos, condições de uso e preços efetivos parametrizados"
+abstract: >-
+  Aplicativo (PWA e Android nativo) para aquisição e tratamento longitudinal de
+  abastecimentos, estimação do consumo por intervalos tanque a tanque segundo regras
+  de consistência (abastecimento parcial, troca entre gasolina e etanol, hodômetro
+  inválido, exclusão manual) e decisão econômica pelo menor custo efetivo por
+  quilômetro, considerando preços parametrizados por cenário de posto e forma de
+  pagamento, faixa de preço máxima e índice de condição de uso com estimativa de
+  influência condicionada à suficiência histórica. Interface, estilos, fórmulas,
+  ícones e dados iniciais executam localmente no APK, sem dependência de rede.
+  English abstract: native Android application and PWA for refuelling-history-based
+  estimation of fuel operating cost per kilometre, with a hierarchical fuel-price
+  model across station/payment scenarios, an economic decision by lowest effective
+  cost per km, and a usage-condition index whose influence estimate is applied only
+  when historical data are sufficient.
+authors:
+  - family-names: Mello
+    given-names: Ricardo Coutinho
+    orcid: https://orcid.org/0000-0002-3265-6595
+    affiliation: Pesquisador independente (desenvolvimento sem vínculo institucional)
+    alias: KM20197
+    email: 140165998+KM20197@users.noreply.github.com
+title-short: Fuel
+keywords:
+  - combustiveis
+  - custo-por-quilometro
+  - abastecimentos
+  - android
+  - progressive-web-app
+  - fuel-cost
+  - refuelling-history
+  - usage-condition-index
+languages:
+  - pt-BR
+  - en
+license: CC-BY-NC-4.0
+date-released: 2026-09-23
+version: "1.1.0"
+type: software
+url: https://github.com/KM20197/Fuel
+repository-code: https://github.com/KM20197/Fuel
+repository: https://github.com/KM20197/Fuel
+# DOI da release (preencha após a publicação no Zenodo), ex.:
+# identifiers:
+#   - type: doi
+#     value: 10.5281/zenodo.0000000
+#   - type: doi
+#     description: DOI conceitual (todos os versionamentos do software)
+#     value: 10.5281/zenodo.0000000
+preferred-citation:
+  type: software
+  title: "Fuel — Calculadora de Combustível com histórico de abastecimentos"
+  authors:
+    - family-names: Mello
+      given-names: Ricardo Coutinho
+  year: 2026
+  version: "1.1.0"
+  publisher: Zenodo
+  url: https://github.com/KM20197/Fuel

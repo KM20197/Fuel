@@ -1,0 +1,35 @@
+{
+  "creators": [
+    {
+      "name": "Ricardo Coutinho Mello",
+      "affiliation": "Pesquisador independente (desenvolvimento sem vínculo institucional)"
+    }
+  ],
+  "title": "Fuel — Sistema computacional para estimativa e comparação do custo operacional de combustíveis a partir de histórico de abastecimentos, condições de uso e preços efetivos parametrizados",
+  "description": "Aplicativo para computação móvel e web (PWA + Android nativo) que integra três componentes: (i) aquisição e tratamento longitudinal de abastecimentos, com regras de consistência de intervalos (tanque cheio, abastecimento parcial, troca entre gasolina e etanol, hodômetro inválido, exclusão manual de intervalos); (ii) estimação do consumo tanque a tanque (km percorridos no intervalo divididos pelos litros abastecidos), atribuído ao combustível do abastecimento anterior; e (iii) decisão econômica pelo menor custo efetivo por quilômetro, baseada em consumo observado, preços parametrizados por cenário de posto e forma de pagamento (Baratão Pix como referência, com Shell, Baratão Cartão e Outros derivados por fatores de desconto) e índice de condição de uso (congestionamento, aclives e ar-condicionado, pesos 0,40/0,35/0,25) cuja influência estimada é aplicada somente quando há dados históricos suficientes (3/5/12 observações e concentração máxima de 70%). Interface, estilos, fórmulas, ícones e dados iniciais são executados localmente no APK, sem permissão de internet, com persistência local e importação/exportação CSV. Licença: Creative Commons Attribution-NonCommercial 4.0 International.\n\n<b>English abstract:</b> A native Android (WebView) and PWA application that acquires and processes repeated refuelling records, estimates tank-to-tank consumption under interval-consistency rules, and supports an economic decision by lowest effective cost per kilometre using observed consumption, a hierarchical price model across station/payment scenarios, and a usage-condition index (congestion, gradients, air conditioning) whose estimated influence is only applied when the accumulated history is sufficient. The APK embeds all UI, logic and data and runs offline.",
+  "upload_type": "software",
+  "license": "CC-BY-NC-4.0",
+  "access_right": "open",
+  "keywords": [
+    "combustiveis",
+    "custo por quilometro",
+    "historico de abastecimentos",
+    "android",
+    "progressive-web-app",
+    "indice de condicao de uso",
+    "fuel cost",
+    "refuelling history",
+    "usage condition index"
+  ],
+  "language": "por",
+  "version": "1.1.0",
+  "publication_date": "2026-09-23",
+  "related_identifiers": [
+    {
+      "scheme": "url",
+      "identifier": "https://github.com/KM20197/Fuel",
+      "relation": "isSupplementTo"
+    }
+  ],
+  "notes": "Registro de programa de computador e depósito de preservação digital. Autor: Ricardo Coutinho Mello (github.com/KM20197)."
+}
