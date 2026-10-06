@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
     private static final String LOCAL_START_URL = "file:///android_asset/www/index.html";
@@ -115,9 +116,9 @@ public class MainActivity extends Activity {
             }
             output.write(pendingText.getBytes(StandardCharsets.UTF_8));
             output.flush();
-            Toast.makeText(this, "CSV salvo com sucesso.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Arquivo salvo com sucesso.", Toast.LENGTH_SHORT).show();
         } catch (Exception error) {
-            Toast.makeText(this, "Não foi possível salvar o CSV.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Não foi possível salvar o arquivo.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -127,13 +128,28 @@ public class MainActivity extends Activity {
         pendingText = null;
     }
 
-    private String safeFileName(String value) {
-        String fallback = "calculadora_combustivel.csv";
+    private static String extensaoPorMimeType(String mimeType) {
+        String mime = mimeType == null ? "" : mimeType.trim().toLowerCase(Locale.ROOT);
+        if (mime.startsWith("application/json")) {
+            return ".json";
+        }
+        if (mime.startsWith("text/csv") || mime.startsWith("text/comma-separated-values")) {
+            return ".csv";
+        }
+        return ".bin";
+    }
+
+    private String safeFileName(String value, String mimeType) {
+        String fallback = "calculadora_combustivel" + extensaoPorMimeType(mimeType);
         if (value == null || value.trim().isEmpty()) {
             return fallback;
         }
         String safe = value.trim().replaceAll("[\\\\/:*?\"<>|]", "_");
-        return safe.toLowerCase().endsWith(".csv") ? safe : safe + ".csv";
+        String minusculo = safe.toLowerCase(Locale.ROOT);
+        if (minusculo.endsWith(".csv") || minusculo.endsWith(".json")) {
+            return safe;
+        }
+        return safe + extensaoPorMimeType(mimeType);
     }
 
     private final class LocalOnlyWebViewClient extends WebViewClient {
@@ -178,7 +194,13 @@ public class MainActivity extends Activity {
             Intent intent;
             try {
                 intent = fileChooserParams.createIntent();
-                intent.setType("text/*");
+                // "text/*" ocultava os backups .json (application/json) no seletor; o tipo é amplo e o
+                // aplicativo valida o conteúdo ao importar.
+                intent.setType("*/*");
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] {
+                    "text/*", "text/csv", "text/comma-separated-values", "application/csv",
+                    "application/vnd.ms-excel", "application/json", "application/octet-stream"
+                });
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, REQUEST_OPEN_CSV);
                 return true;
@@ -193,8 +215,8 @@ public class MainActivity extends Activity {
     public final class AndroidBridge {
         @JavascriptInterface
         public void saveText(String fileName, String mimeType, String text) {
-            pendingFileName = safeFileName(fileName);
-            pendingMimeType = (mimeType == null || mimeType.trim().isEmpty()) ? "text/csv" : mimeType;
+            pendingMimeType = (mimeType == null || mimeType.trim().isEmpty()) ? "text/csv" : mimeType.trim();
+            pendingFileName = safeFileName(fileName, pendingMimeType);
             pendingText = text == null ? "" : text;
 
             runOnUiThread(() -> {
@@ -206,7 +228,7 @@ public class MainActivity extends Activity {
                     startActivityForResult(intent, REQUEST_SAVE_CSV);
                 } catch (ActivityNotFoundException error) {
                     clearPendingExport();
-                    Toast.makeText(MainActivity.this, "Nenhum local disponível para salvar o CSV.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Nenhum local disponível para salvar o arquivo.", Toast.LENGTH_LONG).show();
                 }
             });
         }
