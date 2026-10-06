@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Autor** | Ricardo Coutinho Mello (GitHub: [KM20197](https://github.com/KM20197)) |
-| **Versão** | 1.1.0 (código interno: versionCode 3 / versionName 3.0.0) |
+| **Versão** | 1.1.0 (código interno: versionCode 4 / versionName 3.1.0) |
 | **Licença** | [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/) |
 | **Repositório** | https://github.com/KM20197/Fuel |
 | **DOI** | 10.5281/zenodo.22918209|
@@ -21,13 +21,13 @@
 O aplicativo integra três componentes:
 
 1. **Aquisição e tratamento longitudinal de abastecimentos** — histórico ordenado por data/hora (com desempate por hodômetro), tanque cheio opcional, condições de uso por registro e manutenção integral do histórico mesmo quando um intervalo é excluído do cálculo.
-2. **Estimação do consumo por regras de consistência dos intervalos** — método tanque a tanque: o intervalo é atribuído ao combustível do abastecimento anterior; abastecimentos parciais, trocas entre gasolina e etanol, hodômetro inválido, falta de litros e exclusões manuais são tratados como rótulos explícitos (`sem ref.`, `parcial`, `ref. parcial`, `troca comb.`, `excluído`, `sem km`, `km inválido`, `sem litros`).
+2. **Estimação do consumo por regras de consistência dos intervalos** — método tanque a tanque: o intervalo é atribuído ao combustível do abastecimento anterior; abastecimentos parciais, hodômetro inválido, falta de litros e exclusões manuais são tratados como rótulos explícitos (`sem ref.`, `parcial`, `ref. parcial`, `excluído`, `sem km`, `km inválido`, `sem litros`). Trocas entre gasolina e etanol não excluem o intervalo: a composição do tanque é a média ponderada por volume entre o remanescente (capacidade − litros abastecidos; desprezado abaixo de 5 % da capacidade) e o abastecimento, e km e litros do intervalo são repartidos entre gasolina e etanol na proporção de cada grupo no tanque (`mistura`). O teor de etanol da gasolina de cada abastecimento entra no campo *Litros equiv. etanol* e na camada de desempenho por faixa de teor (limites editáveis; critérios próprios de suficiência). Antes do primeiro lançamento presume-se tanque 100 % gasolina com o teor de «Etanol na gasolina atual».
 3. **Decisão econômica usando consumo observado e condições de uso** — menor custo efetivo por km (R$/km), com custo por 100 km, custo do tanque, autonomia, custo mensal, faixa de preço máxima por cenário e índice de condição de uso.
 
 ## Como calcular (resumo metodológico)
 
 - **Preço efetivo:** cenários de posto e forma de pagamento — Baratão Pix é a referência; Shell, Baratão Cartão e Outros derivam por fatores de desconto; cada cenário pode ter sobrescritas individuais.
-- **Consumo:** `km entre abastecimentos ÷ litros`, condicionado a tanque cheio; o consumo usado no cálculo principal é o último consumo válido do grupo (gasolina ou etanol); média agregada e média dos 3 últimos ficam como referência.
+- **Consumo:** `km entre abastecimentos ÷ litros`, condicionado a tanque cheio; o consumo usado no cálculo principal é o último consumo válido do grupo (gasolina ou etanol) em que o grupo representava pelo menos 50 % do tanque; média agregada e média dos 3 últimos ficam como referência.
 - **Decisão:** combustível com menor `preço efetivo ÷ consumo`.
 - **Faixa de preço:** teto por cenário para cada combustível permanecer o mais econômico, dados os concorrentes.
 - **Índice de condição de uso (IC):** `IC = 100 × (0,40·C + 0,35·A + 0,25·AC)`, com C e A normalizados de 1–5 para 0–1; classifica em Favorável / Intermediária / Severa. O IC **não altera** o consumo observado.

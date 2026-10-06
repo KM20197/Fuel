@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | **Author** | Ricardo Coutinho Mello (GitHub: [KM20197](https://github.com/KM20197)) |
-| **Version** | 1.1.0 (internal: versionCode 3 / versionName 3.0.0) |
+| **Version** | 1.1.0 (internal: versionCode 4 / versionName 3.1.0) |
 | **License** | [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/) |
 | **Repository** | https://github.com/KM20197/Fuel |
 | **DOI** | *10.5281/zenodo.22918209* |
@@ -18,13 +18,13 @@ This is a Portuguese-language application; the current document is the English a
 The app does not just compare prices per litre. It integrates three components:
 
 1. **Longitudinal acquisition and treatment of refuelling records** — history ordered by date/time (odometer as tie-breaker), optional full-tank records, per-record usage conditions, and full retention of history even when an interval is excluded from the calculation.
-2. **Consumption estimation under interval-consistency rules** — tank-to-tank method: the interval is attributed to the fuel of the preceding refuelling; partial refuelling, gasoline/ethanol switch, invalid odometer, missing litres and manual exclusions are handled through explicit labels (`no ref.`, `partial`, `partial ref.`, `fuel switch`, `excluded`, `no km`, `invalid km`, `no litres`).
+2. **Consumption estimation under interval-consistency rules** — tank-to-tank method: the interval is attributed to the fuel of the preceding refuelling; partial refuelling, invalid odometer, missing litres and manual exclusions are handled through explicit labels (`no ref.`, `partial`, `partial ref.`, `excluded`, `no km`, `invalid km`, `no litres`). Gasoline/ethanol switches no longer exclude the interval: the tank composition is the volume-weighted mean of the residual (capacity − litres added; neglected below 5 % of capacity) and the refuelling, and the interval's km and litres are split between gasoline and ethanol in proportion to each group in the tank (`mix`). The ethanol content of each gasoline refuelling feeds the *Ethanol-equivalent litres* field and the performance layer by ethanol-content band (editable limits; own data-sufficiency criteria). Before the first record the tank is assumed to be 100 % gasoline with the "current ethanol in gasoline" content.
 3. **Economic decision using observed consumption and usage conditions** — lowest effective cost per km (R$/km), with cost per 100 km, tank cost, range, monthly cost, maximum-price band per scenario, and a usage-condition index.
 
 ## Methodological summary
 
 - **Effective price:** station/payment scenarios — Baratão Pix is the reference; Shell, Baratão Cartão and Outros are derived through discount factors; individual overrides are supported.
-- **Consumption:** `km between refuellings ÷ litres`, conditional on a full tank; the value used for the main calculation is the last valid consumption of the group (gasoline or ethanol); the aggregate mean and the mean of the last 3 are reference only.
+- **Consumption:** `km between refuellings ÷ litres`, conditional on a full tank; the value used for the main calculation is the last valid consumption of the group (gasoline or ethanol) in which that group made up at least 50 % of the tank; the aggregate mean and the mean of the last 3 are reference only.
 - **Decision:** fuel with the lowest `effective price ÷ consumption`.
 - **Price band:** per-scenario ceiling for each fuel to remain the cheapest, given the competitors.
 - **Usage-condition index (IC):** `IC = 100 × (0.40·C + 0.35·A + 0.25·AC)`, with C and A normalized from 1–5 to 0–1; classified as Favourable / Intermediate / Severe. IC never changes observed consumption.

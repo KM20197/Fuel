@@ -264,7 +264,7 @@
           </label>
           <label>Ar-condicionado
             <select name="arCondicionado">
-              <option value="0">0%</option><option value="0.25" selected>25%</option><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option>
+              <option value="0">0%</option><option value="0.05">5%</option><option value="0.25" selected>25%</option><option value="0.5">50%</option><option value="0.75">75%</option><option value="1">100%</option>
             </select>
           </label>
           <label>Tanque cheio? <small>abastecimento completo</small>
@@ -313,6 +313,15 @@
       </table></div>
       <p class="note">O consumo observado (km ÷ litros) é o dado primário e alimenta a comparação, a faixa de preço e a indicação. O consumo ajustado é uma estimativa por condição de uso (referência: Favorável), calculada apenas com dados suficientes; indica associação observada, não causalidade.</p>
     </div>
+    <div class="panel">
+      <h2>Desempenho por teor de etanol na gasolina <small>camada 4 · estimativa</small></h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Faixa de teor</th><th>Consumo (gasolina)</th><th>Consumos</th><th title="Litros de etanol contidos na gasolina consumida nos intervalos da faixa">Litros equiv. etanol</th><th>Penalidade vs. menor teor</th><th>Avaliação</th></tr></thead>
+        <tbody id="tbl-consumo-teor"></tbody>
+      </table></div>
+      <p class="note" id="nota-teor"></p>
+      <p class="note">Aplica-se apenas à gasolina. Consumo por faixa = Σ km ÷ Σ litros dos intervalos de cada faixa; a faixa de referência é a de menor teor. Os critérios de suficiência são próprios desta camada (3 consumos para estimativa exploratória; 5 por faixa comparada, 12 no total e no máximo 70% em uma única faixa para "baseada no histórico"). O consumo observado não é alterado por esta estimativa, que indica associação observada, não causalidade.</p>
+    </div>
   </div>
 
   <div id="screen-historico" class="overlay-screen">
@@ -331,7 +340,7 @@
         </div>
       </div>
       <div class="table-wrap"><table>
-        <thead><tr><th>Data/Hora</th><th>Combustível</th><th>Etanol%</th><th>Preço</th><th>Hodômetro</th><th>Km</th><th>Litros</th><th title="Consumo do intervalo que termina neste abastecimento, atribuído ao combustível do abastecimento anterior">Consumo</th><th title="Preço pago no combustível do intervalo ÷ consumo">Custo/km</th><th>Valor total</th><th>Congest.</th><th>Aclives</th><th>Ar-cond.</th><th>Condição</th><th title="Tanque cheio neste abastecimento">Cheio?</th><th title="Incluir o intervalo deste abastecimento no cálculo">Incluir?</th><th>Obs.</th><th></th></tr></thead>
+        <thead><tr><th>Data/Hora</th><th>Combustível</th><th>Etanol%</th><th>Preço</th><th>Hodômetro</th><th>Km</th><th>Litros</th><th title="Litros de etanol na mistura consumida no intervalo que termina neste abastecimento: litros × (fração de etanol + fração de gasolina × teor da gasolina)">Litros equiv. etanol</th><th title="Consumo do intervalo que termina neste abastecimento, atribuído ao combustível do abastecimento anterior">Consumo</th><th title="Preço pago no combustível do intervalo ÷ consumo">Custo/km</th><th>Valor total</th><th>Congest.</th><th>Aclives</th><th>Ar-cond.</th><th>Condição</th><th title="Tanque cheio neste abastecimento">Cheio?</th><th title="Incluir o intervalo deste abastecimento no cálculo">Incluir?</th><th>Obs.</th><th></th></tr></thead>
         <tbody id="tbl-historico"></tbody>
       </table></div>
     </div>
@@ -395,6 +404,7 @@
         <thead><tr><th>Valor</th><th>Referência</th><th>Observação</th></tr></thead>
         <tbody>
           <tr><td>0%</td><td>Desligado ou uso praticamente nulo.</td><td>Não considerar apenas ventilação sem compressor.</td></tr>
+          <tr><td>5%</td><td>Ligado em poucos trechos do percurso (cerca de 1/20).</td><td>Contribui com 1,25 ponto ao índice de condição de uso (0,25 × 0,05 × 100).</td></tr>
           <tr><td>25%</td><td>Ligado em aproximadamente 1/4 do percurso.</td><td>Estimativa aproximada é suficiente.</td></tr>
           <tr><td>50%</td><td>Ligado em aproximadamente metade do percurso.</td><td>Use o valor mais próximo do uso real.</td></tr>
           <tr><td>75%</td><td>Ligado em aproximadamente 3/4 do percurso.</td><td>Aumenta o índice de condição de uso (peso 25%).</td></tr>
@@ -416,6 +426,7 @@
           <tr><td>Estimativa inconclusiva.</td><td>O consumo da condição comparada é maior que o da Favorável; nenhum ajuste é aplicado a essa condição (avaliado condição a condição, não apenas para a Severa).</td></tr>
         </tbody>
       </table></div>
+      <p class="legend-note"><strong>Camada 4 — teor de etanol na gasolina:</strong> consumo da gasolina separado por faixa de teor (limites editáveis em Metodologia; padrão: até 27%; acima de 27% até 30%; acima de 30%), com critérios de suficiência próprios (3, 5, 12 e 70%). Referência: faixa de menor teor. Não altera o consumo observado.</p>
       <p class="legend-note" style="margin-top:8px;">Trata-se de associação observada, não de causalidade: congestionamento, aclives e ar-condicionado costumam variar juntos e seus efeitos não são separados nesta versão. Os limites (3, 5, 12 e 70%) são salvaguardas operacionais do aplicativo, não garantias estatísticas de precisão. Mesmo nas faixas classificadas como exploratória ou baseada no histórico, a estimativa pode ser instável, sobretudo próxima aos limites mínimos de observações, e não representa um intervalo de confiança.</p>
     </div>
     <div class="panel">
@@ -448,7 +459,7 @@
           <tr><td>sem ref.</td><td>Primeiro lançamento: o combustível usado no intervalo anterior é desconhecido.</td></tr>
           <tr><td>parcial</td><td>Este abastecimento não encheu o tanque.</td></tr>
           <tr><td>ref. parcial</td><td>O abastecimento anterior não encheu o tanque.</td></tr>
-          <tr><td>troca comb.</td><td>Intervalo logo após troca entre gasolina e etanol (mistura com o resíduo do tanque).</td></tr>
+          <tr><td>mistura: ...</td><td>O remanescente do tanque era superior a 5% da capacidade e de outro grupo de combustível: km e litros do intervalo são repartidos entre gasolina e etanol na proporção de cada um no tanque, mantendo o mesmo km/L.</td></tr>
           <tr><td>excluído</td><td>Marcado como Não em "Incluir?".</td></tr>
           <tr><td>sem km</td><td>Hodômetro igual ao do lançamento anterior.</td></tr>
           <tr><td>km inválido</td><td>Hodômetro menor que o do abastecimento anterior (ordem por data e hora) ou que o hodômetro de referência.</td></tr>
@@ -469,6 +480,12 @@
       <div class="field-grid">
         <label>Etanol na gasolina atual
           <div class="input-suffix"><input id="in-etanolAtual" type="number" step="0.1" min="0" max="100" value="32" oninput="updateEntradaPct('etanolAtual', this.value)"><span>%</span></div>
+        </label>
+        <label>Camada 4: limite superior da faixa de menor teor <small>teor ≤ limite</small>
+          <div class="input-suffix"><input id="in-limiteTeor1" type="number" step="0.1" min="0" max="100" value="27" oninput="updateEntradaPct('limiteTeor1', this.value)"><span>%</span></div>
+        </label>
+        <label>Camada 4: limite superior da faixa intermediária <small>acima do anterior e ≤ limite</small>
+          <div class="input-suffix"><input id="in-limiteTeor2" type="number" step="0.1" min="0" max="100" value="30" oninput="updateEntradaPct('limiteTeor2', this.value)"><span>%</span></div>
         </label>
         <label>Capacidade do tanque
           <div class="input-suffix"><input id="in-capacidadeTanque" type="number" step="0.1" min="0" value="39.5" oninput="updateEntrada('capacidadeTanque', this.value)"><span>L</span></div>
@@ -541,7 +558,9 @@
       <p class="note"><strong>Tanque a tanque.</strong> Para cada abastecimento com tanque cheio, consumo = km desde o abastecimento anterior ÷ litros abastecidos.</p>
       <p class="note"><strong>Sequência.</strong> O abastecimento anterior é o imediatamente anterior por data e hora (desempate pelo menor hodômetro). Um hodômetro menor que o do abastecimento anterior marca o lançamento como "km inválido" e não altera a sequência. Ao lançar, o hodômetro deve ficar entre o do abastecimento anterior e o do seguinte por data e hora; lançamentos retroativos são aceitos dentro desse intervalo.</p>
       <p class="note"><strong>Atribuição.</strong> Os km foram percorridos com o combustível do abastecimento anterior; o consumo e o custo/km do intervalo são atribuídos a esse combustível.</p>
-      <p class="note"><strong>Exclusões automáticas.</strong> Abastecimento parcial (neste ou no anterior), primeiro lançamento (combustível anterior desconhecido) e intervalo logo após troca entre gasolina e etanol (mistura com o resíduo do tanque). Registros importados de CSV sem hodômetro entram com o combustível informado, sem essa verificação.</p>
+      <p class="note"><strong>Exclusões automáticas.</strong> Abastecimento parcial (neste ou no anterior) e primeiro lançamento (combustível anterior desconhecido). Intervalos após troca entre gasolina e etanol não são excluídos (ver Mistura no tanque). Nos consumos usados, parcelas minoritárias de uma mistura (menos de 50% do tanque) só entram se o grupo não tiver nenhuma medição em que seja dominante. Registros sem hodômetro (CSV) usam a coluna km e entram na mesma sequência por data e hora, com combustível anterior e mistura; o tanque anterior ao primeiro lançamento é presumido 100% gasolina, com o teor de “Etanol na gasolina atual”.</p>
+      <p class="note"><strong>Mistura no tanque.</strong> Após cada abastecimento com tanque cheio, o remanescente é a capacidade menos os litros abastecidos. Se for inferior a 5% da capacidade, é desprezado; caso contrário, a composição do tanque é a média ponderada por volume entre o remanescente e o abastecimento. O consumo observado do intervalo (km ÷ litros) é repartido, em km e litros, entre gasolina e etanol na proporção de cada grupo no tanque; cada parcela mantém o mesmo km/L. Antes do primeiro lançamento, presume-se tanque 100% gasolina com o teor de “Etanol na gasolina atual”; após abastecimento anterior parcial, presume-se que o remanescente seja do mesmo combustível do abastecimento.</p>
+      <p class="note"><strong>Litros equiv. etanol.</strong> Litros do intervalo × [fração de etanol no tanque + fração de gasolina × teor de etanol da gasolina]. O teor de cada abastecimento de gasolina é o da coluna Etanol%; lançamentos de gasolina sem teor (importados ou anteriores) herdam o valor de \"Etanol na gasolina atual\".</p>
       <p class="note"><strong>Condição de uso.</strong> Congestionamento, aclives e ar-condicionado compõem o índice de condição (IC; ver Legendas). O consumo por condição e o consumo ajustado aparecem em Resultados atuais como estimativa e não alteram o consumo usado no cálculo principal.</p>
       <p class="note"><strong>Alertas de digitação.</strong> Consumo fora de 5–20 km/L (gasolina) ou 3–15 km/L (etanol), ou distância acima de capacidade do tanque × 20 km/L, pedem confirmação antes de salvar.</p>
     </div>
@@ -584,7 +603,7 @@ const CENARIOS = [
 const CENARIO_BY_KEY = Object.fromEntries(CENARIOS.map(c=>[c.key,c]));
 
 let state = {
-  entradas:{ etanolAtual:0.32, capacidadeTanque:39.5, distanciaMensal:660 },
+  entradas:{ etanolAtual:0.32, capacidadeTanque:39.5, distanciaMensal:660, limiteTeor1:0.27, limiteTeor2:0.30 },
   cenario: 'baratao_pix',
   // Baratão Pix: referência interna dos quatro combustíveis (editável no cenário Pix).
   precos: {
@@ -705,12 +724,19 @@ function normalizeStoredHistorico(rows){
     idsUsados.add(id);
     // 'posto' era o nome antigo do campo 'cenario'; migra sem perder registros.
     const cenario = cenarioValido(r.cenario ?? r.posto ?? 'outros');
+    // Teor de etanol: só entra no cálculo para gasolina. Lançamentos de gasolina sem teor (CSV ou versões anteriores)
+    // herdam o valor atual de "Etanol na gasolina atual"; em lançamentos de etanol o valor informado é preservado,
+    // mas não é usado.
+    const combOk = validos.has(r.combustivel) ? r.combustivel : null;
+    const teorLido = numOrNull(r.etanolPct);
+    const etanolPctNorm = !combOk ? teorLido
+      : (FUEL_BY_KEY[combOk].group==='gasolina' ? (teorLido!=null ? teorLido : numOrNull(state.entradas.etanolAtual)) : teorLido);
     return {
       id,
       data: String(r.data ?? ''),
       hora: String(r.hora ?? ''),
       combustivel: validos.has(r.combustivel) ? r.combustivel : null,
-      etanolPct: numOrNull(r.etanolPct),
+      etanolPct: etanolPctNorm,
       preco: naoNegativoOuNull(r.preco),
       valorTotalPago: naoNegativoOuNull(r.valorTotalPago),
       hodometro: numOrNull(r.hodometro),
@@ -827,6 +853,8 @@ function classificarModeloPrecos(cfg){
 }
 function normalizarConfigState(){
   state.entradas.etanolAtual = clamp01(state.entradas.etanolAtual,0.32);
+  state.entradas.limiteTeor1 = clamp01(state.entradas.limiteTeor1,0.27);
+  state.entradas.limiteTeor2 = clamp01(state.entradas.limiteTeor2,0.30);
   state.entradas.capacidadeTanque = nonNegative(state.entradas.capacidadeTanque,39.5);
   state.entradas.distanciaMensal = nonNegative(state.entradas.distanciaMensal,660);
   if(!CENARIO_BY_KEY[state.cenario]) state.cenario = 'baratao_pix';
@@ -850,7 +878,7 @@ function normalizarConfigState(){
 function aplicarConfig(cfg){
   if(!cfg || typeof cfg!=='object' || Array.isArray(cfg)) return null;
   if(cfg.entradas && typeof cfg.entradas==='object'){
-    ['etanolAtual','capacidadeTanque','distanciaMensal'].forEach(k=>{
+    ['etanolAtual','capacidadeTanque','distanciaMensal','limiteTeor1','limiteTeor2'].forEach(k=>{
       if(cfg.entradas[k]!==undefined) state.entradas[k] = cfg.entradas[k];
     });
   }
@@ -913,6 +941,8 @@ function loadPersisted(){
 function syncInputsFromState(){
   const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
   set('in-etanolAtual', Number((state.entradas.etanolAtual*100).toFixed(4)));
+  set('in-limiteTeor1', Number((state.entradas.limiteTeor1*100).toFixed(4)));
+  set('in-limiteTeor2', Number((state.entradas.limiteTeor2*100).toFixed(4)));
   set('in-capacidadeTanque', state.entradas.capacidadeTanque);
   set('in-distanciaMensal', state.entradas.distanciaMensal);
   set('in-hodometroBaseline', state.hodometroBaseline);
@@ -1044,21 +1074,26 @@ function ordemCronologica(registros){
 // alertas e validação do formulário) derivam dela. Um hodômetro menor que o do abastecimento anterior válido
 // fica sem km (inválido) e não rebaixa a referência: os lançamentos seguintes continuam comparados ao último válido.
 function analisarCadeia(registros, baseline){
-  const ordem = ordemCronologica(registros.filter(temHodometro));
+  // Registros sem hodômetro, mas com km (CSV), avançam o hodômetro de referência pelo km informado; assim um
+  // hodômetro digitado depois é comparado ao acumulado, e não apenas ao hodômetro de referência.
+  const ordem = ordemCronologica(registros.filter(r=>temHodometro(r) || temKmCSV(r)));
   const km = new Map();
   const validos = [];
+  const hodDe = new Map();
   let anterior = Number(baseline) || 0;
   ordem.forEach(r=>{
+    if(!temHodometro(r)){ anterior += Number(r.km); hodDe.set(r, anterior); validos.push(r); return; }
     const hod = Number(r.hodometro);
     if(hod>=anterior){
       km.set(r, hod-anterior);
       anterior = hod;
+      hodDe.set(r, hod);
       validos.push(r);
     }else{
       km.set(r, null);
     }
   });
-  return { ordem, km, validos, ultimo: anterior };
+  return { ordem, km, validos, hodDe, ultimo: anterior };
 }
 function recomputeKmDeltas(){
   analisarCadeia(state.historico, state.hodometroBaseline).km.forEach((valor, r)=>{ r.km = valor; });
@@ -1072,7 +1107,7 @@ function rotuloDataHora(r){
 // hodômetro do novo lançamento deve ficar entre os dois (anterior <= hodômetro <= posterior).
 function referenciaParaLancamento(data, hora, hodometro){
   const base = Number(state.hodometroBaseline) || 0;
-  const { validos } = analisarCadeia(state.historico, base);
+  const { validos, hodDe } = analisarCadeia(state.historico, base);
   const chave = String(data||'')+'T'+String(hora||'');
   // Mesma ordem de ordemCronologica: data+hora, depois menor hodômetro, depois ordem de inclusão (o novo é o último).
   // Com data/hora idênticas, um registro existente é anterior se o hodômetro dele for <= ao do novo lançamento
@@ -1081,10 +1116,10 @@ function referenciaParaLancamento(data, hora, hodometro){
   let anterior = null, proximo = null;
   for(const r of validos){
     const t = tsRegistro(r);
-    if(t < chave || (t === chave && (!temHod || Number(r.hodometro) <= hodometro))) anterior = r;
+    if(t < chave || (t === chave && (!temHod || hodDe.get(r) <= hodometro))) anterior = r;
     else { proximo = r; break; }
   }
-  return { anterior, proximo, odometroAnterior: anterior ? Number(anterior.hodometro) : base };
+  return { anterior, proximo, proximoHod: proximo ? hodDe.get(proximo) : null, odometroAnterior: anterior ? hodDe.get(anterior) : base };
 }
 // Atualiza o rótulo "referência anterior" do formulário conforme a data/hora informadas e refaz o preview do km.
 function atualizarReferenciaFormulario(){
@@ -1117,7 +1152,7 @@ function previewKmDelta(inputEl){
   const ref = referenciaParaLancamento(data, hora, hod);
   const delta = hod - ref.odometroAnterior;
   if(delta<0) el.textContent = 'Hodômetro menor que o do abastecimento anterior por data e hora.';
-  else if(ref.proximo && hod > Number(ref.proximo.hodometro)) el.textContent = 'Hodômetro maior que o do lançamento seguinte ('+fmtInt(ref.proximo.hodometro)+' km, em '+rotuloDataHora(ref.proximo)+').';
+  else if(ref.proximo && hod > ref.proximoHod) el.textContent = 'Hodômetro maior que o do lançamento seguinte ('+fmtInt(ref.proximoHod)+' km, em '+rotuloDataHora(ref.proximo)+').';
   else el.textContent = 'km percorridos: '+fmtNum(delta,1)+' km';
 }
 
@@ -1228,8 +1263,8 @@ function addHistoricoEntry(e){
     alert('O hodômetro informado é menor que o do abastecimento anterior por data e hora ('+fmtInt(odometroAnterior)+' km'+(ref.anterior ? ', em '+rotuloDataHora(ref.anterior) : ', hodômetro de referência')+'). Corrija o valor ou a data/hora antes de salvar o abastecimento.');
     return;
   }
-  if(ref.proximo && hodometro > Number(ref.proximo.hodometro)){
-    alert('O hodômetro informado é maior que o do lançamento seguinte por data e hora ('+fmtInt(ref.proximo.hodometro)+' km, em '+rotuloDataHora(ref.proximo)+'). Salvá-lo tornaria esse lançamento inválido. Corrija o valor ou a data/hora antes de salvar o abastecimento.');
+  if(ref.proximo && hodometro > ref.proximoHod){
+    alert('O hodômetro informado é maior que o do lançamento seguinte por data e hora ('+fmtInt(ref.proximoHod)+' km, em '+rotuloDataHora(ref.proximo)+'). Salvá-lo tornaria esse lançamento inválido. Corrija o valor ou a data/hora antes de salvar o abastecimento.');
     return;
   }
   const preco = parseFloat(el.preco.value);
@@ -1383,8 +1418,11 @@ function exportarCSV(){
     'Data','Combustível','Etanol na gasolina (%)','Preço (R$/L)','Km percorridos','Litros consumidos',
     'Congestionamento','Aclives','Ar-condicionado','Incluir no cálculo?','Observações',
     // Colunas acrescentadas ao final: a importação continua aceitando o formato anterior de 11 colunas.
-    'Hodômetro','Hora','Cenário','Tanque cheio?'
+    'Hodômetro','Hora','Cenário','Tanque cheio?',
+    // Coluna calculada (informativa); ignorada na importação.
+    'Litros equiv. etanol'
   ];
+  const medExport = calcularMedicoes();
   const brNum = (v,d=4) => (v==null || v==='' || !Number.isFinite(Number(v))) ? '' : String(Number(Number(v).toFixed(d))).replace('.',',');
   const linhas = state.historico.map(r=>{
     const data = formatDateDDMMYYYY(r.data);
@@ -1393,7 +1431,8 @@ function exportarCSV(){
       brNum(r.etanolPct), brNum(r.preco), brNum(r.km), brNum(r.litros),
       r.congestionamento ?? '', r.aclives ?? '', brNum(r.arCondicionado),
       r.incluir, r.obs,
-      brNum(r.hodometro), r.hora || '', CENARIO_BY_KEY[r.cenario]?.label || '', r.tanqueCheio===false ? 'Não' : 'Sim'
+      brNum(r.hodometro), r.hora || '', CENARIO_BY_KEY[r.cenario]?.label || '', r.tanqueCheio===false ? 'Não' : 'Sim',
+      brNum((medExport.porRegistro.get(r.id) || {}).litrosEquiv)
     ].map(csvEscape).join(';');
   });
   baixarArquivo('\uFEFF'+headers.map(csvEscape).join(';')+'\r\n'+linhas.join('\r\n'), 'historico_planilha.csv', 'text/csv');
@@ -1404,6 +1443,7 @@ function importarCSV(evt){
   if(!file) return;
   const reader = new FileReader();
   reader.onload = function(ev){
+    const kmCsvPorId = new Map();
     try{
       const texto = String(ev.target.result);
       const delim = (texto.split(/\r?\n/).find(l=>l.trim()!=='')||'').includes(';') ? ';' : ',';
@@ -1438,7 +1478,7 @@ function importarCSV(evt){
         const c = linhas[i];
         if(c.every(x=>String(x).trim()==='')) continue;
         const lbl = String(c[cols.combustivel]??'').trim();
-        const fuelKey = Object.keys(FUEL_BY_KEY).find(k=>FUEL_BY_KEY[k].label===lbl);
+        const fuelKey = Object.keys(FUEL_BY_KEY).find(k=>normalizeHeader(FUEL_BY_KEY[k].label)===normalizeHeader(lbl));
         if(!fuelKey){ ignoradas++; continue; }
         // Data ausente, fora dos formatos aceitos (DD/MM/AAAA ou AAAA-MM-DD) ou com mês/dia inexistente
         // (ex.: 32/13/2026): a linha é rejeitada, em vez de entrar na cadeia cronológica com uma data vazia.
@@ -1453,8 +1493,10 @@ function importarCSV(evt){
         const kmRaw = parseBRNumMilhar(c[cols.km]);
         const cenTxt = cols.cenario>=0 ? String(c[cols.cenario]??'').trim() : '';
         const cen = CENARIOS.find(x=>normalizeHeader(x.label)===normalizeHeader(cenTxt) || x.key===cenTxt);
+        const idNovo = genId();
+        if(hod!=null && Number.isFinite(kmRaw) && kmRaw>0) kmCsvPorId.set(idNovo, kmRaw);
         novos.push({
-          id:genId(), data:dataConvertida, hora: cols.hora>=0 ? normalizarHora(c[cols.hora]) : '',
+          id:idNovo, data:dataConvertida, hora: cols.hora>=0 ? normalizarHora(c[cols.hora]) : '',
           combustivel:fuelKey, etanolPct:pct, preco:parseBRNum(c[cols.preco]),
           // Com hodômetro, o km é recalculado pela cadeia; sem ele, mantém-se o km do CSV.
           hodometro:hod, km: hod!=null ? null : (Number.isFinite(kmRaw) ? kmRaw : null),
@@ -1467,8 +1509,16 @@ function importarCSV(evt){
           obs:cols.obs>=0 ? (c[cols.obs]||'') : ''
         });
       }
-      const normalizados = normalizeStoredHistorico(novos);
+      const candidatos = normalizeStoredHistorico(novos);
+      // Duplicatas: mesma data, hora, combustível, litros e preço de um registro existente (e hodômetro igual, quando ambos o têm).
+      const igual = (a,b)=> a.data===b.data && (a.hora||'')===(b.hora||'') && a.combustivel===b.combustivel
+        && Math.abs((a.litros||0)-(b.litros||0))<0.005 && Math.abs((a.preco||0)-(b.preco||0))<0.005
+        && (a.hodometro==null || b.hodometro==null || a.hodometro===b.hodometro);
+      const normalizados = [];
+      let duplicadas = 0;
+      candidatos.forEach(c=>{ if([...state.historico,...normalizados].some(e=>igual(e,c))) duplicadas++; else normalizados.push(c); });
       const motivos = [];
+      if(duplicadas) motivos.push(duplicadas+' duplicada(s) ignorada(s)');
       if(ignoradas) motivos.push(ignoradas+' por combustível não reconhecido');
       if(ignoradasData) motivos.push(ignoradasData+' por data inválida ou ausente');
       const sufixoIgn = motivos.length ? ' '+motivos.join('; ')+'.' : '';
@@ -1476,8 +1526,21 @@ function importarCSV(evt){
         alert('Nenhum registro válido encontrado no CSV.'+sufixoIgn);
       } else {
         state.historico.push(...normalizados);
+        // Hodômetro de referência: se o primeiro registro da sequência veio deste CSV, com hodômetro e km, a referência
+        // passa a ser (hodômetro − km), de modo que o km do primeiro intervalo coincida com o informado.
+        let avisoRef = '';
+        const primeiro = ordemCronologica(state.historico)[0];
+        if(primeiro && normalizados.includes(primeiro) && temHodometro(primeiro) && kmCsvPorId.has(primeiro.id)){
+          const novaRef = Number(primeiro.hodometro) - kmCsvPorId.get(primeiro.id);
+          if(novaRef>=0 && novaRef!==Number(state.hodometroBaseline)){
+            avisoRef = ' Hodômetro de referência ajustado de '+fmtInt(state.hodometroBaseline)+' para '+fmtInt(novaRef)+' km (hodômetro do primeiro registro menos o km informado).';
+            state.hodometroBaseline = novaRef;
+          }
+        }
         renderAll();
-        alert(normalizados.length+' registro(s) importado(s).'+sufixoIgn);
+        const kmInvalidos = Array.from(analisarCadeia(state.historico, state.hodometroBaseline).km.values()).filter(v=>v===null).length;
+        const avisoKm = kmInvalidos ? ' Atenção: '+kmInvalidos+' registro(s) com hodômetro menor que o anterior (km inválido); confira o hodômetro de referência em Metodologia.' : '';
+        alert(normalizados.length+' registro(s) importado(s).'+sufixoIgn+avisoRef+avisoKm);
       }
     }catch(err){ alert('Erro ao importar CSV: '+err.message); }
     evt.target.value='';
@@ -1525,6 +1588,18 @@ function importarBackupJSON(evt){
 }
 
 function baixarArquivo(content, filename, contentType){
+  // No APK (WebView), não existe manipulador nativo para blob: + <a download> — o clique não gera erro,
+  // mas também não salva nada. O MainActivity.java injeta window.AndroidBridge.saveText(...), que abre o
+  // seletor "Salvar como" do Android; usar essa ponte quando presente, mantendo o caminho de navegador/PWA
+  // (Blob + <a download>) inalterado quando ela não existir.
+  if(window.AndroidBridge && typeof window.AndroidBridge.saveText==='function'){
+    try{
+      window.AndroidBridge.saveText(filename, contentType, content);
+      return;
+    }catch(e){
+      console.warn('Falha ao salvar via AndroidBridge; tentando o caminho padrão do navegador.', e);
+    }
+  }
   const blob = new Blob([content], {type: contentType+';charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = filename; a.rel = 'noopener';
@@ -1582,8 +1657,9 @@ function estimarInfluenciaCondicao(med){
     med.medicoes.filter(m=>m.grupo===g).forEach(m=>{
       const r = porId.get(m.id);
       const c = r ? classifyUsageCondition(r) : '';
-      if(!c){ semCondicao++; return; }
-      cats[c].n++; cats[c].km += m.km; cats[c].litros += m.litros;
+      if(!c){ semCondicao += (m.fracao ?? 1); return; }
+      const peso = m.fracao ?? 1;
+      cats[c].n += peso; cats[c].km += m.km; cats[c].litros += m.litros;
     });
     CONDICOES.forEach(c=>{ if(cats[c].litros>0) cats[c].consumo = cats[c].km/cats[c].litros; });
     const total = CONDICOES.reduce((soma,c)=>soma+cats[c].n, 0);
@@ -1628,6 +1704,83 @@ function ajusteCondicaoPorCombustivel(usado, med, est){
   });
   return out;
 }
+
+// ---- DESEMPENHO POR TEOR DE ETANOL NA GASOLINA (camada 4) ----
+// Só gasolina. Cada parcela de gasolina de um intervalo entra na faixa do seu teor (média ponderada por volume
+// quando o tanque continha gasolinas de teores diferentes). Consumo por faixa = Σ km ÷ Σ litros. Referência: faixa de
+// menor teor. Critérios de suficiência próprios (mesmos valores iniciais da condição de uso, ajustáveis aqui).
+// Fronteiras superiores (inclusivas) das duas primeiras faixas: editáveis em Metodologia (padrão 27% e 30%).
+function limitesTeor(){
+  const a = Number(state.entradas.limiteTeor1), b = Number(state.entradas.limiteTeor2);
+  const x = Number.isFinite(a) ? a : 0.27, y = Number.isFinite(b) ? b : 0.30;
+  return [Math.min(x,y), Math.max(x,y)];
+}
+const MIN_CONSUMOS_TEOR = 3;
+const MIN_CONSUMOS_TEOR_CONFIAVEL = 5;
+const MIN_CONSUMOS_TEOR_TOTAL_CONFIAVEL = 12;
+const MAX_PARTICIPACAO_TEOR = 0.70;
+const AVALIACAO_TEOR = {
+  insuficiente: 'Dados insuficientes para estimar a influência do teor de etanol.',
+  exploratoria: 'Estimativa exploratória baseada no histórico.',
+  baseada: 'Estimativa baseada no histórico do veículo.',
+  inconclusiva: 'Estimativa inconclusiva: o consumo desta faixa é maior que o da faixa de menor teor.',
+};
+function rotuloFaixaTeor(i){
+  const L = limitesTeor(), a = fmtPct(L[0],1), b = fmtPct(L[1],1);
+  return i===0 ? 'Até '+a : (i===1 ? 'Acima de '+a+' até '+b : 'Acima de '+b);
+}
+function faixaTeor(t){
+  if(t==null || !Number.isFinite(t)) return -1;
+  const e = 1e-9;
+  const L = limitesTeor();
+  return t<=L[0]+e ? 0 : (t<=L[1]+e ? 1 : 2);
+}
+function fmtObservacoes(n){
+  return Math.abs(n-Math.round(n))<0.005 ? String(Math.round(n)) : fmtNum(n,1);
+}
+function estimarInfluenciaTeor(med){
+  const cats = [0,1,2].map(()=>({n:0, km:0, litros:0, equiv:0, consumo:null}));
+  let semTeor = 0;
+  med.medicoes.filter(m=>m.grupo==='gasolina').forEach(m=>{
+    const peso = m.fracao ?? 1, i = faixaTeor(m.teor);
+    if(i<0){ semTeor += peso; return; }
+    const k = cats[i];
+    k.n += peso; k.km += m.km; k.litros += m.litros; k.equiv += m.litrosEquivEtanol || 0;
+  });
+  cats.forEach(k=>{ if(k.litros>0) k.consumo = k.km/k.litros; });
+  const total = cats.reduce((a,k)=>a+k.n,0);
+  const maiorN = Math.max(...cats.map(k=>k.n));
+  const ref = cats[0];
+  const efeitos = [null];
+  for(let i=1;i<cats.length;i++){
+    const k = cats[i];
+    let nivel = 'insuficiente', penalidade = null;
+    if(ref.n>=MIN_CONSUMOS_TEOR && k.n>=MIN_CONSUMOS_TEOR && ref.consumo>0 && k.consumo>0){
+      penalidade = 1 - k.consumo/ref.consumo;
+      if(penalidade<0) nivel = 'inconclusiva';
+      else if(ref.n>=MIN_CONSUMOS_TEOR_CONFIAVEL && k.n>=MIN_CONSUMOS_TEOR_CONFIAVEL
+              && total>=MIN_CONSUMOS_TEOR_TOTAL_CONFIAVEL && maiorN/total<=MAX_PARTICIPACAO_TEOR) nivel = 'baseada';
+      else nivel = 'exploratoria';
+    }
+    efeitos.push({penalidade, nivel});
+  }
+  return {categorias:cats, total, semTeor, efeitos};
+}
+function renderDesempenhoTeor(med){
+  const tb = document.getElementById('tbl-consumo-teor');
+  if(!tb) return;
+  const e = estimarInfluenciaTeor(med);
+  tb.innerHTML = e.categorias.map((k,i)=>{
+    let avalia, pen = '—';
+    if(i===0) avalia = k.n>=MIN_CONSUMOS_TEOR ? 'Faixa de referência (menor teor).' : AVALIACAO_TEOR.insuficiente;
+    else { const ef = e.efeitos[i]; avalia = AVALIACAO_TEOR[ef.nivel]; if(ef.penalidade!=null) pen = fmtPct(ef.penalidade,1); }
+    return '<tr><td>'+rotuloFaixaTeor(i)+'</td><td class="num">'+(k.consumo>0 ? fmtNum(k.consumo)+' km/L' : '—')
+      +'</td><td class="num">'+fmtObservacoes(k.n)+'</td><td class="num">'+(k.litros>0 ? fmtNum(k.equiv) : '—')
+      +'</td><td class="num">'+pen+'</td><td class="dim">'+avalia+'</td></tr>';
+  }).join('');
+  const nota = document.getElementById('nota-teor');
+  if(nota) nota.textContent = e.semTeor>0 ? 'Intervalos de gasolina sem teor informado ('+fmtObservacoes(e.semTeor)+') não entram nesta camada.' : '';
+}
 function renderInfluenciaCondicao(usado, comp, med){
   const tb1 = document.getElementById('tbl-ajuste-condicao');
   const tb2 = document.getElementById('tbl-consumo-condicao');
@@ -1652,7 +1805,7 @@ function renderInfluenciaCondicao(usado, comp, med){
       let avalia, pen = '—';
       if(i===0) avalia = k.n>=MIN_CONSUMOS_CONDICAO ? 'Condição de referência.' : AVALIACAO_CONDICAO.insuficiente;
       else { const ef = e.efeitos[c]; avalia = AVALIACAO_CONDICAO[ef.nivel]; if(ef.penalidade!=null) pen = fmtPct(ef.penalidade,1); }
-      linhas.push('<tr><td>'+rotulo+'</td><td>'+tag(c)+'</td><td class="num">'+(k.consumo>0 ? fmtNum(k.consumo)+' km/L' : '—')+'</td><td class="num">'+k.n+'</td><td class="num">'+pen+'</td><td class="dim">'+avalia+'</td></tr>');
+      linhas.push('<tr><td>'+rotulo+'</td><td>'+tag(c)+'</td><td class="num">'+(k.consumo>0 ? fmtNum(k.consumo)+' km/L' : '—')+'</td><td class="num">'+fmtObservacoes(k.n)+'</td><td class="num">'+pen+'</td><td class="dim">'+avalia+'</td></tr>');
     });
   });
   tb2.innerHTML = linhas.join('');
@@ -1667,51 +1820,128 @@ const MOTIVOS = {
   parcial:   {curto:'parcial',     longo:'Abastecimento parcial: o intervalo que termina nele não mede consumo.'},
   refParcial:{curto:'ref. parcial',longo:'O abastecimento anterior foi parcial: o nível do tanque no início do intervalo é desconhecido.'},
   primeiro:  {curto:'sem ref.',    longo:'Primeiro lançamento: o combustível usado no intervalo anterior é desconhecido.'},
-  troca:     {curto:'troca comb.', longo:'Intervalo logo após troca entre gasolina e etanol (mistura com o resíduo do tanque).'},
   kmInvalido:{curto:'km inválido', longo:'Hodômetro menor que o do abastecimento anterior (sequência por data e hora) ou que o hodômetro de referência: km percorridos indisponíveis.'},
   semKm:     {curto:'sem km',      longo:'Sem km percorridos (hodômetro igual ao do lançamento anterior).'},
   litros:    {curto:'sem litros',  longo:'Litros ausentes ou inválidos.'},
 };
 function grupoDe(fuelKey){ return FUEL_BY_KEY[fuelKey] ? FUEL_BY_KEY[fuelKey].group : null; }
 function tsRegistro(r){ return String(r.data||'')+'T'+String(r.hora||''); }
+// ---- COMPOSIÇÃO DO TANQUE E MISTURA ENTRE ABASTECIMENTOS ----
+// Após cada abastecimento com tanque cheio, o remanescente é (capacidade − litros abastecidos). Abaixo de
+// LIMIAR_RESIDUO_TROCA da capacidade ele é desprezado (tanque = combustível abastecido); acima, a composição é a
+// média ponderada por volume entre o remanescente e o abastecimento. Nenhum intervalo é excluído por troca.
+// Composição = { gas: fração do tanque em gasolina, eqGas: fração do tanque em etanol contido na gasolina }.
+const LIMIAR_RESIDUO_TROCA = 0.05;
+function ehGasolina(fuelKey){ return grupoDe(fuelKey)==='gasolina'; }
+function teorEtanolRegistro(r){
+  if(!r || !ehGasolina(r.combustivel)) return null;
+  const t = Number(r.etanolPct);
+  if(r.etanolPct!=null && Number.isFinite(t) && t>=0 && t<=1) return t;
+  const atual = Number(state.entradas.etanolAtual);
+  return Number.isFinite(atual) ? atual : 0;
+}
+function composicaoPura(r){
+  return ehGasolina(r.combustivel) ? {gas:1, eqGas:teorEtanolRegistro(r)} : {gas:0, eqGas:0};
+}
+function composicaoAposAbastecimento(r, anterior){
+  if(r.tanqueCheio===false) return null;                 // volume do tanque desconhecido
+  const L = Number(r.litros), cap = Number(state.entradas.capacidadeTanque);
+  if(!(L>0)) return anterior || null;
+  const puro = composicaoPura(r);
+  if(!anterior || !(cap>0)) return puro;                 // sem composição anterior: presume-se o mesmo combustível
+  const residuo = Math.max(cap-L, 0);
+  if(residuo/cap < LIMIAR_RESIDUO_TROCA) return puro;
+  const w = residuo/(residuo+L);
+  return desprezarMinoritario({ gas: w*anterior.gas + (1-w)*puro.gas, eqGas: w*anterior.eqGas + (1-w)*puro.eqGas });
+}
+// Fração do tanque do grupo minoritário (remanescente da troca) abaixo do limiar: desprezada.
+function desprezarMinoritario(c){
+  if(c.gas < LIMIAR_RESIDUO_TROCA) return {gas:0, eqGas:0};
+  if(1-c.gas < LIMIAR_RESIDUO_TROCA) return {gas:1, eqGas:c.eqGas/c.gas};
+  return c;
+}
+function particionarIntervalo(r, prev, comp, ultimoPorGrupo){
+  const c = desprezarMinoritario(comp || composicaoPura(prev));
+  const gas = Math.min(1, Math.max(0, c.gas));
+  const consumo = r.km/r.litros;
+  const grupoPrev = grupoDe(prev.combustivel);
+  const montar = (grupo, frac) => {
+    let ref = prev;
+    if(grupo!==grupoPrev){
+      const u = ultimoPorGrupo[grupo];
+      ref = u ? u : {combustivel: FUELS.find(f=>f.group===grupo).key, preco:null};
+    }
+    const litros = r.litros*frac;
+    const teor = grupo==='gasolina' ? c.eqGas/gas : null;
+    return { id:r.id, origem:'hodometro', combustivel:ref.combustivel, grupo, km:r.km*frac, litros, consumo,
+             preco:ref.preco, ts:tsRegistro(r), hodometro:(Number(r.hodometro)||0), fracao:frac, teor,
+             litrosEquivEtanol: grupo==='gasolina' ? litros*teor : litros };
+  };
+  const EPS = 1e-9;
+  const fr = { gasolina: gas, etanol: 1-gas };
+  const grupos = [grupoPrev, grupoPrev==='gasolina' ? 'etanol' : 'gasolina'];
+  return grupos.filter(g=>fr[g]>EPS).map(g=>montar(g, fr[g]));
+}
+// Custo/km = Σ(fração × preço do combustível de cada parcela) ÷ km/L. Parcela sem preço registrado (combustível já
+// no tanque antes do primeiro lançamento) usa o preço do abastecimento mais próximo do mesmo grupo e é sinalizada
+// como estimada; sem nenhum preço registrado no grupo, o custo/km fica indisponível.
+function resumoPartes(partes, precoSubstituto){
+  const consumo = partes[0].consumo;
+  let estimado = false, completo = true, soma = 0;
+  partes.forEach(p=>{
+    let preco = p.preco>0 ? p.preco : null;
+    if(preco==null && precoSubstituto){ preco = precoSubstituto(p.grupo); if(preco>0) estimado = true; }
+    if(!(preco>0)) completo = false; else soma += p.fracao*preco;
+  });
+  return { medicao:partes[0], partes, mistura:partes.length>1,
+           custoKm: completo ? soma/consumo : null, custoEstimado: completo && estimado,
+           litrosEquiv: partes.reduce((a,p)=>a+p.litrosEquivEtanol,0) };
+}
+function temKmCSV(r){ return !temHodometro(r) && Number(r.km)>0; }
+// Tanque antes do primeiro lançamento: presume-se 100% gasolina com o teor de "Etanol na gasolina atual".
+function composicaoInicial(){
+  const t = Number(state.entradas.etanolAtual);
+  return { gas:1, eqGas: Number.isFinite(t) ? t : 0 };
+}
 function calcularMedicoes(){
-  const cadeia = ordemCronologica(state.historico.filter(temHodometro));
+  // Sequência única por data e hora. O km do intervalo vem do hodômetro (cadeia) ou, sem hodômetro, da coluna km
+  // importada. O intervalo é atribuído ao combustível que estava no tanque (composição após o abastecimento anterior).
+  const cadeia = ordemCronologica(state.historico);
   const medicoes = [];
   const porRegistro = new Map();
-  let prev = null, prevPrev = null;
+  const inicial = composicaoInicial();
+  const precosGrupo = { gasolina:[], etanol:[] };
+  cadeia.forEach(r=>{ const g = grupoDe(r.combustivel); if(g && r.preco>0) precosGrupo[g].push({ts:tsRegistro(r), preco:r.preco}); });
+  const precoMaisProximo = (g, ts) => { const l = precosGrupo[g] || []; let ant = null; for(const x of l){ if(x.ts<=ts) ant = x; else break; } return ant ? ant.preco : (l.length ? l[0].preco : null); };
+  let prev = null, comp = inicial;
+  const ultimoPorGrupo = {};
   cadeia.forEach(r=>{
-    if(r.km==null){ porRegistro.set(r.id,{motivo:MOTIVOS.kmInvalido}); return; }
-    let motivo = null;
-    if(!(r.km>0)) motivo = MOTIVOS.semKm;
-    else if(r.incluir!=='Sim') motivo = MOTIVOS.manual;
-    else if(r.tanqueCheio===false) motivo = MOTIVOS.parcial;
-    else if(!(r.litros>0)) motivo = MOTIVOS.litros;
-    else if(!prev) motivo = MOTIVOS.primeiro;
-    else if(prev.tanqueCheio===false) motivo = MOTIVOS.refParcial;
-    else if(prevPrev && grupoDe(prevPrev.combustivel)!==grupoDe(prev.combustivel)) motivo = MOTIVOS.troca;
-    if(motivo){
-      porRegistro.set(r.id,{motivo});
+    if(!temHodometro(r) && !(r.km!=null)){ // sem hodômetro e sem km: não há intervalo mensurável
+      porRegistro.set(r.id,{motivo:MOTIVOS.semKm});
+    } else if(temHodometro(r) && r.km==null){
+      porRegistro.set(r.id,{motivo:MOTIVOS.kmInvalido});
     } else {
-      const m = { id:r.id, origem:'hodometro', combustivel:prev.combustivel, grupo:grupoDe(prev.combustivel),
-                  km:r.km, litros:r.litros, consumo:r.km/r.litros, preco:prev.preco,
-                  ts:tsRegistro(r), hodometro:Number(r.hodometro) };
-      medicoes.push(m);
-      porRegistro.set(r.id,{medicao:m});
+      let motivo = null;
+      if(!(r.km>0)) motivo = MOTIVOS.semKm;
+      else if(r.incluir!=='Sim') motivo = MOTIVOS.manual;
+      else if(r.tanqueCheio===false) motivo = MOTIVOS.parcial;
+      else if(!(r.litros>0)) motivo = MOTIVOS.litros;
+      else if(prev && prev.tanqueCheio===false) motivo = MOTIVOS.refParcial;
+      if(motivo){
+        porRegistro.set(r.id,{motivo});
+      } else {
+        const ref = prev || { combustivel:'gasolina_comum', preco:null, tanqueCheio:true,
+                              etanolPct: state.entradas.etanolAtual, tanqueInicial:true };
+        const partes = particionarIntervalo(r, ref, comp, ultimoPorGrupo).map(p=>{
+          p.origem = temHodometro(r) ? 'hodometro' : 'csv'; return p; });
+        partes.forEach(m=>medicoes.push(m));
+        porRegistro.set(r.id, resumoPartes(partes, g=>precoMaisProximo(g, tsRegistro(r))));
+      }
     }
-    prevPrev = prev; prev = r;
-  });
-  // Registros sem hodômetro (CSV no formato anterior): medição isolada, atribuída ao combustível informado.
-  state.historico.filter(r=>!temHodometro(r)).forEach(r=>{
-    let motivo = null;
-    if(!(r.km>0)) motivo = MOTIVOS.semKm;
-    else if(r.incluir!=='Sim') motivo = MOTIVOS.manual;
-    else if(r.tanqueCheio===false) motivo = MOTIVOS.parcial;
-    else if(!(r.litros>0)) motivo = MOTIVOS.litros;
-    if(motivo){ porRegistro.set(r.id,{motivo}); return; }
-    const m = { id:r.id, origem:'csv', combustivel:r.combustivel, grupo:grupoDe(r.combustivel),
-                km:r.km, litros:r.litros, consumo:r.km/r.litros, preco:r.preco, ts:tsRegistro(r), hodometro:0 };
-    medicoes.push(m);
-    porRegistro.set(r.id,{medicao:m});
+    comp = composicaoAposAbastecimento(r, comp);
+    const g = grupoDe(r.combustivel);
+    if(g) ultimoPorGrupo[g] = {combustivel:r.combustivel, preco:r.preco};
+    prev = r;
   });
   medicoes.sort((a,b)=> b.ts.localeCompare(a.ts) || (b.hodometro-a.hodometro));
   return {medicoes, porRegistro};
@@ -1722,7 +1952,10 @@ function consumoDinamico(med){
   // "mediaComparacao" (JANELA_COMPARACAO últimos) e "media" (todos os válidos) são referências
   // exibidas para comparação e não entram no cálculo principal.
   const medicoes = (med || calcularMedicoes()).medicoes;
-  const grupos = { gasolina: medicoes.filter(m=>m.grupo==='gasolina'), etanol: medicoes.filter(m=>m.grupo==='etanol') };
+  // Parcelas minoritárias de intervalos com mistura (fração < 50%) refletem o km/L da mistura, não o do grupo:
+  // só entram no "usado" quando o grupo não tem nenhuma medição em que seja dominante.
+  const doGrupo = g => { const todas = medicoes.filter(m=>m.grupo===g); const dom = todas.filter(m=>(m.fracao ?? 1) >= 0.5); return dom.length ? dom : todas; };
+  const grupos = { gasolina: doGrupo('gasolina'), etanol: doGrupo('etanol') };
   const somar = arr => arr.reduce((s,m)=>({km:s.km+m.km, litros:s.litros+m.litros}),{km:0,litros:0});
   const out = {};
   FUELS.forEach(f=>{
@@ -1950,7 +2183,7 @@ function renderHistoricoTable(med){
     if(!fuel) return '';
     const info = med.porRegistro.get(r.id) || {};
     const m = info.medicao || null;
-    const custoKm = (m && m.preco>0) ? m.preco/m.consumo : null;
+    const custoKm = (m && info.custoKm>0) ? info.custoKm : null;
     const valorTotal = valorTotalRow(r);
     const condicao = classifyUsageCondition(r);
     const ic = indiceCondicao(r);
@@ -1958,10 +2191,11 @@ function renderHistoricoTable(med){
     const fuelKey = escapeHTML(r.combustivel);
     const id = escapeHTML(r.id);
     const kmTxt = r.km!=null
-      ? (fmtInt(r.km)+(r.hodometro==null?' <span class="tag tag-neutral" title="Km importado direto do CSV, sem hodômetro — não participa da cadeia de hodômetro nem da verificação de troca de combustível.">CSV</span>':''))
+      ? (fmtInt(r.km)+(r.hodometro==null?' <span class="tag tag-neutral" title="Km importado do CSV sem hodômetro: o hodômetro de referência avança por esse km e o intervalo segue a mesma regra de combustível anterior e mistura.">CSV</span>':''))
       : '—';
     const consumoTxt = m
-      ? fmtNum(m.consumo)+'<span class="sub">'+escapeHTML(FUEL_BY_KEY[m.combustivel].label)+'</span>'
+      ? fmtNum(m.consumo)+'<span class="sub"'+(info.mistura?' title="Remanescente acima de '+fmtPct(LIMIAR_RESIDUO_TROCA,0)+' da capacidade: km e litros repartidos entre os grupos na proporção de cada um no tanque."':'')+'>'
+        +(info.mistura ? 'mistura: '+info.partes.map(p=>(p.grupo==='gasolina'?'gasolina ':'etanol ')+fmtPct(p.fracao,0)).join(' / ') : escapeHTML(FUEL_BY_KEY[m.combustivel].label))+'</span>'
       : '—'+(info.motivo ? '<span class="sub" title="'+escapeHTML(info.motivo.longo)+'">'+escapeHTML(info.motivo.curto)+'</span>' : '');
     const cheio = r.tanqueCheio!==false;
     const incl = r.incluir==='Sim';
@@ -1970,8 +2204,8 @@ function renderHistoricoTable(med){
       <td class="num">${r.etanolPct!=null?fmtPct(r.etanolPct):'—'}</td><td class="num">${fmtBRL(r.preco)}</td>
       <td class="num">${r.hodometro!=null?fmtInt(r.hodometro):'—'}</td>
       <td class="num">${kmTxt}</td>
-      <td class="num">${fmtNum(r.litros)}</td><td class="num">${consumoTxt}</td>
-      <td class="num">${custoKm!=null?fmtBRLd(custoKm,4):'—'}</td><td class="num">${valorTotal!=null?fmtBRL(valorTotal):'—'}</td>
+      <td class="num">${fmtNum(r.litros)}</td><td class="num">${info.litrosEquiv!=null?fmtNum(info.litrosEquiv):'—'}</td><td class="num">${consumoTxt}</td>
+      <td class="num">${custoKm!=null?fmtBRLd(custoKm,4)+(info.custoEstimado?'<span class="sub" title="Inclui combustível sem preço registrado (tanque anterior ao primeiro lançamento): usado o preço do abastecimento mais próximo do mesmo grupo.">estimado</span>':''):'—'}</td><td class="num">${valorTotal!=null?fmtBRL(valorTotal):'—'}</td>
       <td class="num">${r.congestionamento ?? '—'}</td><td class="num">${r.aclives ?? '—'}</td><td class="num">${r.arCondicionado!=null?fmtPct(r.arCondicionado,0):'—'}</td>
       <td><span class="tag ${condicao==='Severa'?'tag-bad':condicao==='Favorável'?'tag-good':'tag-neutral'}">${condicao||'—'}</span>${ic!=null?'<span class="sub">IC '+fmtNum(ic,1)+'</span>':''}</td>
       <td><button type="button" class="tag tag-btn ${cheio?'tag-good':'tag-neutral'}" data-act="cheio" data-id="${id}" aria-pressed="${cheio}" title="Alternar tanque cheio / parcial">${cheio?'Sim':'Não'}</button></td>
@@ -2013,6 +2247,7 @@ function renderAll(){
   renderHistoricoTable(med);
   renderValorEmUsoMetodologia(usado);
   renderInfluenciaCondicao(usado, comp, med);
+  renderDesempenhoTeor(med);
   atualizarInfoHodometroBase();
   atualizarReferenciaFormulario();
 }
