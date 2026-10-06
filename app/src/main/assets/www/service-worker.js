@@ -1,4 +1,4 @@
-const CACHE_NAME = 'combustivel-v3';
+const CACHE_NAME = 'combustivel-v4';
 const ASSETS = [
   './',
   './index.html',
