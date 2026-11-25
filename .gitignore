@@ -1,0 +1,26 @@
+# Credenciais e chaves de assinatura
+*.jks
+*.keystore
+*.pem
+*.p12
+*.key
+.env
+.env.*
+local.properties
+
+# Artefatos de build Android / Gradle
+build/
+app/build/
+.gradle/
+captures/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Arquivos de IDE e sistema operacional
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
