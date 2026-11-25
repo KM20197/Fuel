@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | **Author** | Ricardo Coutinho Mello (GitHub: [KM20197](https://github.com/KM20197)) |
-| **Version** | 1.1.0 (internal: versionCode 4 / versionName 3.1.0) |
+| **Version** | 1.2.0 (internal: versionCode 4 / versionName 3.1.0) |
 | **License** | [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/) |
 | **Repository** | https://github.com/KM20197/Fuel |
 | **DOI** | *10.5281/zenodo.22918209* |
@@ -66,7 +66,7 @@ Or use the repository's **Android CI** action (artifact `app-debug`).
            cost of fuels using a refuelling history, usage conditions and
            parametrized effective prices},
   year = {2026},
-  version = {1.1.0},
+  version = {1.2.0},
   url = {https://github.com/KM20197/Fuel},
   note = {CC BY-NC 4.0; Zenodo DOI 10.5281/zenodo.22918209}
 }

@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Autor** | Ricardo Coutinho Mello (GitHub: [KM20197](https://github.com/KM20197)) |
-| **Versão** | 1.1.0 (código interno: versionCode 4 / versionName 3.1.0) |
+| **Versão** | 1.2.0 (código interno: versionCode 4 / versionName 3.1.0) |
 | **Licença** | [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/) |
 | **Repositório** | https://github.com/KM20197/Fuel |
 | **DOI** | 10.5281/zenodo.22918209|
@@ -69,7 +69,7 @@ Ou use a Action **Android CI** do repositório (artefato `app-debug`).
            operacional de combustíveis a partir de histórico de abastecimentos,
            condições de uso e preços efetivos parametrizados},
   year = {2026},
-  version = {1.1.0},
+  version = {1.2.0},
   url = {https://github.com/KM20197/Fuel},
   note = {Licença CC BY-NC 4.0; DOI Zenodo em 10.5281/zenodo.22918209}
 }
