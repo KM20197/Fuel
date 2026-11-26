@@ -3,10 +3,27 @@ name: Android CI
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
+  web-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run calculation engine tests
+        run: node --test tests/engine.test.mjs
+
   build:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
 
     steps:

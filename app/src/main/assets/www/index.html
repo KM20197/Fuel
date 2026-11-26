@@ -7,6 +7,12 @@
 <title>Calculadora de Combustível</title>
 <meta name="theme-color" content="#0f131a">
 <meta name="description" content="Calculadora de custo por km para gasolina aditivada, gasolina comum, etanol comum e etanol aditivado.">
+<meta property="og:title" content="Fuel — Calculadora de Combustível">
+<meta property="og:description" content="Sistema computacional para estimativa e comparação do custo operacional de combustíveis a partir de histórico de abastecimentos, condições de uso e preços efetivos parametrizados.">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
   :root{
     --bg:#0f131a;--bg-panel:#161c25;--bg-panel-2:#1c2431;--bg-input:#10151d;
@@ -26,14 +32,14 @@
   body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;}
   a{color:var(--accent);}
   ::selection{background:var(--accent-soft);}
-  .wrap{width:100%;max-width:960px;margin:0 auto;padding:20px 16px 80px;min-width:0;}
+  .wrap{width:100%;max-width:960px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) calc(80px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px));min-width:0;}
   .overlay-screen{width:100%;min-width:0;box-sizing:border-box;}
   .panel,.hero-card,header.top,.side-menu{min-width:0;}
   input,select,button{max-width:100%;}
   .field-grid > label{min-width:0;}
   @media(max-width:420px){
-    .wrap{padding-left:12px;padding-right:12px;}
-    .overlay-screen{padding-left:12px;padding-right:12px;}
+    .wrap{padding-left:calc(12px + env(safe-area-inset-left,0px));padding-right:calc(12px + env(safe-area-inset-right,0px));}
+    .overlay-screen{padding-left:calc(12px + env(safe-area-inset-left,0px));padding-right:calc(12px + env(safe-area-inset-right,0px));}
     .panel{padding:12px;}
     .overlay-header h2{font-size:15px;}
     .panel-header-row .actions{width:100%;}
@@ -45,7 +51,7 @@
   .hamburger-btn:hover{border-color:var(--accent);}
   .side-menu-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;background:rgba(0,0,0,0.6);z-index:999;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
   .side-menu-overlay.open{opacity:1;visibility:visible;}
-  .side-menu{position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100vh;height:100dvh;background:var(--bg-panel);border-left:1px solid var(--border);z-index:1000;display:flex;flex-direction:column;transform:translateX(100%);visibility:hidden;transition:transform .3s cubic-bezier(.1,.9,.2,1),visibility .3s;padding:20px;overflow-y:auto;}
+  .side-menu{position:fixed;top:0;right:0;width:280px;max-width:85vw;height:100vh;height:100dvh;background:var(--bg-panel);border-left:1px solid var(--border);z-index:1000;display:flex;flex-direction:column;transform:translateX(100%);visibility:hidden;transition:transform .3s cubic-bezier(.1,.9,.2,1),visibility .3s;padding:calc(20px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) 20px;overflow-y:auto;}
   .side-menu.open{transform:translateX(0);visibility:visible;transition:transform .3s cubic-bezier(.1,.9,.2,1),visibility 0s;}
   .side-menu-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px;}
   .side-menu-header h3{margin:0;font-size:16px;}
@@ -55,7 +61,7 @@
   .side-menu-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-faint);line-height:1.4;}
   .session-banner{margin-top:10px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;background:var(--warn-soft);border:1px solid rgba(224,161,58,.35);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:#f0cd8f;}
   .session-banner strong{color:#f6dfab;}
-  .overlay-screen{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;background:var(--bg);z-index:900;display:none;flex-direction:column;overflow-y:auto;padding:16px;}
+  .overlay-screen{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;background:var(--bg);z-index:900;display:none;flex-direction:column;overflow-y:auto;padding:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px));}
   .overlay-screen.active{display:flex;}
   .overlay-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:10px;}
   .overlay-header h2{margin:0;font-size:16px;}
@@ -121,6 +127,14 @@
   .file-btn:hover{color:var(--text);border-color:var(--text-faint);}
   .icon-btn{background:transparent;border:none;color:var(--text-faint);cursor:pointer;padding:2px 6px;font-size:12px;}
   .icon-btn:hover{color:var(--bad);}
+  .icon-btn.edit:hover{color:var(--accent);}
+  .actions-cell{display:flex;gap:4px;align-items:center;}
+  .app-dialog-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.68);z-index:1200;display:none;align-items:center;justify-content:center;padding:16px;}
+  .app-dialog-backdrop.open{display:flex;}
+  .app-dialog{width:100%;max-width:440px;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 16px 40px rgba(0,0,0,0.45);}
+  .app-dialog h3{margin:0 0 8px;font-size:15px;color:var(--text);}
+  .app-dialog p{margin:0 0 16px;font-size:13px;color:var(--text-dim);white-space:pre-line;line-height:1.5;}
+  .app-dialog-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;}
   form#form-historico button[type=submit]{margin-top:14px;width:100%;padding:12px;font-size:14px;}
   .legend-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px;}
   .legend-table th{text-align:left;color:var(--text-dim);padding:7px 8px;border-bottom:1px solid var(--border);}
@@ -276,7 +290,7 @@
           </label>
           <label class="span-2">Observações<input type="text" name="obs" placeholder="opcional"></label>
         </div>
-        <button type="submit">Adicionar abastecimento</button>
+        <button type="submit" id="btn-submit-abastecimento">Adicionar abastecimento</button>
       </form>
     </div>
   </div>
@@ -483,22 +497,22 @@
       <h2>Entradas principais</h2>
       <div class="field-grid">
         <label>Etanol na gasolina atual
-          <span class="input-suffix"><input id="in-etanolAtual" type="number" step="0.1" min="0" max="100" value="32" oninput="updateEntradaPct('etanolAtual', this.value)"><span>%</span></span>
+          <span class="input-suffix"><input id="in-etanolAtual" data-cfg-input="1" type="text" inputmode="decimal" value="32" oninput="updateEntradaPct('etanolAtual', this.value)"><span>%</span></span>
         </label>
         <label>Camada 4: limite superior da faixa de menor teor <small>teor ≤ limite</small>
-          <span class="input-suffix"><input id="in-limiteTeor1" type="number" step="0.1" min="0" max="100" value="27" oninput="updateEntradaPct('limiteTeor1', this.value)"><span>%</span></span>
+          <span class="input-suffix"><input id="in-limiteTeor1" data-cfg-input="1" type="text" inputmode="decimal" value="27" oninput="updateEntradaPct('limiteTeor1', this.value)"><span>%</span></span>
         </label>
         <label>Camada 4: limite superior da faixa intermediária <small>acima do anterior e ≤ limite</small>
-          <span class="input-suffix"><input id="in-limiteTeor2" type="number" step="0.1" min="0" max="100" value="30" oninput="updateEntradaPct('limiteTeor2', this.value)"><span>%</span></span>
+          <span class="input-suffix"><input id="in-limiteTeor2" data-cfg-input="1" type="text" inputmode="decimal" value="30" oninput="updateEntradaPct('limiteTeor2', this.value)"><span>%</span></span>
         </label>
         <label>Capacidade do tanque
-          <span class="input-suffix"><input id="in-capacidadeTanque" type="number" step="0.1" min="0" value="39.5" oninput="updateEntrada('capacidadeTanque', this.value)"><span>L</span></span>
+          <span class="input-suffix"><input id="in-capacidadeTanque" data-cfg-input="1" type="text" inputmode="decimal" value="39.5" oninput="updateEntrada('capacidadeTanque', this.value)"><span>L</span></span>
         </label>
         <label>Distância mensal
-          <span class="input-suffix"><input id="in-distanciaMensal" type="number" step="1" min="0" value="660" oninput="updateEntrada('distanciaMensal', this.value)"><span>km</span></span>
+          <span class="input-suffix"><input id="in-distanciaMensal" data-cfg-input="1" type="text" inputmode="decimal" value="660" oninput="updateEntrada('distanciaMensal', this.value)"><span>km</span></span>
         </label>
         <label>Hodômetro de referência <small>ponto de partida dos km</small>
-          <span class="input-suffix"><input id="in-hodometroBaseline" type="number" step="1" min="0" value="5698" oninput="updateHodometroBase(this.value)"><span>km</span></span>
+          <span class="input-suffix"><input id="in-hodometroBaseline" data-cfg-input="1" type="text" inputmode="decimal" value="5698" oninput="updateHodometroBase(this.value)"><span>km</span></span>
           <small id="info-hodometro-base"></small>
         </label>
       </div>
@@ -508,31 +522,31 @@
       <p class="note">Os quatro fatores do Baratão Pix e os quatro do Baratão Cartão são calculados em relação ao Shell. O desconto Shell→Outros é único e começa em 5,45%: o Shell fica abaixo de Outros (Outros = Shell ÷ (1 − desconto)); uma edição manual de “Outros” para um combustível passa a prevalecer para esse combustível.</p>
       <div class="field-grid">
         <label>Baratão Pix vs. Shell <small>Gasolina aditivada</small>
-            <span class="input-suffix"><input id="in-fator-pix-gasolina_aditivada" type="number" step="0.01" min="0" max="99" oninput="updateFatorBaratao('pix','gasolina_aditivada', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-pix-gasolina_aditivada" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('pix','gasolina_aditivada', this.value)"><span>%</span></span>
           </label>
           <label>Baratão Pix vs. Shell <small>Gasolina comum</small>
-            <span class="input-suffix"><input id="in-fator-pix-gasolina_comum" type="number" step="0.01" min="0" max="99" oninput="updateFatorBaratao('pix','gasolina_comum', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-pix-gasolina_comum" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('pix','gasolina_comum', this.value)"><span>%</span></span>
           </label>
           <label>Baratão Pix vs. Shell <small>Etanol comum</small>
-            <span class="input-suffix"><input id="in-fator-pix-etanol_comum" type="number" step="0.01" min="0" max="99" oninput="updateFatorBaratao('pix','etanol_comum', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-pix-etanol_comum" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('pix','etanol_comum', this.value)"><span>%</span></span>
           </label>
           <label>Baratão Pix vs. Shell <small>Etanol aditivado</small>
-            <span class="input-suffix"><input id="in-fator-pix-etanol_aditivado" type="number" step="0.01" min="0" max="99" oninput="updateFatorBaratao('pix','etanol_aditivado', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-pix-etanol_aditivado" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('pix','etanol_aditivado', this.value)"><span>%</span></span>
           </label>
           <label>Baratão Cartão vs. Shell <small>Gasolina aditivada</small>
-            <span class="input-suffix"><input id="in-fator-cartao-gasolina_aditivada" type="number" step="0.01" min="0" max="99" oninput="updateFatorBaratao('cartao','gasolina_aditivada', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-cartao-gasolina_aditivada" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('cartao','gasolina_aditivada', this.value)"><span>%</span></span>
           </label>
           <label>Baratão Cartão vs. Shell <small>Gasolina comum</small>
-            <span class="input-suffix"><input id="in-fator-cartao-gasolina_comum" type="number" step="0.01" min="0" max="99" oninput="updateFatorBaratao('cartao','gasolina_comum', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-cartao-gasolina_comum" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('cartao','gasolina_comum', this.value)"><span>%</span></span>
           </label>
           <label>Baratão Cartão vs. Shell <small>Etanol comum</small>
-            <span class="input-suffix"><input id="in-fator-cartao-etanol_comum" type="number" step="0.01" min="0" max="99" oninput="updateFatorBaratao('cartao','etanol_comum', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-cartao-etanol_comum" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('cartao','etanol_comum', this.value)"><span>%</span></span>
           </label>
           <label>Baratão Cartão vs. Shell <small>Etanol aditivado</small>
-            <span class="input-suffix"><input id="in-fator-cartao-etanol_aditivado" type="number" step="0.01" min="0" max="99" oninput="updateFatorBaratao('cartao','etanol_aditivado', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-cartao-etanol_aditivado" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('cartao','etanol_aditivado', this.value)"><span>%</span></span>
           </label>
           <label>Shell vs. Outros <small>Shell abaixo de Outros (desconto máximo único)</small>
-            <span class="input-suffix"><input id="in-desconto-shell-outros" type="number" step="0.01" min="0" max="99" value="5.45" oninput="updateDescontoShellOutros(this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-desconto-shell-outros" data-cfg-input="1" type="text" inputmode="decimal" value="5.45" oninput="updateDescontoShellOutros(this.value)"><span>%</span></span>
           </label>
       </div>
     </div>
@@ -541,11 +555,11 @@
       <p class="note">Só valem quando ainda não há consumo válido registrado para o grupo — depois do primeiro, o valor calculado do histórico assume automaticamente (ver abaixo).</p>
       <div class="field-grid">
         <label>Gasolina <small>(comum e aditivada)</small>
-          <span class="input-suffix"><input id="in-consumo-gasolina" type="number" step="0.01" min="0" value="11.54" oninput="updateConsumoManual('gasolina', this.value)"><span>km/L</span></span>
+          <span class="input-suffix"><input id="in-consumo-gasolina" data-cfg-input="1" type="text" inputmode="decimal" value="11.54" oninput="updateConsumoManual('gasolina', this.value)"><span>km/L</span></span>
           <small class="preco-efetivo" id="valor-em-uso-gasolina"></small>
         </label>
         <label>Etanol <small>(comum e aditivado)</small>
-          <span class="input-suffix"><input id="in-consumo-etanol" type="number" step="0.01" min="0" value="8.24" oninput="updateConsumoManual('etanol', this.value)"><span>km/L</span></span>
+          <span class="input-suffix"><input id="in-consumo-etanol" data-cfg-input="1" type="text" inputmode="decimal" value="8.24" oninput="updateConsumoManual('etanol', this.value)"><span>km/L</span></span>
           <small class="preco-efetivo" id="valor-em-uso-etanol"></small>
         </label>
       </div>
@@ -571,6 +585,17 @@
   </div>
 
   <footer class="foot">Aplicativo local · dados armazenados neste aparelho.</footer>
+</div>
+
+<div id="app-dialog" class="app-dialog-backdrop" role="alertdialog" aria-modal="true" aria-hidden="true" aria-labelledby="app-dialog-title" aria-describedby="app-dialog-msg">
+  <div class="app-dialog">
+    <h3 id="app-dialog-title">Aviso</h3>
+    <p id="app-dialog-msg"></p>
+    <div class="app-dialog-actions">
+      <button type="button" id="app-dialog-cancel" class="ghost">Cancelar</button>
+      <button type="button" id="app-dialog-ok">OK</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -864,7 +889,7 @@ function quarentena(curto, raw){
     return true;
   }catch(e){ quarentenaFalhou = true; return false; }
 }
-function baixarCorrompidos(){
+async function baixarCorrompidos(){
   const dados = {};
   try{
     for(let i=0;i<localStorage.length;i++){
@@ -872,8 +897,8 @@ function baixarCorrompidos(){
       if(k && k.startsWith(PREFIXO_CORROMPIDO)) dados[k.slice(PREFIXO_CORROMPIDO.length)] = localStorage.getItem(k);
     }
   }catch(e){}
-  if(!Object.keys(dados).length){ alert('Nenhuma cópia de dados ilegíveis foi encontrada.'); return; }
-  baixarArquivo(JSON.stringify(dados,null,2), 'dados_ilegiveis_calculadora_combustivel.json', 'application/json');
+  if(!Object.keys(dados).length){ await mostrarMensagem('Nenhuma cópia de dados ilegíveis foi encontrada.'); return; }
+  await baixarArquivo(JSON.stringify(dados,null,2), 'dados_ilegiveis_calculadora_combustivel.json', 'application/json');
 }
 // Lê e interpreta uma chave do localStorage sem propagar exceções. Conteúdo ilegível
 // é copiado para uma chave de quarentena antes de qualquer regravação.
@@ -1120,8 +1145,13 @@ function syncInputsFromState(){
 }
 
 function numeroCampoConfiguracao(valor){
-  if(String(valor ?? '').trim()==='') return null;
-  const n = Number(valor);
+  const s = String(valor ?? '').trim();
+  if(s==='') return null;
+  if(s.startsWith('-')){
+    const pos = parseNumCampo(s.slice(1), 'decimal');
+    return Number.isFinite(pos) ? -pos : null;
+  }
+  const n = parseNumCampo(s, 'decimal');
   return Number.isFinite(n) ? n : null;
 }
 function restaurarCampoConfiguracao(input){
@@ -1143,6 +1173,10 @@ function restaurarCampoConfiguracao(input){
     const m = id.match(/^in-fator-(pix|cartao)-(.+)$/);
     if(m && state.fatoresBaratao[m[1]] && Number.isFinite(state.fatoresBaratao[m[1]][m[2]]))
       input.value=Number((state.fatoresBaratao[m[1]][m[2]]*100).toFixed(2));
+  }
+  if(input.dataset && input.dataset.erroRejeicao==='1'){
+    delete input.dataset.erroRejeicao;
+    avisoCampo(id, '');
   }
 }
 // Mensagem não modal junto ao campo (sem alerta a cada tecla); vazia limpa o aviso. Liga o campo à mensagem por aria-describedby.
@@ -1168,14 +1202,29 @@ function avisoFaixa(id, n, min, max, unidade){
 }
 function updateEntrada(campo, valor){
   const n=numeroCampoConfiguracao(valor); if(n==null) return;
-  if(campo==='capacidadeTanque' && !(n>0)){ avisoCampo('in-'+campo, 'A capacidade do tanque deve ser maior que zero; o valor anterior ('+fmtNum(state.entradas.capacidadeTanque,1)+' L) foi mantido.'); return; }
+  const inputEl = document.getElementById('in-'+campo);
+  if(campo==='capacidadeTanque' && !(n>0)){
+    if(inputEl) inputEl.dataset.erroRejeicao = '1';
+    avisoCampo('in-'+campo, 'A capacidade do tanque deve ser maior que zero; o valor anterior ('+fmtNum(state.entradas.capacidadeTanque,1)+' L) foi mantido.');
+    return;
+  }
+  if(inputEl && inputEl.dataset) delete inputEl.dataset.erroRejeicao;
   avisoCampo('in-'+campo, n<0 ? 'Valor negativo não é aceito: foi aplicado 0.' : '');
   preservarConfigOriginal = false; state.entradas[campo] = Math.max(0,n); renderAll();
 }
 function updateEntradaPct(campo, valor){
   const n=numeroCampoConfiguracao(valor); if(n==null) return;
   avisoFaixa('in-'+campo, n, 0, 100, '%');
-  preservarConfigOriginal = false; state.entradas[campo] = clamp01(n/100, 0); renderAll();
+  preservarConfigOriginal = false; state.entradas[campo] = clamp01(n/100, 0);
+  if(campo==='limiteTeor1' || campo==='limiteTeor2'){
+    if(state.entradas.limiteTeor1 > state.entradas.limiteTeor2){
+      avisoCampo('in-limiteTeor2', 'Limite intermediário menor que o da primeira faixa: as fronteiras foram ordenadas automaticamente ('+fmtPct(state.entradas.limiteTeor2,1)+' e '+fmtPct(state.entradas.limiteTeor1,1)+').');
+    } else if(n>=0 && n<=100){
+      avisoCampo('in-limiteTeor1', '');
+      avisoCampo('in-limiteTeor2', '');
+    }
+  }
+  renderAll();
 }
 function updateHodometroBase(valor){
   const n=numeroCampoConfiguracao(valor); if(n==null) return;
@@ -1212,23 +1261,23 @@ function mensagemRejeicaoPreco(res, fuel, v){
 }
 // Confirmação da edição do preço principal (evento change: uma única vez por edição, não a cada tecla).
 // Durante a digitação o texto do campo não é tocado; vazio, "7," e "7." são apenas estados intermediários.
-function updatePrecoCenario(fuel, valor){
+async function updatePrecoCenario(fuel, valor){
   const nome = (FUEL_BY_KEY[fuel] && FUEL_BY_KEY[fuel].label) || String(fuel);
   const bruto = String(valor ?? '').trim();
   if(bruto===''){
-    alert('Preço de '+nome+' não informado. O valor anterior foi mantido.');
+    await mostrarMensagem('Preço de '+nome+' não informado. O valor anterior foi mantido.');
     syncInputsFromState();
     return;
   }
   const v = parseNumCampo(bruto, 'decimal');
   if(!Number.isFinite(v)){
-    alert('Preço de '+nome+' inválido ("'+bruto+'"). Use apenas números, com vírgula ou ponto decimal (ex.: 5,25). O valor anterior foi mantido.');
+    await mostrarMensagem('Preço de '+nome+' inválido ("'+bruto+'"). Use apenas números, com vírgula ou ponto decimal (ex.: 5,25). O valor anterior foi mantido.');
     syncInputsFromState();
     return;
   }
   const res = aplicarPrecoNoCenario(fuel, v, state.cenario);
   if(res && res.aplicado) preservarConfigOriginal = false;
-  else alert(mensagemRejeicaoPreco(res, fuel, v)+' O valor anterior foi mantido.');
+  else await mostrarMensagem(mensagemRejeicaoPreco(res, fuel, v)+' O valor anterior foi mantido.');
   if(res && res.aplicado) avisoCampo('in-preco-'+fuel, (v===0 && state.cenario==='outros') ? 'Preço 0 remove o preço específico de Outros: passa a valer o preço derivado do Shell com o desconto Shell→Outros.' : '');
   syncInputsFromState();
   renderAll();
@@ -1280,8 +1329,46 @@ function closeSideMenu(){
   if(botao){ botao.setAttribute('aria-expanded','false'); botao.focus(); }
 }
 
-let overlayAtivo = null, focoAnteriorOverlay = null;
+let overlayAtivo = null, focoAnteriorOverlay = null, dialogResolver = null, focoAnteriorDialog = null, editingEntryId = null;
 const SELETOR_FOCO = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+function abrirDialogo({titulo='Aviso', mensagem='', confirmacao=false, textoOk='OK', textoCancelar='Cancelar'}){
+  const backdrop = document.getElementById('app-dialog');
+  if(!backdrop) return Promise.resolve(confirmacao ? false : true);
+  if(dialogResolver){ dialogResolver(false); dialogResolver = null; }
+  focoAnteriorDialog = document.activeElement;
+  document.getElementById('app-dialog-title').textContent = titulo;
+  document.getElementById('app-dialog-msg').textContent = String(mensagem ?? '');
+  const btnOk = document.getElementById('app-dialog-ok');
+  const btnCancel = document.getElementById('app-dialog-cancel');
+  btnOk.textContent = textoOk;
+  btnCancel.textContent = textoCancelar;
+  btnCancel.style.display = confirmacao ? '' : 'none';
+  backdrop.classList.add('open');
+  backdrop.setAttribute('aria-hidden', 'false');
+  return new Promise(resolve=>{
+    dialogResolver = resolve;
+    const finalizar = res => {
+      if(!dialogResolver) return;
+      const r = dialogResolver; dialogResolver = null;
+      backdrop.classList.remove('open');
+      backdrop.setAttribute('aria-hidden', 'true');
+      btnOk.onclick = null; btnCancel.onclick = null; backdrop.onclick = null;
+      if(focoAnteriorDialog && typeof focoAnteriorDialog.focus==='function') focoAnteriorDialog.focus();
+      focoAnteriorDialog = null;
+      r(res);
+    };
+    btnOk.onclick = () => finalizar(true);
+    btnCancel.onclick = () => finalizar(false);
+    backdrop.onclick = ev => { if(ev.target===backdrop) finalizar(false); };
+    btnOk.focus();
+  });
+}
+function mostrarMensagem(mensagem, titulo='Aviso'){
+  return abrirDialogo({titulo, mensagem, confirmacao:false, textoOk:'OK'});
+}
+function pedirConfirmacao(mensagem, titulo='Confirmar'){
+  return abrirDialogo({titulo, mensagem, confirmacao:true, textoOk:'Confirmar', textoCancelar:'Cancelar'});
+}
 function openOverlay(screenId){
   let origem = document.activeElement;
   const menuAtual = document.getElementById('side-menu');
@@ -1295,11 +1382,19 @@ function openOverlay(screenId){
   focoAnteriorOverlay = origem;
   Array.from(screen.parentElement.children).forEach(el=>{ if(el!==screen) el.inert=true; });
   if(screenId === 'screen-novo-abastecimento'){
-    preencherDataHoraAtual();
-    // O cenário do preço pago acompanha o cenário ativo, salvo se já há digitação em andamento.
-    const selCen = document.querySelector('#form-historico select[name=cenarioPreco]');
-    if(selCen && ordemEdicaoAbastecimento.length===0 && CENARIO_BY_KEY[state.cenario]) selCen.value = state.cenario;
-    atualizarPrecoPagoModal();
+    if(!editingEntryId){
+      const form = document.getElementById('form-historico');
+      if(form) form.reset();
+      ordemEdicaoAbastecimento = [];
+      const tit = document.getElementById('titulo-novo-abastecimento');
+      const btnSub = document.getElementById('btn-submit-abastecimento');
+      if(tit) tit.textContent = 'Novo Abastecimento';
+      if(btnSub) btnSub.textContent = 'Adicionar abastecimento';
+      preencherDataHoraAtual();
+      const selCen = document.querySelector('#form-historico select[name=cenarioPreco]');
+      if(selCen && CENARIO_BY_KEY[state.cenario]) selCen.value = state.cenario;
+      atualizarPrecoPagoModal();
+    }
   }
   const primeiroFoco = screen.querySelector(SELETOR_FOCO);
   if(primeiroFoco) primeiroFoco.focus(); else screen.focus();
@@ -1308,6 +1403,13 @@ function openOverlay(screenId){
 function closeOverlay(screenId){
   const screen = document.getElementById(screenId);
   if(screen){ screen.classList.remove('active'); screen.setAttribute('aria-hidden','true'); }
+  if(screenId === 'screen-novo-abastecimento'){
+    editingEntryId = null;
+    const tit = document.getElementById('titulo-novo-abastecimento');
+    const btnSub = document.getElementById('btn-submit-abastecimento');
+    if(tit) tit.textContent = 'Novo Abastecimento';
+    if(btnSub) btnSub.textContent = 'Adicionar abastecimento';
+  }
   Array.from(screen.parentElement.children).forEach(el=>{ if(el.id!=='side-menu') el.inert=false; });   // menu lateral fechado continua inerte
   if(overlayAtivo===screenId){
     overlayAtivo=null;
@@ -1318,9 +1420,19 @@ function closeOverlay(screenId){
 }
 document.addEventListener('keydown',ev=>{
   if(ev.key==='Escape'){
+    if(dialogResolver){ ev.preventDefault(); document.getElementById('app-dialog-cancel').click(); return; }
     if(overlayAtivo){ ev.preventDefault(); closeOverlay(overlayAtivo); return; }
     const menu=document.getElementById('side-menu');
     if(menu && menu.classList.contains('open')){ ev.preventDefault(); closeSideMenu(); }
+    return;
+  }
+  if(ev.key==='Tab' && dialogResolver){
+    const dlg=document.getElementById('app-dialog'), itens=Array.from(dlg.querySelectorAll('button')).filter(el=>el.style.display!=='none');
+    if(itens.length){
+      const primeiro=itens[0], ultimo=itens[itens.length-1];
+      if(ev.shiftKey && document.activeElement===primeiro){ ev.preventDefault(); ultimo.focus(); }
+      else if(!ev.shiftKey && document.activeElement===ultimo){ ev.preventDefault(); primeiro.focus(); }
+    }
     return;
   }
   if(ev.key==='Tab' && overlayAtivo){
@@ -1333,7 +1445,7 @@ document.addEventListener('keydown',ev=>{
 });
 document.addEventListener('focusout',ev=>{
   const input=ev.target;
-  if(input && input.matches && input.matches('input[type="number"]')) restaurarCampoConfiguracao(input);
+  if(input && input.matches && (input.matches('input[type="number"]') || (input.dataset && input.dataset.cfgInput==='1'))) restaurarCampoConfiguracao(input);
 });
 
 const fmtBRL = n => (n==null||isNaN(n)||!isFinite(n)) ? '—' : n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -1425,9 +1537,10 @@ function rotuloDataHora(r){
 // Referência para um lançamento em data/hora específica (inclusive retroativo): o abastecimento válido
 // imediatamente anterior a esse instante e o imediatamente posterior. Para ser compatível com a cadeia, o
 // hodômetro do novo lançamento deve ficar entre os dois (anterior <= hodômetro <= posterior).
-function referenciaParaLancamento(data, hora, hodometro){
+function referenciaParaLancamento(data, hora, hodometro, ignoreId){
   const base = Number(state.hodometroBaseline) || 0;
-  const { validos, hodDe } = analisarCadeia(state.historico, base);
+  const lista = ignoreId ? state.historico.filter(r=>r.id!==ignoreId) : state.historico;
+  const { validos, hodDe } = analisarCadeia(lista, base);
   const chave = String(data||'')+'T'+String(hora||'');
   // Mesma ordem de ordemCronologica: data+hora, depois menor hodômetro, depois ordem de inclusão (o novo é o último).
   // Com data/hora idênticas, um registro existente é anterior se o hodômetro dele for <= ao do novo lançamento
@@ -1449,7 +1562,7 @@ function atualizarReferenciaFormulario(){
   const hora = (form && form.elements['hora']) ? form.elements['hora'].value : '';
   const h = form && form.elements['hodometro'];
   const hodDigitado = (h && h.value!=='') ? parseNumCampo(h.value) : undefined;
-  if(lbl) lbl.textContent = data ? referenciaParaLancamento(data, hora, hodDigitado).odometroAnterior : getUltimoHodometro();
+  if(lbl) lbl.textContent = data ? referenciaParaLancamento(data, hora, hodDigitado, editingEntryId).odometroAnterior : getUltimoHodometro();
   if(h && h.value!=='') previewKmDelta(h);
 }
 
@@ -1469,7 +1582,7 @@ function previewKmDelta(inputEl){
   const form = document.getElementById('form-historico');
   const data = (form && form.elements['data']) ? form.elements['data'].value : '';
   const hora = (form && form.elements['hora']) ? form.elements['hora'].value : '';
-  const ref = referenciaParaLancamento(data, hora, hod);
+  const ref = referenciaParaLancamento(data, hora, hod, editingEntryId);
   const delta = hod - ref.odometroAnterior;
   if(delta<0){ el.textContent = 'Hodômetro menor que o do abastecimento anterior por data e hora.'; el.className = 'msg-erro'; }
   else if(ref.proximo && hod > ref.proximoHod){ el.textContent = 'Hodômetro maior que o do lançamento seguinte ('+fmtInt(ref.proximoHod)+' km, em '+rotuloDataHora(ref.proximo)+').'; el.className = 'msg-erro'; }
@@ -1542,11 +1655,11 @@ function valorTotalRow(r){
   return (r.preco!=null && r.litros!=null) ? Math.round(r.preco*r.litros*100)/100 : null;
 }
 
-function avaliarPlausibilidade(novo){
+function avaliarPlausibilidade(novo, ignoreId){
   // Alertas de digitação: não bloqueiam; o usuário confirma para salvar mesmo assim.
   const avisos = [];
   // Abastecimento anterior = o válido imediatamente anterior à data/hora do novo lançamento (mesma cadeia do cálculo).
-  const ref = referenciaParaLancamento(novo.data, novo.hora, novo.hodometro);
+  const ref = referenciaParaLancamento(novo.data, novo.hora, novo.hodometro, ignoreId);
   const km = novo.hodometro - ref.odometroAnterior;
   const p = ref.anterior;
   if(km===0) avisos.push('O hodômetro é igual ao do lançamento anterior (0 km percorridos).');
@@ -1566,47 +1679,82 @@ function avaliarPlausibilidade(novo){
   return avisos;
 }
 
-function addHistoricoEntry(e){
+function editarHistoricoEntry(id){
+  const r = state.historico.find(x=>x.id===id);
+  if(!r) return;
+  const form = document.getElementById('form-historico');
+  if(!form) return;
+  editingEntryId = r.id;
+  const el = form.elements;
+  el.data.value = r.data || '';
+  el.hora.value = r.hora || '';
+  el.combustivel.value = r.combustivel;
+  el.preco.value = r.preco!=null ? String(r.preco) : '';
+  if(el.cenarioPreco) el.cenarioPreco.value = CENARIO_BY_KEY[r.cenario] ? r.cenario : state.cenario;
+  el.hodometro.value = r.hodometro!=null ? String(r.hodometro) : '';
+  el.litros.value = r.litros!=null ? String(r.litros) : '';
+  el.valorTotalPago.value = r.valorTotalPago!=null ? String(r.valorTotalPago) : '';
+  el.congestionamento.value = r.congestionamento!=null ? String(r.congestionamento) : '';
+  el.aclives.value = r.aclives!=null ? String(r.aclives) : '';
+  el.arCondicionado.value = r.arCondicionado!=null ? String(r.arCondicionado) : '';
+  if(el.tanqueCheio) el.tanqueCheio.value = r.tanqueCheio===false ? 'nao' : 'sim';
+  el.obs.value = r.obs || '';
+  ordemEdicaoAbastecimento = ['preco','litros'];
+  const tit = document.getElementById('titulo-novo-abastecimento');
+  const btnSub = document.getElementById('btn-submit-abastecimento');
+  if(tit) tit.textContent = 'Editar Abastecimento';
+  if(btnSub) btnSub.textContent = 'Salvar alterações';
+  openOverlay('screen-novo-abastecimento');
+  atualizarReferenciaFormulario();
+  renderPrevisaoPosto();
+}
+
+async function addHistoricoEntry(e){
   e.preventDefault();
   const f = e.target;
   const el = f.elements;
+  const editandoId = editingEntryId;
+  const existente = editandoId ? state.historico.find(x=>x.id===editandoId) : null;
   const combustivel = el.combustivel.value;
   const fuelInfo = FUEL_BY_KEY[combustivel];
   const hodometro = parseNumCampo(el.hodometro.value);
-  if(!fuelInfo){ alert('Selecione um combustível válido.'); return; }
-  if(!Number.isFinite(hodometro) || hodometro<0){ alert('Informe um hodômetro válido.'); return; }
+  if(!fuelInfo){ await mostrarMensagem('Selecione um combustível válido.'); return; }
+  if(!Number.isFinite(hodometro) || hodometro<0){ await mostrarMensagem('Informe um hodômetro válido.'); return; }
   // A referência é o abastecimento válido imediatamente anterior à data/hora informada (mesma cadeia do cálculo);
   // o hodômetro também não pode ultrapassar o do lançamento seguinte, que ficaria inválido.
-  const ref = referenciaParaLancamento(el.data.value, el.hora.value || '', hodometro);
+  const ref = referenciaParaLancamento(el.data.value, el.hora.value || '', hodometro, editandoId);
   const odometroAnterior = ref.odometroAnterior;
   if(hodometro < odometroAnterior){
-    alert('O hodômetro informado é menor que o do abastecimento anterior por data e hora ('+fmtInt(odometroAnterior)+' km'+(ref.anterior ? ', em '+rotuloDataHora(ref.anterior) : ', hodômetro de referência')+'). Corrija o valor ou a data/hora antes de salvar o abastecimento.');
+    await mostrarMensagem('O hodômetro informado é menor que o do abastecimento anterior por data e hora ('+fmtInt(odometroAnterior)+' km'+(ref.anterior ? ', em '+rotuloDataHora(ref.anterior) : ', hodômetro de referência')+'). Corrija o valor ou a data/hora antes de salvar o abastecimento.');
     return;
   }
   if(ref.proximo && hodometro > ref.proximoHod){
-    alert('O hodômetro informado é maior que o do lançamento seguinte por data e hora ('+fmtInt(ref.proximoHod)+' km, em '+rotuloDataHora(ref.proximo)+'). Salvá-lo tornaria esse lançamento inválido. Corrija o valor ou a data/hora antes de salvar o abastecimento.');
+    await mostrarMensagem('O hodômetro informado é maior que o do lançamento seguinte por data e hora ('+fmtInt(ref.proximoHod)+' km, em '+rotuloDataHora(ref.proximo)+'). Salvá-lo tornaria esse lançamento inválido. Corrija o valor ou a data/hora antes de salvar o abastecimento.');
     return;
   }
   const preco = parseNumCampo(el.preco.value, 'decimal');
   const litros = parseNumCampo(el.litros.value, 'decimal');
-  if(String(el.preco.value).trim()!=='' && !Number.isFinite(preco)){ alert('Preço por litro inválido ("'+String(el.preco.value).trim()+'"). Use apenas números, com vírgula ou ponto decimal (ex.: 5,25).'); return; }
-  if(String(el.litros.value).trim()!=='' && !Number.isFinite(litros)){ alert('Quantidade de litros inválida ("'+String(el.litros.value).trim()+'"). Use apenas números, com vírgula ou ponto decimal (ex.: 20,5).'); return; }
-  if(!(preco>0)){ alert('Informe um preço por litro maior que zero.'); return; }
-  if(!(litros>0)){ alert('Informe uma quantidade de litros maior que zero.'); return; }
+  if(String(el.preco.value).trim()!=='' && !Number.isFinite(preco)){ await mostrarMensagem('Preço por litro inválido ("'+String(el.preco.value).trim()+'"). Use apenas números, com vírgula ou ponto decimal (ex.: 5,25).'); return; }
+  if(String(el.litros.value).trim()!=='' && !Number.isFinite(litros)){ await mostrarMensagem('Quantidade de litros inválida ("'+String(el.litros.value).trim()+'"). Use apenas números, com vírgula ou ponto decimal (ex.: 20,5).'); return; }
+  if(!(preco>0)){ await mostrarMensagem('Informe um preço por litro maior que zero.'); return; }
+  if(!(litros>0)){ await mostrarMensagem('Informe uma quantidade de litros maior que zero.'); return; }
   // Cenario do preco pago. O registro guarda cenario e forma de pagamento separados,
   // para nunca reinterpretar depois um preco de cartao como se fosse preco cheio.
-  if(el.cenarioPreco && el.cenarioPreco.value!=='' && !CENARIO_BY_KEY[el.cenarioPreco.value]){ alert('Cenário de preço inválido: o abastecimento não foi salvo.'); return; }
+  if(el.cenarioPreco && el.cenarioPreco.value!=='' && !CENARIO_BY_KEY[el.cenarioPreco.value]){ await mostrarMensagem('Cenário de preço inválido: o abastecimento não foi salvo.'); return; }
   const cenarioFormulario = (el.cenarioPreco && CENARIO_BY_KEY[el.cenarioPreco.value]) ? el.cenarioPreco.value : state.cenario;
   const tanqueCheio = !(el.tanqueCheio && el.tanqueCheio.value==='nao');
-  const avisos = avaliarPlausibilidade({hodometro, litros, tanqueCheio, data: el.data.value, hora: el.hora.value || ''});
-  if(avisos.length && !confirm('Verifique antes de salvar:\n\n• '+avisos.join('\n• ')+'\n\nSalvar mesmo assim?')) return;
+  const avisos = avaliarPlausibilidade({hodometro, litros, tanqueCheio, data: el.data.value, hora: el.hora.value || ''}, editandoId);
+  if(avisos.length && !(await pedirConfirmacao('Verifique antes de salvar:\n\n• '+avisos.join('\n• ')+'\n\nSalvar mesmo assim?', 'Plausibilidade do lançamento'))) return;
   const totalInformado = parseNumCampo(el.valorTotalPago.value, 'decimal');
-  if(String(el.valorTotalPago.value).trim()!=='' && !Number.isFinite(totalInformado)){ alert('Valor total inválido ("'+String(el.valorTotalPago.value).trim()+'"). Use apenas números, com vírgula ou ponto decimal (ex.: 105,00).'); return; }
+  if(String(el.valorTotalPago.value).trim()!=='' && !Number.isFinite(totalInformado)){ await mostrarMensagem('Valor total inválido ("'+String(el.valorTotalPago.value).trim()+'"). Use apenas números, com vírgula ou ponto decimal (ex.: 105,00).'); return; }
   const valorTotalPago = totalInformado>0 ? Math.round(totalInformado*100)/100 : Math.round(preco*litros*100)/100;
+  const etanolPctCalculado = (fuelInfo.group==='gasolina')
+    ? (existente && ehGasolina(existente.combustivel) && existente.etanolPct!=null ? existente.etanolPct : state.entradas.etanolAtual)
+    : null;
   const entry = {
-    id: genId(), data: el.data.value, hora: el.hora.value || '',
+    id: existente ? existente.id : genId(), data: el.data.value, hora: el.hora.value || '',
     combustivel,
-    etanolPct: (fuelInfo.group==='gasolina') ? state.entradas.etanolAtual : null,
+    etanolPct: etanolPctCalculado,
     preco, valorTotalPago,
     hodometro, km: hodometro-odometroAnterior,
     litros,
@@ -1614,7 +1762,7 @@ function addHistoricoEntry(e){
     aclives: el.aclives.value==='' ? null : parseInt(el.aclives.value, 10),
     arCondicionado: el.arCondicionado.value==='' ? null : parseFloat(el.arCondicionado.value),
     tanqueCheio,
-    incluir: 'Sim',
+    incluir: existente ? existente.incluir : 'Sim',
     cenario: cenarioFormulario,
     formaPagamento: formaDoCenario(cenarioFormulario),
     obs: el.obs.value,
@@ -1622,8 +1770,15 @@ function addHistoricoEntry(e){
   // Só um lançamento que é o mais recente da sequência atualiza os preços correntes do modelo: o preço de um
   // abastecimento retroativo pertence ao passado e fica apenas no histórico.
   const chaveNovo = String(entry.data||'')+'T'+String(entry.hora||'');
-  const retroativo = state.historico.some(r=>dataIsoValida(r.data) && tsRegistro(r) > chaveNovo);
-  state.historico.push(entry);
+  const outros = state.historico.filter(r=>r.id!==entry.id);
+  const retroativo = outros.some(r=>dataIsoValida(r.data) && tsRegistro(r) > chaveNovo);
+  if(existente){
+    const idx = state.historico.findIndex(r=>r.id===existente.id);
+    if(idx>=0) state.historico[idx] = entry;
+    else state.historico.push(entry);
+  } else {
+    state.historico.push(entry);
+  }
   preservarHistoricoOriginal = false;   // alteração intencional do histórico
   // O preco pago atualiza o preco interno do combustivel pela conversao inversa do
   // cenario usado no abastecimento. O historico segue guardando o preco pago.
@@ -1634,18 +1789,20 @@ function addHistoricoEntry(e){
     if(resModelo && resModelo.aplicado) preservarConfigOriginal = false;   // preço aceito pelo modelo: a configuração pode ser gravada
     else msgModeloInvalido = 'Abastecimento salvo no histórico. O preço informado não atualizou o modelo e os preços atuais permaneceram iguais. Motivo: '+mensagemRejeicaoPreco(resModelo, combustivel, preco);
   }
+  editingEntryId = null;
   syncInputsFromState();
   ordemEdicaoAbastecimento = [];
   f.reset();
   preencherDataHoraAtual();
   renderAll();
   closeOverlay('screen-novo-abastecimento');
-  if(msgModeloInvalido) alert(msgModeloInvalido);
-  else if(retroativo) alert('Lançamento retroativo salvo. O preço informado ficou apenas no histórico e não alterou os preços atuais do modelo.');
+  if(existente) openOverlay('screen-historico');
+  if(msgModeloInvalido) await mostrarMensagem(msgModeloInvalido);
+  else if(retroativo) await mostrarMensagem('Lançamento retroativo salvo. O preço informado ficou apenas no histórico e não alterou os preços atuais do modelo.');
 }
 
-function removeHistoricoEntry(id){
-  if(!confirm('Remover este lançamento?')) return;
+async function removeHistoricoEntry(id){
+  if(!(await pedirConfirmacao('Remover este lançamento?', 'Remover lançamento'))) return;
   state.historico = state.historico.filter(r=>r.id!==id);
   preservarHistoricoOriginal = false;
   renderAll();
@@ -1658,8 +1815,8 @@ function alternarCampoHistorico(id, campo){
   preservarHistoricoOriginal = false;
   renderAll();
 }
-function limparHistorico(){
-  if(confirm('Remover todo o histórico? O hodômetro de referência ('+fmtInt(state.hodometroBaseline)+' km) será mantido; ajuste-o em Metodologia, se necessário.')){
+async function limparHistorico(){
+  if(await pedirConfirmacao('Remover todo o histórico? O hodômetro de referência ('+fmtInt(state.hodometroBaseline)+' km) será mantido; ajuste-o em Metodologia, se necessário.', 'Limpar histórico')){
     state.historico = [];
     preservarHistoricoOriginal = false;
     renderAll();
@@ -1824,7 +1981,7 @@ function importarCSV(evt){
   const file = evt.target.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = function(ev){
+  reader.onload = async function(ev){
     const kmCsvPorId = new Map();
     const extrasCSV = new Map();   // id → percentuais inválidos / sem unidade do registro importado
     try{
@@ -1932,7 +2089,7 @@ function importarCSV(evt){
       if(partesCampos.length) sufixoIgn += ' Campos inválidos removidos de registros importados: '+partesCampos.join('; ')+'.';
       if(semUnidade) sufixoIgn += ' Atenção: '+semUnidade+' percentual(is) sem "%" entre 0 e 1 foram lidos como fração (convenção de arquivos antigos: 1 = 100%, 0,5 = 50%). Arquivos exportados por esta versão usam "%"; se o arquivo veio de versão anterior, que gravava 1 para 1%, confira esses valores.';
       if(!normalizados.length){
-        alert('Nenhum registro válido encontrado no CSV.'+sufixoIgn);
+        await mostrarMensagem('Nenhum registro válido encontrado no CSV.'+sufixoIgn);
       } else {
         const tinhaHistorico = state.historico.length>0;
         state.historico.push(...normalizados);
@@ -1945,7 +2102,7 @@ function importarCSV(evt){
           const novaRef = Number(primeiro.hodometro) - kmCsvPorId.get(primeiro.id);
           if(novaRef>=0 && novaRef!==Number(state.hodometroBaseline)){
             if(tinhaHistorico){
-              const ok = confirm('A importação sugere ajustar o hodômetro de referência de '+fmtInt(state.hodometroBaseline)+' para '+fmtInt(novaRef)+' km (hodômetro do primeiro registro menos o km informado). Isso recalcula os km e os consumos de todo o histórico antigo. Confirmar o ajuste?');
+              const ok = await pedirConfirmacao('A importação sugere ajustar o hodômetro de referência de '+fmtInt(state.hodometroBaseline)+' para '+fmtInt(novaRef)+' km (hodômetro do primeiro registro menos o km informado). Isso recalcula os km e os consumos de todo o histórico antigo. Confirmar o ajuste?', 'Ajustar hodômetro de referência');
               if(ok){
                 avisoRef = ' Hodômetro de referência ajustado de '+fmtInt(state.hodometroBaseline)+' para '+fmtInt(novaRef)+' km (hodômetro do primeiro registro menos o km informado). As medições antigas foram recalculadas.';
                 state.hodometroBaseline = novaRef;
@@ -1969,14 +2126,13 @@ function importarCSV(evt){
         if(pl.consumoFora) partesPl.push(pl.consumoFora+' com consumo fora da faixa usual (gasolina '+FAIXA_CONSUMO_ALERTA.gasolina.join('–')+' km/L; etanol '+FAIXA_CONSUMO_ALERTA.etanol.join('–')+' km/L)');
         if(pl.kmZero) partesPl.push(pl.kmZero+' com hodômetro igual ao do lançamento anterior (0 km)');
         const avisoPl = partesPl.length ? ' Plausibilidade (mesmas regras do formulário; nada foi bloqueado): '+partesPl.join('; ')+'.' : '';
-        alert(normalizados.length+' registro(s) importado(s).'+sufixoIgn+avisoRef+avisoKm+avisoPl);
+        await mostrarMensagem(normalizados.length+' registro(s) importado(s).'+sufixoIgn+avisoRef+avisoKm+avisoPl, 'Importação CSV');
       }
-    }catch(err){ alert('Erro ao importar CSV: '+err.message); }
+    }catch(err){ await mostrarMensagem('Erro ao importar CSV: '+err.message); }
     evt.target.value='';
   };
   reader.readAsText(file, 'UTF-8');
 }
-
 
 
 
@@ -1990,7 +2146,7 @@ function importarBackupJSON(evt){
   const file = evt.target.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = function(e){
+  reader.onload = async function(e){
     try{
       const parsed = JSON.parse(e.target.result);
       if(!parsed || typeof parsed!=='object' || Array.isArray(parsed)) throw new Error('arquivo de backup inválido.');
@@ -2009,13 +2165,16 @@ function importarBackupJSON(evt){
       let atencao = '';
       if(dPrev && dPrev.registros.length===0 && parsed.historico.length===0 && state.historico.length>0) atencao = '\n\nATENÇÃO: o histórico atual ('+state.historico.length+' registro(s)) será substituído por uma lista vazia.';
       else if(dPrev && dPrev.registros.length>0 && dPrev.registros.length<state.historico.length) atencao = '\n\nATENÇÃO: o arquivo tem menos registros ('+dPrev.registros.length+') que o histórico atual ('+state.historico.length+').';
-      if(!confirm('Restaurar este backup?\n\nArquivo: histórico: '+resumoHist+'; configuração: '+(gruposCfg.length ? gruposCfg.join(', ') : 'nenhuma')+'.\nAtual: '+state.historico.length+' registro(s) de histórico e a configuração em uso.'+atencao+'\n\nUma cópia do estado atual será baixada antes da restauração.')) return;
+      if(!(await pedirConfirmacao('Restaurar este backup?\n\nArquivo: histórico: '+resumoHist+'; configuração: '+(gruposCfg.length ? gruposCfg.join(', ') : 'nenhuma')+'.\nAtual: '+state.historico.length+' registro(s) de histórico e a configuração em uso.'+atencao+'\n\nUma cópia do estado atual será salva antes da restauração.', 'Restaurar backup'))) return;
+      let copiaOk = false;
       try{
-        baixarArquivo(JSON.stringify({ ...serializarConfig(), historico: state.historico, geradoEm: new Date().toISOString(), origem:'cópia automática antes da restauração' }, null, 2),
+        const resCopia = await baixarArquivo(JSON.stringify({ ...serializarConfig(), historico: state.historico, geradoEm: new Date().toISOString(), origem:'cópia automática antes da restauração' }, null, 2),
           'backup_antes_da_restauracao_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json', 'application/json');
+        copiaOk = !!(resCopia && resCopia.ok);
       }catch(errCopia){
-        if(!confirm('Não foi possível gerar a cópia do estado atual. Restaurar mesmo assim?')) return;
+        copiaOk = false;
       }
+      if(!copiaOk && !(await pedirConfirmacao('Não foi possível salvar a cópia do estado atual. Restaurar mesmo assim?', 'Cópia não salva'))) return;
       const resultado = aplicarConfig(parsed);
       // A proteção da configuração só é liberada quando algum campo de configuração foi efetivamente aplicado
       // (a presença da chave, ou um histórico sozinho, não basta).
@@ -2060,22 +2219,41 @@ function importarBackupJSON(evt){
       } else if(m && m.temDados && m.origem==='estrutura'){
         msg += ' O arquivo não informava a versão do modelo de preços; foi aceito porque sua estrutura corresponde integralmente ao modelo '+MODELO_PRECO_VERSAO+'.';
       }
-      alert(msg);
-    }catch(err){ alert('Erro ao ler backup: '+err.message); }
+      await mostrarMensagem(msg, 'Restauração');
+    }catch(err){ await mostrarMensagem('Erro ao ler backup: '+err.message); }
   };
-  reader.readAsText(file);
+  reader.readAsText(file, 'UTF-8');
   evt.target.value='';
 }
 
+const androidSavePending = new Map();
+let androidSaveSeq = 0;
+window.__onAndroidSaveResult = function(reqId, ok, canceled){
+  const resolver = androidSavePending.get(String(reqId));
+  if(resolver){
+    androidSavePending.delete(String(reqId));
+    resolver({ok:Boolean(ok), canceled:Boolean(canceled)});
+  }
+};
 function baixarArquivo(content, filename, contentType){
-  // No APK (WebView), não existe manipulador nativo para blob: + <a download> — o clique não gera erro,
-  // mas também não salva nada. O MainActivity.java injeta window.AndroidBridge.saveText(...), que abre o
-  // seletor "Salvar como" do Android; usar essa ponte quando presente, mantendo o caminho de navegador/PWA
-  // (Blob + <a download>) inalterado quando ela não existir.
+  // No APK (WebView), o MainActivity.java injeta window.AndroidBridge.saveTextWithId / saveText,
+  // que abre o seletor "Salvar como" do Android e retorna o resultado real via __onAndroidSaveResult.
+  if(window.AndroidBridge && typeof window.AndroidBridge.saveTextWithId==='function'){
+    const reqId = 'sv_'+(++androidSaveSeq);
+    return new Promise(resolve=>{
+      androidSavePending.set(reqId, resolve);
+      try{
+        window.AndroidBridge.saveTextWithId(reqId, filename, contentType, content);
+      }catch(e){
+        androidSavePending.delete(reqId);
+        resolve({ok:false, canceled:false});
+      }
+    });
+  }
   if(window.AndroidBridge && typeof window.AndroidBridge.saveText==='function'){
     try{
       window.AndroidBridge.saveText(filename, contentType, content);
-      return;
+      return Promise.resolve({ok:true, canceled:false});
     }catch(e){
       console.warn('Falha ao salvar via AndroidBridge; tentando o caminho padrão do navegador.', e);
     }
@@ -2086,6 +2264,7 @@ function baixarArquivo(content, filename, contentType){
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   // Liberar o URL de imediato pode cancelar o download em alguns navegadores (Firefox inclusive).
   setTimeout(()=>URL.revokeObjectURL(url), 30000);
+  return Promise.resolve({ok:true, canceled:false});
 }
 
 
@@ -2408,7 +2587,7 @@ function calcularMedicoes(){
   // depender da composição anterior; o primeiro lançamento segue excluído por falta de referência.
   let prev = null, comp = composicaoInicial();
   const ultimoPorGrupo = {};
-  cadeia.forEach(r=>{
+  cadeia.forEach((r, ordemIdx)=>{
     if(!temHodometro(r) && !temKmCSV(r)){ // sem hodômetro e sem km positivo e finito (mesma elegibilidade de analisarCadeia)
       porRegistro.set(r.id,{motivo:MOTIVOS.semDistancia});
       return; // sem distância: não atualiza prev/comp/ultimoPorGrupo, para não contaminar os intervalos seguintes
@@ -2427,7 +2606,7 @@ function calcularMedicoes(){
         porRegistro.set(r.id,{motivo});
       } else {
         const partes = particionarIntervalo(r, prev, comp, ultimoPorGrupo).map(p=>{
-          p.origem = temHodometro(r) ? 'hodometro' : 'csv'; return p; });
+          p.origem = temHodometro(r) ? 'hodometro' : 'csv'; p.ordemIdx = ordemIdx; return p; });
         partes.forEach(m=>medicoes.push(m));
         porRegistro.set(r.id, resumoPartes(partes, g=>precoMaisProximo(g, tsRegistro(r))));
       }
@@ -2437,7 +2616,7 @@ function calcularMedicoes(){
     if(g) ultimoPorGrupo[g] = {combustivel:r.combustivel, preco:r.preco};
     prev = r;
   });
-  medicoes.sort((a,b)=> b.ts.localeCompare(a.ts) || (b.hodometro-a.hodometro));
+  medicoes.sort((a,b)=> b.ts.localeCompare(a.ts) || (b.hodometro-a.hodometro) || ((b.ordemIdx||0)-(a.ordemIdx||0)));
   return {medicoes, porRegistro};
 }
 function consumoDinamico(med){
@@ -2571,9 +2750,11 @@ function decisaoAutomatica(comp){
   const custos = FUELS.map(f=>comp[f.key].custoKm);
   const completo = custos.every(c=>c!=null);
   if(!completo) return {completo:false, faltaPreco, faltaConsumo};
-  let melhor = FUELS[0].key;
-  FUELS.forEach(f=>{ if(comp[f.key].custoKm < comp[melhor].custoKm) melhor = f.key; });
-  return {completo:true, melhor, menorCusto: comp[melhor].custoKm};
+  let menor = Infinity;
+  FUELS.forEach(f=>{ if(comp[f.key].custoKm < menor) menor = comp[f.key].custoKm; });
+  const empates = FUELS.filter(f=>Math.abs(comp[f.key].custoKm - menor) <= 1e-6).map(f=>f.key);
+  const melhor = empates[0] || FUELS[0].key;
+  return {completo:true, melhor, empates, menorCusto: comp[melhor].custoKm};
 }
 
 
@@ -2649,6 +2830,11 @@ function renderHero(decisao){
     return;
   }
   const f = FUEL_BY_KEY[decisao.melhor];
+  if(decisao.empates && decisao.empates.length > 1){
+    const nomes = decisao.empates.map(k=>FUEL_BY_KEY[k].label).join(' / ');
+    el.innerHTML = `<div class="hero-label">Melhor Combustível (empate)</div><div class="hero-value" style="--fuel-color:${f.color}">${nomes}</div>`;
+    return;
+  }
   el.innerHTML = `<div class="hero-label">Melhor Combustível</div><div class="hero-value" style="--fuel-color:${f.color}">${f.label}</div>`;
 }
 
@@ -2731,7 +2917,7 @@ function renderHistoricoTable(med){
       <td><button type="button" class="tag tag-btn ${cheio?'tag-good':'tag-neutral'}" data-act="cheio" data-id="${id}" aria-pressed="${cheio}" title="Alternar tanque cheio / parcial">${cheio?'Sim':'Não'}</button></td>
       <td><button type="button" class="tag tag-btn ${incl?'tag-good':'tag-neutral'}" data-act="incluir" data-id="${id}" aria-pressed="${incl}" title="Alternar inclusão no cálculo">${incl?'Sim':'Não'}</button></td>
       <td class="dim">${escapeHTML(r.obs||'')}</td>
-      <td><button type="button" class="icon-btn" data-act="remover" data-id="${id}" aria-label="Remover lançamento">✕</button></td>
+      <td><div class="actions-cell"><button type="button" class="icon-btn edit" data-act="editar" data-id="${id}" aria-label="Editar lançamento" title="Editar lançamento">✎</button><button type="button" class="icon-btn" data-act="remover" data-id="${id}" aria-label="Remover lançamento" title="Remover lançamento">✕</button></div></td>
     </tr>`;
   }).join('');
   const cont = document.getElementById('contagem-historico');
@@ -2785,9 +2971,25 @@ document.getElementById('tbl-historico').addEventListener('click', ev=>{
   if(!btn) return;
   const id = btn.dataset.id;
   if(btn.dataset.act==='remover') removeHistoricoEntry(id);
+  else if(btn.dataset.act==='editar') editarHistoricoEntry(id);
   else if(btn.dataset.act==='incluir') alternarCampoHistorico(id,'incluir');
   else if(btn.dataset.act==='cheio') alternarCampoHistorico(id,'tanqueCheio');
 });
+window.handleAndroidBack = function(){
+  if(dialogResolver){
+    const cancel = document.getElementById('app-dialog-cancel');
+    if(cancel && cancel.style.display!=='none') cancel.click();
+    else document.getElementById('app-dialog-ok').click();
+    return true;
+  }
+  const menu = document.getElementById('side-menu');
+  if(menu && menu.classList.contains('open')){ closeSideMenu(); return true; }
+  if(overlayAtivo){ closeOverlay(overlayAtivo); return true; }
+  return false;
+};
+if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost' || location.hostname==='127.0.0.1')){
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('./service-worker.js').catch(()=>{}); });
+}
 renderAll();
 
 </script>
