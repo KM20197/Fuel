@@ -8,8 +8,8 @@
 | | |
 |---|---|
 | **Autor** | Ricardo Coutinho Mello (GitHub: [KM20197](https://github.com/KM20197)) |
-| **Versão** | 1.2.0 (código interno: versionCode 4 / versionName 3.1.0) |
-| **Licença** | [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/) |
+| **Versão** | 1.2.0 (código interno: versionCode 5 / versionName 3.1.0) |
+| **Licença** | [MIT License](https://opensource.org/license/mit) |
 | **Repositório** | https://github.com/KM20197/Fuel |
 | **DOI** | 10.5281/zenodo.22918209|
 | **Idiomas** | Português (BR) / interface em pt-BR |
@@ -70,11 +70,11 @@ Ou use a Action **Android CI** do repositório (artefato `app-debug`).
   year = {2026},
   version = {1.2.0},
   url = {https://github.com/KM20197/Fuel},
-  note = {Licença CC BY-NC 4.0; DOI Zenodo em 10.5281/zenodo.22918209}
+  note = {Licença MIT; DOI Zenodo em 10.5281/zenodo.22918209}
 }
 ```
 Consulte também `CITATION.cff` (formato Citation File Format v1.2.0).
 
 ## Licença
 
-Este software está licenciado sob a **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** — atribuição obrigatória e **proibição de uso comercial**. Texto integral em `LICENSE`. Não se trata de licença OSI para código-fonte nem de cessão de titularidade; o registro no INPI e a autoria permanecem com Ricardo Coutinho Mello.
+Este software está licenciado sob a MIT License. Texto integral em LICENSE. Texto integral em `LICENSE`. 
