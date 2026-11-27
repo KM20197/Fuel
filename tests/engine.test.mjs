@@ -294,17 +294,25 @@ test('C4: parciais do mesmo combustível são somados ao tanque cheio seguinte',
   assert.equal(Math.round(medicoes[0].consumo * 1000) / 1000, 12);  // 600 km ÷ (30 + 10 + 10) L
 });
 
-test('C4: parcial de outro combustível não é acumulado', () => {
+test('C4: parcial de outro combustível é somado e o consumo é partilhado pela composição média', () => {
   const { api } = createHarness();
+  api.state.entradas.capacidadeTanque = 39.5;
   carregar(api, [
-    gas('d1', '2026-09-01', '08:00', 1000, 30),
-    gas('d2', '2026-09-03', '08:00', 1200, 10, { tanqueCheio: false }),
-    { ...gas('d3', '2026-09-05', '08:00', 1400, 30), combustivel: 'etanol_comum' }
+    gas('d1', '2026-09-01', '08:00', 1000, 30),                       // tanque cheio, gasolina
+    { ...gas('d2', '2026-09-03', '08:00', 1200, 10, { tanqueCheio: false }), combustivel: 'etanol_comum' }, // parcial etanol
+    { ...gas('d3', '2026-09-05', '08:00', 1600, 30), combustivel: 'etanol_comum' }  // tanque cheio, etanol
   ]);
   const { medicoes, porRegistro } = api.calcularMedicoes();
-  assert.equal(porRegistro.get('d2').motivo.curto, 'parcial');
-  assert.equal(porRegistro.get('d3').motivo.curto, 'ref. parcial');
-  assert.equal(medicoes.length, 0);
+  assert.equal(porRegistro.get('d2').motivo.curto, 'parcial acum.');
+  // km 600 (1000→1600) ÷ Σlitros 40 (10 parcial + 30 cheio) = 15 km/L
+  assert.equal(medicoes.length, 2);
+  medicoes.forEach(m => assert.equal(Math.round(m.consumo * 1000) / 1000, 15));
+  // composição média: gasolina 1 no início e 29,5/39,5 no fim -> fração de gasolina ~0,873
+  const gasolina = medicoes.find(m => m.grupo === 'gasolina');
+  const etanol = medicoes.find(m => m.grupo === 'etanol');
+  const fracGas = (1 + 29.5 / 39.5) / 2;
+  assert.ok(Math.abs(gasolina.fracao - fracGas) < 1e-9);
+  assert.ok(Math.abs(etanol.fracao - (1 - fracGas)) < 1e-9);
 });
 
 test('S1: index.html sem atributos on* e com CSP por hash, sem unsafe-inline em script-src', () => {
