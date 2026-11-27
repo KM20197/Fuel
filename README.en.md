@@ -24,7 +24,7 @@ The app does not just compare prices per litre. It integrates three components:
 ## Methodological summary
 
 - **Effective price:** station/payment scenarios — Baratão Pix is the reference; Shell, Baratão Cartão and Outros are derived through discount factors; individual overrides are supported.
-- **Consumption:** `km between refuellings ÷ litres`, conditional on a full tank; the value used for the main calculation is the last valid consumption of the group (gasoline or ethanol) in which that group made up at least 50 % of the tank; the aggregate mean and the mean of the last 3 are reference only.
+- **Consumption:** `km between refuellings ÷ litres`, conditional on a full tank; the value used for the main calculation is Σkm ÷ Σlitros over the last 3 valid consumptions of the group (partial refuellings of the same fuel are summed into the next full tank; intervals above 40 km/L gasoline or 30 km/L ethanol are excluded as implausible) (gasoline or ethanol) in which that group made up at least 50 % of the tank; the aggregate mean and the mean of the last 3 are reference only.
 - **Decision:** fuel with the lowest `effective price ÷ consumption`.
 - **Price band:** per-scenario ceiling for each fuel to remain the cheapest, given the competitors.
 - **Usage-condition index (IC):** `IC = 100 × (0.40·C + 0.35·A + 0.25·AC)`, with C and A normalized from 1–5 to 0–1; classified as Favourable / Intermediate / Severe. IC never changes observed consumption.
@@ -45,14 +45,13 @@ app/                        Android application (Gradle; package br.com.combusti
 .github/workflows/build.yml CI APK build (GitHub Actions)
 index.html, manifest.json, service-worker.js   PWA
 README.md, LICENSE, CITATION.cff, .zenodo.json
-docs/                       Technical description, contribution memorial, guides (Zenodo/INPI)
 ```
 
 ## Building the APK
 
 ```bash
 # Local (JDK 17):
-gradle assembleDebug          # or: ./gradlew assembleDebug
+gradle assembleDebug          # requires Gradle 8.9 installed (the repository has no gradlew)
 # Output: app/build/outputs/apk/debug/app-debug.apk
 ```
 Or use the repository's **Android CI** action (artifact `app-debug`).

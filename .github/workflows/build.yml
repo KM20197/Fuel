@@ -22,6 +22,12 @@ jobs:
       - name: Run calculation engine tests
         run: node --test tests/engine.test.mjs
 
+      - name: Verificar cópias duplicadas do PWA (raiz e APK)
+        run: |
+          for f in index.html manifest.json service-worker.js; do
+            diff -u "$f" "app/src/main/assets/www/$f"
+          done
+
   build:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
@@ -43,7 +49,7 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build Debug APK
-        run: gradle assembleDebug
+        run: gradle testDebugUnitTest assembleDebug
 
       - name: Decode Release Keystore
         env:

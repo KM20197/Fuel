@@ -227,3 +227,100 @@ test('Índice de condição de uso (IC) e quarentena de armazenamento corrompido
   assert.equal(icSev, 100);
   assert.equal(api.classifyUsageCondition({ congestionamento: 5, aclives: 5, arCondicionado: 1 }), 'Severa');
 });
+
+// ---- Regressões da auditoria (C1–C4, S1, S2) ----
+
+// Preenche r.km como o app faz (recomputeKmDeltas): km do intervalo pela cadeia de hodômetro.
+function carregar(api, registros, baseline = 0) {
+  api.state.historico.push(...registros);
+  api.state.hodometroBaseline = baseline;
+  api.analisarCadeia(registros, baseline).km.forEach((valor, r) => { r.km = valor; });
+}
+
+const gas = (id, data, hora, hodometro, litros, extra = {}) =>
+  ({ id, data, hora, combustivel: 'gasolina_comum', preco: 5.0, hodometro, litros, tanqueCheio: true, incluir: 'Sim', ...extra });
+
+test('C2: hodômetro digitado a maior é retirado da cadeia e não invalida os seguintes', () => {
+  const { api } = createHarness();
+  const r = [
+    gas('h1', '2026-09-01', '08:00', 1000, 30),
+    gas('h2', '2026-09-05', '08:00', 13000, 30),   // digitado no lugar de 1300
+    gas('h3', '2026-09-10', '08:00', 1500, 30),
+    gas('h4', '2026-09-15', '08:00', 1800, 30),
+  ];
+  const cad = api.analisarCadeia(r, 0);
+  assert.equal(cad.km.get(r[1]), null);   // erro retirado da cadeia
+  assert.equal(cad.km.get(r[2]), 500);    // medido a partir de 1000
+  assert.equal(cad.km.get(r[3]), 300);
+});
+
+test('C2: diferença sem consumo implausível não remove o lançamento anterior', () => {
+  const { api } = createHarness();
+  const r = [
+    gas('k1', '2026-09-01', '08:00', 1000, 30),
+    gas('k2', '2026-09-05', '08:00', 1300, 30),   // 10 km/L: plausível
+    gas('k3', '2026-09-10', '08:00', 1100, 30),   // hodômetro menor: inválido, sem retirar k2
+  ];
+  const cad = api.analisarCadeia(r, 0);
+  assert.equal(cad.km.get(r[1]), 300);
+  assert.equal(cad.km.get(r[2]), null);
+});
+
+test('C1: intervalo com consumo acima do limite físico é excluído do cálculo', () => {
+  const { api } = createHarness();
+  carregar(api, [
+    gas('p1', '2026-09-01', '08:00', 1000, 30),
+    gas('p2', '2026-09-05', '08:00', 13000, 30) // 12 000 km com 30 L: 400 km/L
+  ]);
+  const { medicoes, porRegistro } = api.calcularMedicoes();
+  assert.equal(porRegistro.get('p2').motivo.curto, 'km/L implausível');
+  assert.equal(medicoes.length, 0);
+});
+
+test('C4: parciais do mesmo combustível são somados ao tanque cheio seguinte', () => {
+  const { api } = createHarness();
+  carregar(api, [
+    gas('c1', '2026-09-01', '08:00', 1000, 30),
+    gas('c2', '2026-09-03', '08:00', 1200, 10, { tanqueCheio: false }),
+    gas('c3', '2026-09-05', '08:00', 1350, 10, { tanqueCheio: false }),
+    gas('c4', '2026-09-08', '08:00', 1600, 30)
+  ]);
+  const { medicoes, porRegistro } = api.calcularMedicoes();
+  assert.equal(porRegistro.get('c2').motivo.curto, 'parcial acum.');
+  assert.equal(porRegistro.get('c3').motivo.curto, 'parcial acum.');
+  assert.equal(medicoes.length, 1);
+  assert.equal(medicoes[0].id, 'c4');
+  assert.equal(medicoes[0].km, 600);
+  assert.equal(Math.round(medicoes[0].consumo * 1000) / 1000, 12);  // 600 km ÷ (30 + 10 + 10) L
+});
+
+test('C4: parcial de outro combustível não é acumulado', () => {
+  const { api } = createHarness();
+  carregar(api, [
+    gas('d1', '2026-09-01', '08:00', 1000, 30),
+    gas('d2', '2026-09-03', '08:00', 1200, 10, { tanqueCheio: false }),
+    { ...gas('d3', '2026-09-05', '08:00', 1400, 30), combustivel: 'etanol_comum' }
+  ]);
+  const { medicoes, porRegistro } = api.calcularMedicoes();
+  assert.equal(porRegistro.get('d2').motivo.curto, 'parcial');
+  assert.equal(porRegistro.get('d3').motivo.curto, 'ref. parcial');
+  assert.equal(medicoes.length, 0);
+});
+
+test('S1: index.html sem atributos on* e com CSP por hash, sem unsafe-inline em script-src', () => {
+  const crypto = require_crypto();
+  const scriptText = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  const headPart = html.slice(0, html.indexOf('<script>'));
+  assert.equal(/ on(click|change|input|submit)="/.test(headPart), false);
+  const csp = html.match(/script-src ([^;]*);/)[1];
+  assert.equal(csp.includes("'unsafe-inline'"), false);
+  const hash = 'sha256-' + crypto.createHash('sha256').update(scriptText, 'utf8').digest('base64');
+  assert.ok(csp.includes(`'${hash}'`), 'Hash do script inline desatualizado: execute "node scripts/atualizar-csp.mjs".');
+});
+
+test('S2: campos de condição de uso são escapados na tabela do histórico', () => {
+  assert.ok(html.includes("${escapeHTML(r.congestionamento ?? '—')}"));
+  assert.ok(html.includes("${escapeHTML(r.aclives ?? '—')}"));
+});
+
+function require_crypto() { return globalThis.process.getBuiltinModule('node:crypto'); }
