@@ -74,4 +74,4 @@ See also `CITATION.cff` (Citation File Format v1.2.0).
 
 ## License
 
-Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) — attribution required; **commercial use prohibited**. Full text in `LICENSE`. It is neither an OSI licence for source code nor an assignment of ownership; INPI registration and authorship remain with Ricardo Coutinho Mello.
+MIT — attribution required. Full text in `LICENSE`.
