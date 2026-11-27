@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: file:; script-src 'self' 'sha256-TunzMDI6C4u9qoH9jdrjumMb0fFeCNWaHP51alC6XbY='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: file:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: file:; script-src 'self' 'sha256-SsSG/hyH8PYqnENvXhemRbmdxI97o8bwiMsdigWAeiA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: file:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:">
 <title>Calculadora de Combustível</title>
 <meta name="theme-color" content="#0f131a">
 <meta name="description" content="Calculadora de custo por km para gasolina aditivada, gasolina comum, etanol comum e etanol aditivado.">
@@ -2323,7 +2323,7 @@ const MIN_CONSUMOS_CONDICAO_CONFIAVEL = 5;   // por condição comparada, para "
 const MIN_CONSUMOS_TOTAL_CONFIAVEL = 12;     // consumos com condição informada, no grupo
 const MAX_PARTICIPACAO_CONDICAO = 0.70;      // nenhuma condição pode concentrar mais que isso do total
 const AVALIACAO_CONDICAO = {
-  insuficiente: 'Dados insuficientes para estimar a influência da condição.',
+  insuficiente: 'Dados insuficientes.',
   exploratoria: 'Estimativa exploratória baseada no histórico.',
   baseada: 'Estimativa baseada no histórico do veículo.',
   inconclusiva: 'Estimativa inconclusiva: o consumo desta condição é maior que o da condição Favorável.',
@@ -2536,7 +2536,8 @@ function composicaoPura(r){
   return ehGasolina(r.combustivel) ? {gas:1, eqGas:teorEtanolRegistro(r)} : {gas:0, eqGas:0};
 }
 function composicaoAposAbastecimento(r, anterior){
-  if(r.tanqueCheio===false) return null;                 // volume do tanque desconhecido
+  // Parcial: o nível antes do abastecimento é desconhecido; presume-se remanescente = capacidade − litros do parcial
+  // (aproximação que ignora o consumo entre o último tanque cheio e o parcial). Mesma regra dos tanques cheios.
   const L = Number(r.litros), cap = Number(state.entradas.capacidadeTanque);
   if(!(L>0)) return anterior || null;
   const puro = composicaoPura(r);
@@ -2596,6 +2597,13 @@ function composicaoInicial(){
   const t = Number(state.entradas.etanolAtual);
   return { gas:1, eqGas: Number.isFinite(t) ? t : 0 };
 }
+// Composição média do intervalo: média entre a composição após o tanque cheio inicial e a composição antes do
+// tanque cheio final. Usada na partilha do consumo entre gasolina e etanol quando há parciais de outro combustível.
+function composicaoMediaIntervalo(inicio, fim){
+  if(!inicio) return fim || null;
+  if(!fim) return inicio;
+  return { gas:(inicio.gas+fim.gas)/2, eqGas:(inicio.eqGas+fim.eqGas)/2 };
+}
 function calcularMedicoes(){
   // Sequência única por data e hora. O km do intervalo vem do hodômetro (cadeia) ou, sem hodômetro, da coluna km
   // importada. O intervalo é atribuído ao combustível que estava no tanque (composição após o abastecimento anterior).
@@ -2637,7 +2645,7 @@ function calcularMedicoes(){
     else if(!(r.litros>0)) motivo = MOTIVOS.litros;
 
     if(parcial){
-      if(motivo || !baseCheio || (parciais.length && grupoDe(parciais[0].combustivel)!==g)){
+      if(motivo || !baseCheio){
         // não acumulável: o intervalo deste parcial não mede consumo e a soma anterior é encerrada
         porRegistro.set(r.id,{motivo: motivo || MOTIVOS.parcial});
         excluirParciais(MOTIVOS.parcial);
@@ -2652,13 +2660,11 @@ function calcularMedicoes(){
       if(!motivo && parciais.length){
         const kmSoma = Number(r.km) + parciais.reduce((a,p)=>a+Number(p.km),0);
         const litrosSoma = Number(r.litros) + parciais.reduce((a,p)=>a+Number(p.litros),0);
-        const grupoBase = grupoDe(baseCheio.combustivel);
-        const mesmoGrupo = parciais.every(p=>grupoDe(p.combustivel)===grupoBase) && grupoDe(r.combustivel)===grupoBase;
-        if(!mesmoGrupo) motivo = MOTIVOS.refParcial;
-        else if(kmPorLitroImplausivel(kmSoma, litrosSoma, baseCheio.combustivel)) motivo = MOTIVOS.implausivel;
+        if(kmPorLitroImplausivel(kmSoma, litrosSoma, baseCheio.combustivel)) motivo = MOTIVOS.implausivel;
         else {
           const synth = Object.assign({}, r, {km:kmSoma, litros:litrosSoma});
-          const partes = registrarPartes(r, particionarIntervalo(synth, baseCheio, compBase, ultimoPorGrupo), ordemIdx);
+          const compMedia = composicaoMediaIntervalo(compBase || composicaoPura(baseCheio), comp);
+          const partes = registrarPartes(r, particionarIntervalo(synth, baseCheio, compMedia, ultimoPorGrupo), ordemIdx);
           parciais.forEach(p=>porRegistro.set(p.id,{motivo:MOTIVOS.acumulado}));
           porRegistro.set(r.id, resumoPartes(partes, gr=>precoMaisProximo(gr, tsRegistro(r))));
           parciais = [];
