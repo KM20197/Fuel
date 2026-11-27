@@ -54,7 +54,7 @@ README.md, LICENSE, CITATION.cff, .zenodo.json
 
 ```bash
 # Local (JDK 17):
-gradle assembleDebug          # requer Gradle 8.9 instalado (o repositório não inclui gradlew)
+./gradlew assembleDebug          # usa o Gradle Wrapper 9.9.2 incluído; requer JDK 17 (Windows: gradlew.bat assembleDebug)
 # Saída: app/build/outputs/apk/debug/app-debug.apk
 ```
 Ou use a Action **Android CI** do repositório (artefato `app-debug`).
