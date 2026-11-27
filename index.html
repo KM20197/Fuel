@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: file:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: file:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: file:; script-src 'self' 'sha256-TunzMDI6C4u9qoH9jdrjumMb0fFeCNWaHP51alC6XbY='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: file:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:">
 <title>Calculadora de Combustível</title>
 <meta name="theme-color" content="#0f131a">
 <meta name="description" content="Calculadora de custo por km para gasolina aditivada, gasolina comum, etanol comum e etanol aditivado.">
@@ -148,46 +148,46 @@
 <div class="wrap">
   <header class="top">
     <div><h1>Calculadora de Combustível</h1></div>
-    <button class="hamburger-btn" onclick="toggleSideMenu()" aria-label="Abrir menu" aria-controls="side-menu" aria-expanded="false">≡</button>
+    <button class="hamburger-btn" data-hk-1 aria-label="Abrir menu" aria-controls="side-menu" aria-expanded="false">≡</button>
   </header>
   <div class="session-banner" id="restore-banner" style="display:none;">
     <span>✓</span><span>Dados restaurados deste aparelho a partir da última vez que você usou o app.</span>
-    <button type="button" class="icon-btn" style="margin-left:auto" onclick="esconderAviso('restore-banner')" aria-label="Fechar aviso">✕</button>
+    <button type="button" class="icon-btn" style="margin-left:auto" data-hk-2 aria-label="Fechar aviso">✕</button>
   </div>
   <div class="session-banner" id="aviso-armazenamento" style="display:none;" role="alert">
     <span>⚠</span><span id="aviso-armazenamento-texto"></span>
   </div>
   <div class="session-banner" id="aviso-carga" style="display:none;" role="alert">
     <span>⚠</span><span id="aviso-carga-texto"></span>
-    <button type="button" class="ghost" style="margin-left:auto" onclick="baixarCorrompidos()">Baixar cópia</button>
+    <button type="button" class="ghost" style="margin-left:auto" data-hk-3>Baixar cópia</button>
   </div>
-  <button class="action-banner-btn" onclick="openOverlay('screen-novo-abastecimento')">+ Registrar Novo Abastecimento</button>
+  <button class="action-banner-btn" data-hk-4>+ Registrar Novo Abastecimento</button>
 
   <section id="screen-principal">
     <div class="hero-card" id="hero-decisao" role="status" aria-live="polite" aria-atomic="true"></div>
     <div class="panel">
       <h2>Preços por litro <small>Baratão Pix é a referência; Shell e Baratão Cartão são calculados pelo modelo, Outros pode ter edição individual</small></h2>
       <div class="posto-select">
-        <label><input type="radio" name="cenario" value="outros" onchange="updateCenario(this.value)"> Outros</label>
-        <label><input type="radio" name="cenario" value="shell" onchange="updateCenario(this.value)"> Shell</label>
-        <label><input type="radio" name="cenario" value="baratao_pix" checked onchange="updateCenario(this.value)"> Baratão Pix</label>
-        <label><input type="radio" name="cenario" value="baratao_cartao" onchange="updateCenario(this.value)"> Baratão Cartão</label>
+        <label><input type="radio" name="cenario" value="outros" data-hk-5> Outros</label>
+        <label><input type="radio" name="cenario" value="shell" data-hk-6> Shell</label>
+        <label><input type="radio" name="cenario" value="baratao_pix" checked data-hk-7> Baratão Pix</label>
+        <label><input type="radio" name="cenario" value="baratao_cartao" data-hk-8> Baratão Cartão</label>
       </div>
       <div class="field-grid">
         <label>Gasolina aditivada
-          <span class="input-suffix"><span>R$</span><input id="in-preco-gasolina_aditivada" aria-describedby="efetivo-gasolina_aditivada" type="text" inputmode="decimal" value="5.25" onchange="updatePrecoCenario('gasolina_aditivada', this.value)"></span>
+          <span class="input-suffix"><span>R$</span><input id="in-preco-gasolina_aditivada" aria-describedby="efetivo-gasolina_aditivada" type="text" inputmode="decimal" value="5.25" data-hk-9></span>
           <small class="preco-efetivo" id="efetivo-gasolina_aditivada"></small>
         </label>
         <label>Gasolina comum
-          <span class="input-suffix"><span>R$</span><input id="in-preco-gasolina_comum" aria-describedby="efetivo-gasolina_comum" type="text" inputmode="decimal" value="4.83" onchange="updatePrecoCenario('gasolina_comum', this.value)"></span>
+          <span class="input-suffix"><span>R$</span><input id="in-preco-gasolina_comum" aria-describedby="efetivo-gasolina_comum" type="text" inputmode="decimal" value="4.83" data-hk-10></span>
           <small class="preco-efetivo" id="efetivo-gasolina_comum"></small>
         </label>
         <label>Etanol comum
-          <span class="input-suffix"><span>R$</span><input id="in-preco-etanol_comum" aria-describedby="efetivo-etanol_comum" type="text" inputmode="decimal" value="3.03" onchange="updatePrecoCenario('etanol_comum', this.value)"></span>
+          <span class="input-suffix"><span>R$</span><input id="in-preco-etanol_comum" aria-describedby="efetivo-etanol_comum" type="text" inputmode="decimal" value="3.03" data-hk-11></span>
           <small class="preco-efetivo" id="efetivo-etanol_comum"></small>
         </label>
         <label>Etanol aditivado
-          <span class="input-suffix"><span>R$</span><input id="in-preco-etanol_aditivado" aria-describedby="efetivo-etanol_aditivado" type="text" inputmode="decimal" value="3.05" onchange="updatePrecoCenario('etanol_aditivado', this.value)"></span>
+          <span class="input-suffix"><span>R$</span><input id="in-preco-etanol_aditivado" aria-describedby="efetivo-etanol_aditivado" type="text" inputmode="decimal" value="3.05" data-hk-12></span>
           <small class="preco-efetivo" id="efetivo-etanol_aditivado"></small>
         </label>
       </div>
@@ -210,18 +210,18 @@
     </div>
   </section>
 
-  <div class="side-menu-overlay" id="side-menu-overlay" onclick="toggleSideMenu()"></div>
+  <div class="side-menu-overlay" id="side-menu-overlay" data-hk-13></div>
   <aside class="side-menu" id="side-menu" aria-hidden="true" inert aria-label="Menu do Aplicativo">
     <div class="side-menu-header">
       <h3>Menu do Aplicativo</h3>
-      <button class="ghost" onclick="toggleSideMenu()" aria-label="Fechar menu">✕</button>
+      <button class="ghost" data-hk-14 aria-label="Fechar menu">✕</button>
     </div>
     <nav>
-      <button class="side-menu-btn" onclick="openOverlay('screen-resultados')">Resultados atuais</button>
-      <button class="side-menu-btn" onclick="openOverlay('screen-historico')">Histórico</button>
-      <button class="side-menu-btn" onclick="openOverlay('screen-metodologia')">Metodologia</button>
-      <button class="side-menu-btn" onclick="openOverlay('screen-backup')">Backup e Restauração</button>
-      <button class="side-menu-btn" onclick="openOverlay('screen-legendas')">Legendas</button>
+      <button class="side-menu-btn" data-hk-15>Resultados atuais</button>
+      <button class="side-menu-btn" data-hk-16>Histórico</button>
+      <button class="side-menu-btn" data-hk-17>Metodologia</button>
+      <button class="side-menu-btn" data-hk-18>Backup e Restauração</button>
+      <button class="side-menu-btn" data-hk-19>Legendas</button>
     </nav>
     <div class="side-menu-footer">Idealizado por KM20197<br>Licença: Creative Commons BY-NC (atribuição obrigatória; uso comercial proibido)</div>
   </aside>
@@ -230,17 +230,17 @@
 
   <div id="screen-novo-abastecimento" class="overlay-screen" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-novo-abastecimento" tabindex="-1">
     <div class="overlay-header">
-      <button class="back-btn" onclick="closeOverlay('screen-novo-abastecimento')">← Voltar</button>
+      <button class="back-btn" data-hk-20>← Voltar</button>
       <h2 id="titulo-novo-abastecimento">Novo Abastecimento</h2>
-      <button class="close-overlay-btn" onclick="closeOverlay('screen-novo-abastecimento')" aria-label="Fechar Novo Abastecimento">✕</button>
+      <button class="close-overlay-btn" data-hk-21 aria-label="Fechar Novo Abastecimento">✕</button>
     </div>
     <div class="panel">
-      <form id="form-historico" onsubmit="addHistoricoEntry(event)">
+      <form id="form-historico" data-hk-22>
         <div class="field-grid">
-          <label>Data<input type="date" name="data" required oninput="atualizarReferenciaFormulario()" onchange="atualizarReferenciaFormulario()"></label>
-          <label>Hora<input type="time" name="hora" required oninput="atualizarReferenciaFormulario()" onchange="atualizarReferenciaFormulario()"></label>
+          <label>Data<input type="date" name="data" required data-hk-23 data-hk-24></label>
+          <label>Hora<input type="time" name="hora" required data-hk-25 data-hk-26></label>
           <label>Combustível
-            <select name="combustivel" required onchange="atualizarPrecoPagoModal()">
+            <select name="combustivel" required data-hk-27>
               <option value="gasolina_aditivada">Gasolina aditivada</option>
               <option value="gasolina_comum">Gasolina comum</option>
               <option value="etanol_comum">Etanol comum</option>
@@ -248,10 +248,10 @@
             </select>
           </label>
           <label>Preço pago por litro
-            <span class="input-suffix"><span>R$</span><input type="text" inputmode="decimal" name="preco" aria-describedby="preview-posto-equiv" oninput="onEditarValorAbastecimento('preco')"></span>
+            <span class="input-suffix"><span>R$</span><input type="text" inputmode="decimal" name="preco" aria-describedby="preview-posto-equiv" data-hk-28></span>
           </label>
           <label>Cenário do preço pago <small>onde e como você pagou</small>
-            <select name="cenarioPreco" onchange="atualizarPrecoPagoModal(); renderPrevisaoPosto()">
+            <select name="cenarioPreco" data-hk-29>
               <option value="outros">Outros</option>
               <option value="shell" selected>Shell</option>
               <option value="baratao_pix">Baratão Pix</option>
@@ -261,12 +261,12 @@
             <small>O preço do abastecimento mais recente atualiza o modelo; no Cartão, ajusta o fator que o deriva.</small>
           </label>
           <label>Hodômetro atual <small>referência anterior: <span id="lbl-hodometro-ref">5698</span> km</small>
-            <span class="input-suffix"><input type="text" inputmode="decimal" name="hodometro" required aria-describedby="preview-km-delta" oninput="previewKmDelta(this)"><span>km</span></span>
+            <span class="input-suffix"><input type="text" inputmode="decimal" name="hodometro" required aria-describedby="preview-km-delta" data-hk-30><span>km</span></span>
             <small class="msg-erro" id="preview-km-delta" role="status" aria-live="polite"></small>
           </label>
-          <label>Litros consumidos<input type="text" inputmode="decimal" name="litros" oninput="onEditarValorAbastecimento('litros')"></label>
+          <label>Litros consumidos<input type="text" inputmode="decimal" name="litros" data-hk-31></label>
           <label>Valor total pago <small>preencha 2 dos 3 e o terceiro é calculado</small>
-            <span class="input-suffix"><span>R$</span><input type="text" inputmode="decimal" name="valorTotalPago" oninput="onEditarValorAbastecimento('valorTotalPago')"></span>
+            <span class="input-suffix"><span>R$</span><input type="text" inputmode="decimal" name="valorTotalPago" data-hk-32></span>
           </label>
           <label>Congestionamento
             <select name="congestionamento">
@@ -298,9 +298,9 @@
   <!-- Resultados atuais -->
   <div id="screen-resultados" class="overlay-screen" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-resultados" tabindex="-1">
     <div class="overlay-header">
-      <button class="back-btn" onclick="closeOverlay('screen-resultados')">← Voltar</button>
+      <button class="back-btn" data-hk-33>← Voltar</button>
       <h2 id="titulo-resultados">Resultados Atuais</h2>
-      <button class="close-overlay-btn" onclick="closeOverlay('screen-resultados')" aria-label="Fechar Resultados Atuais">✕</button>
+      <button class="close-overlay-btn" data-hk-34 aria-label="Fechar Resultados Atuais">✕</button>
     </div>
     <div class="panel">
       <h2>Comparação econômica atual</h2>
@@ -341,18 +341,18 @@
 
   <div id="screen-historico" class="overlay-screen" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-historico" tabindex="-1">
     <div class="overlay-header">
-      <button class="back-btn" onclick="closeOverlay('screen-historico')">← Voltar</button>
+      <button class="back-btn" data-hk-35>← Voltar</button>
       <h2 id="titulo-historico">Histórico</h2>
-      <button class="close-overlay-btn" onclick="closeOverlay('screen-historico')" aria-label="Fechar Histórico">✕</button>
+      <button class="close-overlay-btn" data-hk-36 aria-label="Fechar Histórico">✕</button>
     </div>
     <div class="panel">
       <div class="panel-header-row">
         <h2>Lançamentos <span id="contagem-historico" class="note" style="display:inline" role="status" aria-live="polite"></span></h2>
         <div class="actions">
-          <button type="button" onclick="exportarCSV()">Baixar CSV (planilha)</button>
-          <button type="button" class="file-btn" onclick="document.getElementById('arquivo-csv').click()">Importar CSV</button>
-          <input id="arquivo-csv" type="file" accept=".csv,text/csv" aria-label="Arquivo CSV do histórico" onchange="importarCSV(event)" hidden>
-          <button type="button" class="ghost danger" onclick="limparHistorico()">Limpar tudo</button>
+          <button type="button" data-hk-37>Baixar CSV (planilha)</button>
+          <button type="button" class="file-btn" data-hk-38>Importar CSV</button>
+          <input id="arquivo-csv" type="file" accept=".csv,text/csv" aria-label="Arquivo CSV do histórico" data-hk-39 hidden>
+          <button type="button" class="ghost danger" data-hk-40>Limpar tudo</button>
         </div>
       </div>
       <div class="table-wrap"><table><caption class="sr-only">Histórico de abastecimentos</caption>
@@ -365,26 +365,26 @@
 
   <div id="screen-backup" class="overlay-screen" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-backup" tabindex="-1">
     <div class="overlay-header">
-      <button class="back-btn" onclick="closeOverlay('screen-backup')">← Voltar</button>
+      <button class="back-btn" data-hk-41>← Voltar</button>
       <h2 id="titulo-backup">Backup e Restauração</h2>
-      <button class="close-overlay-btn" onclick="closeOverlay('screen-backup')" aria-label="Fechar Backup e Restauração">✕</button>
+      <button class="close-overlay-btn" data-hk-42 aria-label="Fechar Backup e Restauração">✕</button>
     </div>
     <div class="panel">
       <h2>Backup de dados (Arquivo JSON)</h2>
       <p class="note">Salve uma cópia de segurança completa de todos os seus dados ou importe um backup anterior.</p>
       <div class="actions actions-bar">
-        <button type="button" onclick="exportarBackupJSON()">Baixar arquivo de backup</button>
-          <button type="button" class="file-btn" onclick="document.getElementById('arquivo-backup').click()">Restaurar arquivo de backup</button>
-          <input id="arquivo-backup" type="file" accept=".json" aria-label="Arquivo de backup JSON" onchange="importarBackupJSON(event)" hidden>
+        <button type="button" data-hk-43>Baixar arquivo de backup</button>
+          <button type="button" class="file-btn" data-hk-44>Restaurar arquivo de backup</button>
+          <input id="arquivo-backup" type="file" accept=".json" aria-label="Arquivo de backup JSON" data-hk-45 hidden>
       </div>
     </div>
   </div>
 
   <div id="screen-legendas" class="overlay-screen" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-legendas" tabindex="-1">
     <div class="overlay-header">
-      <button class="back-btn" onclick="closeOverlay('screen-legendas')">← Voltar</button>
+      <button class="back-btn" data-hk-46>← Voltar</button>
       <h2 id="titulo-legendas">Legendas</h2>
-      <button class="close-overlay-btn" onclick="closeOverlay('screen-legendas')" aria-label="Fechar Legendas">✕</button>
+      <button class="close-overlay-btn" data-hk-47 aria-label="Fechar Legendas">✕</button>
     </div>
     <div class="panel">
       <h2>Legendas para o Histórico de Abastecimentos</h2>
@@ -489,30 +489,30 @@
 
   <div id="screen-metodologia" class="overlay-screen" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-metodologia" tabindex="-1">
     <div class="overlay-header">
-      <button class="back-btn" onclick="closeOverlay('screen-metodologia')">← Voltar</button>
+      <button class="back-btn" data-hk-48>← Voltar</button>
       <h2 id="titulo-metodologia">Metodologia</h2>
-      <button class="close-overlay-btn" onclick="closeOverlay('screen-metodologia')" aria-label="Fechar Metodologia">✕</button>
+      <button class="close-overlay-btn" data-hk-49 aria-label="Fechar Metodologia">✕</button>
     </div>
     <div class="panel">
       <h2>Entradas principais</h2>
       <div class="field-grid">
         <label>Etanol na gasolina atual
-          <span class="input-suffix"><input id="in-etanolAtual" data-cfg-input="1" type="text" inputmode="decimal" value="32" oninput="updateEntradaPct('etanolAtual', this.value)"><span>%</span></span>
+          <span class="input-suffix"><input id="in-etanolAtual" data-cfg-input="1" type="text" inputmode="decimal" value="32" data-hk-50><span>%</span></span>
         </label>
         <label>Camada 4: limite superior da faixa de menor teor <small>teor ≤ limite</small>
-          <span class="input-suffix"><input id="in-limiteTeor1" data-cfg-input="1" type="text" inputmode="decimal" value="27" oninput="updateEntradaPct('limiteTeor1', this.value)"><span>%</span></span>
+          <span class="input-suffix"><input id="in-limiteTeor1" data-cfg-input="1" type="text" inputmode="decimal" value="27" data-hk-51><span>%</span></span>
         </label>
         <label>Camada 4: limite superior da faixa intermediária <small>acima do anterior e ≤ limite</small>
-          <span class="input-suffix"><input id="in-limiteTeor2" data-cfg-input="1" type="text" inputmode="decimal" value="30" oninput="updateEntradaPct('limiteTeor2', this.value)"><span>%</span></span>
+          <span class="input-suffix"><input id="in-limiteTeor2" data-cfg-input="1" type="text" inputmode="decimal" value="30" data-hk-52><span>%</span></span>
         </label>
         <label>Capacidade do tanque
-          <span class="input-suffix"><input id="in-capacidadeTanque" data-cfg-input="1" type="text" inputmode="decimal" value="39.5" oninput="updateEntrada('capacidadeTanque', this.value)"><span>L</span></span>
+          <span class="input-suffix"><input id="in-capacidadeTanque" data-cfg-input="1" type="text" inputmode="decimal" value="39.5" data-hk-53><span>L</span></span>
         </label>
         <label>Distância mensal
-          <span class="input-suffix"><input id="in-distanciaMensal" data-cfg-input="1" type="text" inputmode="decimal" value="660" oninput="updateEntrada('distanciaMensal', this.value)"><span>km</span></span>
+          <span class="input-suffix"><input id="in-distanciaMensal" data-cfg-input="1" type="text" inputmode="decimal" value="660" data-hk-54><span>km</span></span>
         </label>
         <label>Hodômetro de referência <small>ponto de partida dos km</small>
-          <span class="input-suffix"><input id="in-hodometroBaseline" data-cfg-input="1" type="text" inputmode="decimal" value="5698" oninput="updateHodometroBase(this.value)"><span>km</span></span>
+          <span class="input-suffix"><input id="in-hodometroBaseline" data-cfg-input="1" type="text" inputmode="decimal" value="5698" data-hk-55><span>km</span></span>
           <small id="info-hodometro-base"></small>
         </label>
       </div>
@@ -522,31 +522,31 @@
       <p class="note">Os quatro fatores do Baratão Pix e os quatro do Baratão Cartão são calculados em relação ao Shell. O desconto Shell→Outros é único e começa em 5,45%: o Shell fica abaixo de Outros (Outros = Shell ÷ (1 − desconto)); uma edição manual de “Outros” para um combustível passa a prevalecer para esse combustível.</p>
       <div class="field-grid">
         <label>Baratão Pix vs. Shell <small>Gasolina aditivada</small>
-            <span class="input-suffix"><input id="in-fator-pix-gasolina_aditivada" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('pix','gasolina_aditivada', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-pix-gasolina_aditivada" data-cfg-input="1" type="text" inputmode="decimal" data-hk-56><span>%</span></span>
           </label>
           <label>Baratão Pix vs. Shell <small>Gasolina comum</small>
-            <span class="input-suffix"><input id="in-fator-pix-gasolina_comum" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('pix','gasolina_comum', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-pix-gasolina_comum" data-cfg-input="1" type="text" inputmode="decimal" data-hk-57><span>%</span></span>
           </label>
           <label>Baratão Pix vs. Shell <small>Etanol comum</small>
-            <span class="input-suffix"><input id="in-fator-pix-etanol_comum" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('pix','etanol_comum', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-pix-etanol_comum" data-cfg-input="1" type="text" inputmode="decimal" data-hk-58><span>%</span></span>
           </label>
           <label>Baratão Pix vs. Shell <small>Etanol aditivado</small>
-            <span class="input-suffix"><input id="in-fator-pix-etanol_aditivado" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('pix','etanol_aditivado', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-pix-etanol_aditivado" data-cfg-input="1" type="text" inputmode="decimal" data-hk-59><span>%</span></span>
           </label>
           <label>Baratão Cartão vs. Shell <small>Gasolina aditivada</small>
-            <span class="input-suffix"><input id="in-fator-cartao-gasolina_aditivada" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('cartao','gasolina_aditivada', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-cartao-gasolina_aditivada" data-cfg-input="1" type="text" inputmode="decimal" data-hk-60><span>%</span></span>
           </label>
           <label>Baratão Cartão vs. Shell <small>Gasolina comum</small>
-            <span class="input-suffix"><input id="in-fator-cartao-gasolina_comum" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('cartao','gasolina_comum', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-cartao-gasolina_comum" data-cfg-input="1" type="text" inputmode="decimal" data-hk-61><span>%</span></span>
           </label>
           <label>Baratão Cartão vs. Shell <small>Etanol comum</small>
-            <span class="input-suffix"><input id="in-fator-cartao-etanol_comum" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('cartao','etanol_comum', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-cartao-etanol_comum" data-cfg-input="1" type="text" inputmode="decimal" data-hk-62><span>%</span></span>
           </label>
           <label>Baratão Cartão vs. Shell <small>Etanol aditivado</small>
-            <span class="input-suffix"><input id="in-fator-cartao-etanol_aditivado" data-cfg-input="1" type="text" inputmode="decimal" oninput="updateFatorBaratao('cartao','etanol_aditivado', this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-fator-cartao-etanol_aditivado" data-cfg-input="1" type="text" inputmode="decimal" data-hk-63><span>%</span></span>
           </label>
           <label>Shell vs. Outros <small>Shell abaixo de Outros (desconto máximo único)</small>
-            <span class="input-suffix"><input id="in-desconto-shell-outros" data-cfg-input="1" type="text" inputmode="decimal" value="5.45" oninput="updateDescontoShellOutros(this.value)"><span>%</span></span>
+            <span class="input-suffix"><input id="in-desconto-shell-outros" data-cfg-input="1" type="text" inputmode="decimal" value="5.45" data-hk-64><span>%</span></span>
           </label>
       </div>
     </div>
@@ -555,11 +555,11 @@
       <p class="note">Só valem quando ainda não há consumo válido registrado para o grupo — depois do primeiro, o valor calculado do histórico assume automaticamente (ver abaixo).</p>
       <div class="field-grid">
         <label>Gasolina <small>(comum e aditivada)</small>
-          <span class="input-suffix"><input id="in-consumo-gasolina" data-cfg-input="1" type="text" inputmode="decimal" value="11.54" oninput="updateConsumoManual('gasolina', this.value)"><span>km/L</span></span>
+          <span class="input-suffix"><input id="in-consumo-gasolina" data-cfg-input="1" type="text" inputmode="decimal" value="11.54" data-hk-65><span>km/L</span></span>
           <small class="preco-efetivo" id="valor-em-uso-gasolina"></small>
         </label>
         <label>Etanol <small>(comum e aditivado)</small>
-          <span class="input-suffix"><input id="in-consumo-etanol" data-cfg-input="1" type="text" inputmode="decimal" value="8.24" oninput="updateConsumoManual('etanol', this.value)"><span>km/L</span></span>
+          <span class="input-suffix"><input id="in-consumo-etanol" data-cfg-input="1" type="text" inputmode="decimal" value="8.24" data-hk-66><span>km/L</span></span>
           <small class="preco-efetivo" id="valor-em-uso-etanol"></small>
         </label>
       </div>
@@ -618,10 +618,11 @@ function genId(){ return 'r'+Math.random().toString(36).slice(2,9); }
 const MODELO_PRECO_VERSAO = 3;
 const DESCONTO_SHELL_OUTROS_PADRAO = 0.0545;
 const DESCONTO_MAX = 0.99;                 // limite superior aceito para fatores e desconto (igual ao max=99 do HTML)
-const JANELA_CONSUMO = 1;                  // consumos válidos mais recentes usados no cálculo principal (1 = último consumo válido)
+const JANELA_CONSUMO = 3;                  // consumos válidos mais recentes usados no cálculo principal (razão Σkm÷Σlitros; 3 reduz a variância de um único intervalo)
 const JANELA_COMPARACAO = 3;               // média exibida ao lado do consumo usado, só para comparação (não altera o cálculo)
 const FAIXA_CONSUMO_ALERTA = { gasolina:[5,20], etanol:[3,15] };  // km/L; gera alerta com confirmação, não bloqueia
 const KM_POR_LITRO_MAX_ALERTA = 20;        // distância entre abastecimentos > capacidade × 20 km/L gera alerta
+const KM_POR_LITRO_MAX_CALCULO = { gasolina:40, etanol:30 };  // acima disso o intervalo é excluído do cálculo (não apenas alertado)
 const PREFIXO_CORROMPIDO = 'combustivel:corrompido:';
 const CENARIOS = [
   {key:'outros',         label:'Outros',         curto:'Outros',      tipo:'outros'},
@@ -1505,6 +1506,11 @@ function ordemCronologica(registros){
 // as medições de consumo e a referência do próximo lançamento (getUltimoHodometro, referenciaParaLancamento,
 // alertas e validação do formulário) derivam dela. Um hodômetro menor que o do abastecimento anterior válido
 // fica sem km (inválido) e não rebaixa a referência: os lançamentos seguintes continuam comparados ao último válido.
+function kmPorLitroImplausivel(km, litros, combustivel){
+  const g = grupoDe(combustivel);
+  const limite = g ? KM_POR_LITRO_MAX_CALCULO[g] : undefined;
+  return limite!=null && Number(litros)>0 && km!=null && km/Number(litros) > limite;
+}
 function analisarCadeia(registros, baseline){
   // Registros sem hodômetro, mas com km (CSV), avançam o hodômetro de referência pelo km informado; assim um
   // hodômetro digitado depois é comparado ao acumulado, e não apenas ao hodômetro de referência.
@@ -1512,7 +1518,8 @@ function analisarCadeia(registros, baseline){
   const km = new Map();
   const validos = [];
   const hodDe = new Map();
-  let anterior = Number(baseline) || 0;
+  const base = Number(baseline) || 0;
+  let anterior = base;
   ordem.forEach(r=>{
     if(!temHodometro(r)){ anterior += Number(r.km); hodDe.set(r, anterior); validos.push(r); return; }
     const hod = Number(r.hodometro);
@@ -1521,9 +1528,24 @@ function analisarCadeia(registros, baseline){
       anterior = hod;
       hodDe.set(r, hod);
       validos.push(r);
-    }else{
-      km.set(r, null);
+      return;
     }
+    // Hodômetro menor que o do lançamento anterior. Se o anterior tem consumo implausível (hodômetro digitado a
+    // maior) e este hodômetro é consistente com o lançamento que precedia o erro, o erro é o anterior: ele sai da
+    // cadeia e este registro passa a medir o km a partir do lançamento válido anterior.
+    const ultimo = validos.length ? validos[validos.length-1] : null;
+    const penultimoHod = validos.length>=2 ? hodDe.get(validos[validos.length-2]) : base;
+    if(ultimo && temHodometro(ultimo) && hod>=penultimoHod && kmPorLitroImplausivel(km.get(ultimo), ultimo.litros, ultimo.combustivel)){
+      km.set(ultimo, null);
+      validos.pop();
+      hodDe.delete(ultimo);
+      km.set(r, hod-penultimoHod);
+      anterior = hod;
+      hodDe.set(r, hod);
+      validos.push(r);
+      return;
+    }
+    km.set(r, null);
   });
   return { ordem, km, validos, hodDe, ultimo: anterior };
 }
@@ -2489,6 +2511,8 @@ const MOTIVOS = {
   primeiro:  {curto:'sem ref.',    longo:'Primeiro lançamento: o combustível usado no intervalo anterior é desconhecido.'},
   kmInvalido:{curto:'km inválido', longo:'Hodômetro menor que o do abastecimento anterior (sequência por data e hora) ou que o hodômetro de referência: km percorridos indisponíveis.'},
   semDistancia:{curto:'sem km',longo:'Sem hodômetro e sem km positivo informado: não há distância mensurável; o registro não entra na sequência de cálculo.'},
+  implausivel:{curto:'km/L implausível',longo:'Consumo acima do limite físico plausível para o combustível (provável erro de digitação do hodômetro ou dos litros): o intervalo não entra no cálculo.'},
+  acumulado: {curto:'parcial acum.',longo:'Parcial: km e litros são somados ao próximo tanque cheio do mesmo combustível, que mede o consumo. Sem tanque cheio posterior, o registro aguarda.'},
   semKm:     {curto:'sem km',      longo:'Sem km percorridos (hodômetro igual ao do lançamento anterior).'},
   litros:    {curto:'sem litros',  longo:'Litros ausentes ou inválidos.'},
 };
@@ -2582,39 +2606,82 @@ function calcularMedicoes(){
   cadeia.forEach(r=>{ const g = grupoDe(r.combustivel); if(g && r.preco>0) precosGrupo[g].push({ts:tsRegistro(r), preco:r.preco}); });
   const precoMaisProximo = (g, ts) => { const l = precosGrupo[g] || []; let ant = null; for(const x of l){ if(x.ts<=ts) ant = x; else break; } return ant ? ant.preco : (l.length ? l[0].preco : null); };
   // Sem abastecimento anterior, o combustível usado no intervalo é desconhecido: exclui ("sem ref."),
-  // em vez de supor qualquer combustível. comp começa com a composição inicial documentada
-  // (tanque 100% gasolina com o teor atual), aplicada somente quando um intervalo mensurável
-  // depender da composição anterior; o primeiro lançamento segue excluído por falta de referência.
+  // em vez de supor qualquer combustível. comp começa com a composição inicial documentada.
   let prev = null, comp = composicaoInicial();
   const ultimoPorGrupo = {};
+  // Parciais: km e litros de abastecimentos parciais do mesmo combustível são somados ao tanque cheio seguinte,
+  // que mede o consumo (km cheio→cheio ÷ Σ litros). baseCheio/compBase são o último tanque cheio válido e a
+  // composição do tanque após ele. Qualquer registro não acumulável interrompe a soma (parciaisInvalidas).
+  let baseCheio = null, compBase = null, parciais = [], parciaisInvalidas = false;
+  const excluirParciais = (motivo) => { parciais.forEach(p=>porRegistro.set(p.id,{motivo})); parciais = []; };
+  const registrarPartes = (r, partes, ordemIdx) => {
+    partes.forEach(m=>{ m.origem = temHodometro(r) ? 'hodometro' : 'csv'; m.ordemIdx = ordemIdx; medicoes.push(m); });
+    return partes;
+  };
   cadeia.forEach((r, ordemIdx)=>{
     if(!temHodometro(r) && !temKmCSV(r)){ // sem hodômetro e sem km positivo e finito (mesma elegibilidade de analisarCadeia)
       porRegistro.set(r.id,{motivo:MOTIVOS.semDistancia});
+      excluirParciais(MOTIVOS.parcial); parciaisInvalidas = parciaisInvalidas || !!baseCheio;
       return; // sem distância: não atualiza prev/comp/ultimoPorGrupo, para não contaminar os intervalos seguintes
-    } else if(temHodometro(r) && r.km==null){
+    }
+    if(temHodometro(r) && r.km==null){
       porRegistro.set(r.id,{motivo:MOTIVOS.kmInvalido});
+      excluirParciais(MOTIVOS.parcial); parciaisInvalidas = parciaisInvalidas || !!baseCheio;
       return; // hodômetro não confiável: não atualiza prev/comp, para não contaminar os intervalos seguintes
+    }
+    const parcial = r.tanqueCheio===false;
+    const g = grupoDe(r.combustivel);
+    let motivo = null;
+    if(!(r.km>0)) motivo = MOTIVOS.semKm;
+    else if(r.incluir!=='Sim') motivo = MOTIVOS.manual;
+    else if(!(r.litros>0)) motivo = MOTIVOS.litros;
+
+    if(parcial){
+      if(motivo || !baseCheio || (parciais.length && grupoDe(parciais[0].combustivel)!==g)){
+        // não acumulável: o intervalo deste parcial não mede consumo e a soma anterior é encerrada
+        porRegistro.set(r.id,{motivo: motivo || MOTIVOS.parcial});
+        excluirParciais(MOTIVOS.parcial);
+        parciaisInvalidas = true;
+      } else {
+        parciais.push(r);
+        porRegistro.set(r.id,{motivo: MOTIVOS.acumulado});
+      }
     } else {
-      let motivo = null;
-      if(!(r.km>0)) motivo = MOTIVOS.semKm;
-      else if(r.incluir!=='Sim') motivo = MOTIVOS.manual;
-      else if(r.tanqueCheio===false) motivo = MOTIVOS.parcial;
-      else if(!(r.litros>0)) motivo = MOTIVOS.litros;
-      else if(!prev) motivo = MOTIVOS.primeiro;
-      else if(prev.tanqueCheio===false) motivo = MOTIVOS.refParcial;
+      if(!motivo && parciaisInvalidas) motivo = MOTIVOS.refParcial;
+      if(!motivo && !baseCheio) motivo = MOTIVOS.primeiro;
+      if(!motivo && parciais.length){
+        const kmSoma = Number(r.km) + parciais.reduce((a,p)=>a+Number(p.km),0);
+        const litrosSoma = Number(r.litros) + parciais.reduce((a,p)=>a+Number(p.litros),0);
+        const grupoBase = grupoDe(baseCheio.combustivel);
+        const mesmoGrupo = parciais.every(p=>grupoDe(p.combustivel)===grupoBase) && grupoDe(r.combustivel)===grupoBase;
+        if(!mesmoGrupo) motivo = MOTIVOS.refParcial;
+        else if(kmPorLitroImplausivel(kmSoma, litrosSoma, baseCheio.combustivel)) motivo = MOTIVOS.implausivel;
+        else {
+          const synth = Object.assign({}, r, {km:kmSoma, litros:litrosSoma});
+          const partes = registrarPartes(r, particionarIntervalo(synth, baseCheio, compBase, ultimoPorGrupo), ordemIdx);
+          parciais.forEach(p=>porRegistro.set(p.id,{motivo:MOTIVOS.acumulado}));
+          porRegistro.set(r.id, resumoPartes(partes, gr=>precoMaisProximo(gr, tsRegistro(r))));
+          parciais = [];
+        }
+      }
       if(motivo){
         porRegistro.set(r.id,{motivo});
-      } else {
-        const partes = particionarIntervalo(r, prev, comp, ultimoPorGrupo).map(p=>{
-          p.origem = temHodometro(r) ? 'hodometro' : 'csv'; p.ordemIdx = ordemIdx; return p; });
-        partes.forEach(m=>medicoes.push(m));
-        porRegistro.set(r.id, resumoPartes(partes, g=>precoMaisProximo(g, tsRegistro(r))));
+        excluirParciais(MOTIVOS.parcial);
+      } else if(!porRegistro.has(r.id)) {
+        // intervalo tanque a tanque (sem parciais pendentes)
+        if(kmPorLitroImplausivel(r.km, r.litros, prev.combustivel)){
+          porRegistro.set(r.id,{motivo: MOTIVOS.implausivel});
+        } else {
+          const partes = registrarPartes(r, particionarIntervalo(r, prev, comp, ultimoPorGrupo), ordemIdx);
+          porRegistro.set(r.id, resumoPartes(partes, gr=>precoMaisProximo(gr, tsRegistro(r))));
+        }
       }
+      parciaisInvalidas = false;
     }
     comp = composicaoAposAbastecimento(r, comp);
-    const g = grupoDe(r.combustivel);
     if(g) ultimoPorGrupo[g] = {combustivel:r.combustivel, preco:r.preco};
     prev = r;
+    if(!parcial){ baseCheio = r; compBase = comp; }
   });
   medicoes.sort((a,b)=> b.ts.localeCompare(a.ts) || (b.hodometro-a.hodometro) || ((b.ordemIdx||0)-(a.ordemIdx||0)));
   return {medicoes, porRegistro};
@@ -2912,7 +2979,7 @@ function renderHistoricoTable(med){
       <td class="num">${kmTxt}</td>
       <td class="num">${fmtNum(r.litros)}</td><td class="num">${info.litrosEquiv!=null?fmtNum(info.litrosEquiv):'—'}</td><td class="num">${consumoTxt}</td>
       <td class="num">${custoKm!=null?fmtBRLd(custoKm,4)+(info.custoEstimado?'<span class="sub" title="Inclui combustível sem preço registrado (tanque anterior ao primeiro lançamento): usado o preço do abastecimento mais próximo do mesmo grupo.">estimado</span>':''):'—'}</td><td class="num">${valorTotal!=null?fmtBRL(valorTotal):'—'}</td>
-      <td class="num">${r.congestionamento ?? '—'}</td><td class="num">${r.aclives ?? '—'}</td><td class="num">${r.arCondicionado!=null?fmtPct(r.arCondicionado,0):'—'}</td>
+      <td class="num">${escapeHTML(r.congestionamento ?? '—')}</td><td class="num">${escapeHTML(r.aclives ?? '—')}</td><td class="num">${r.arCondicionado!=null?fmtPct(r.arCondicionado,0):'—'}</td>
       <td><span class="tag ${condicao==='Severa'?'tag-bad':condicao==='Favorável'?'tag-good':'tag-neutral'}">${condicao||'—'}</span>${ic!=null?'<span class="sub">IC '+fmtNum(ic,2)+'</span>':''}</td>
       <td><button type="button" class="tag tag-btn ${cheio?'tag-good':'tag-neutral'}" data-act="cheio" data-id="${id}" aria-pressed="${cheio}" title="Alternar tanque cheio / parcial">${cheio?'Sim':'Não'}</button></td>
       <td><button type="button" class="tag tag-btn ${incl?'tag-good':'tag-neutral'}" data-act="incluir" data-id="${id}" aria-pressed="${incl}" title="Alternar inclusão no cálculo">${incl?'Sim':'Não'}</button></td>
@@ -2992,6 +3059,81 @@ if('serviceWorker' in navigator && (location.protocol==='https:' || location.hos
 }
 renderAll();
 
+
+// ---- VINCULAÇÃO DE EVENTOS ----
+// Os controles não usam mais atributos on* no HTML (a CSP não permite 'unsafe-inline' em script-src).
+// Cada controle recebe um atributo data-hk-N; a tabela abaixo associa N ao evento e ao código original.
+[
+  [1, 'click', (event, el) => { toggleSideMenu(); }],
+  [2, 'click', (event, el) => { esconderAviso('restore-banner'); }],
+  [3, 'click', (event, el) => { baixarCorrompidos(); }],
+  [4, 'click', (event, el) => { openOverlay('screen-novo-abastecimento'); }],
+  [5, 'change', (event, el) => { updateCenario(el.value); }],
+  [6, 'change', (event, el) => { updateCenario(el.value); }],
+  [7, 'change', (event, el) => { updateCenario(el.value); }],
+  [8, 'change', (event, el) => { updateCenario(el.value); }],
+  [9, 'change', (event, el) => { updatePrecoCenario('gasolina_aditivada', el.value); }],
+  [10, 'change', (event, el) => { updatePrecoCenario('gasolina_comum', el.value); }],
+  [11, 'change', (event, el) => { updatePrecoCenario('etanol_comum', el.value); }],
+  [12, 'change', (event, el) => { updatePrecoCenario('etanol_aditivado', el.value); }],
+  [13, 'click', (event, el) => { toggleSideMenu(); }],
+  [14, 'click', (event, el) => { toggleSideMenu(); }],
+  [15, 'click', (event, el) => { openOverlay('screen-resultados'); }],
+  [16, 'click', (event, el) => { openOverlay('screen-historico'); }],
+  [17, 'click', (event, el) => { openOverlay('screen-metodologia'); }],
+  [18, 'click', (event, el) => { openOverlay('screen-backup'); }],
+  [19, 'click', (event, el) => { openOverlay('screen-legendas'); }],
+  [20, 'click', (event, el) => { closeOverlay('screen-novo-abastecimento'); }],
+  [21, 'click', (event, el) => { closeOverlay('screen-novo-abastecimento'); }],
+  [22, 'submit', (event, el) => { addHistoricoEntry(event); }],
+  [23, 'input', (event, el) => { atualizarReferenciaFormulario(); }],
+  [24, 'change', (event, el) => { atualizarReferenciaFormulario(); }],
+  [25, 'input', (event, el) => { atualizarReferenciaFormulario(); }],
+  [26, 'change', (event, el) => { atualizarReferenciaFormulario(); }],
+  [27, 'change', (event, el) => { atualizarPrecoPagoModal(); }],
+  [28, 'input', (event, el) => { onEditarValorAbastecimento('preco'); }],
+  [29, 'change', (event, el) => { atualizarPrecoPagoModal(); renderPrevisaoPosto(); }],
+  [30, 'input', (event, el) => { previewKmDelta(el); }],
+  [31, 'input', (event, el) => { onEditarValorAbastecimento('litros'); }],
+  [32, 'input', (event, el) => { onEditarValorAbastecimento('valorTotalPago'); }],
+  [33, 'click', (event, el) => { closeOverlay('screen-resultados'); }],
+  [34, 'click', (event, el) => { closeOverlay('screen-resultados'); }],
+  [35, 'click', (event, el) => { closeOverlay('screen-historico'); }],
+  [36, 'click', (event, el) => { closeOverlay('screen-historico'); }],
+  [37, 'click', (event, el) => { exportarCSV(); }],
+  [38, 'click', (event, el) => { document.getElementById('arquivo-csv').click(); }],
+  [39, 'change', (event, el) => { importarCSV(event); }],
+  [40, 'click', (event, el) => { limparHistorico(); }],
+  [41, 'click', (event, el) => { closeOverlay('screen-backup'); }],
+  [42, 'click', (event, el) => { closeOverlay('screen-backup'); }],
+  [43, 'click', (event, el) => { exportarBackupJSON(); }],
+  [44, 'click', (event, el) => { document.getElementById('arquivo-backup').click(); }],
+  [45, 'change', (event, el) => { importarBackupJSON(event); }],
+  [46, 'click', (event, el) => { closeOverlay('screen-legendas'); }],
+  [47, 'click', (event, el) => { closeOverlay('screen-legendas'); }],
+  [48, 'click', (event, el) => { closeOverlay('screen-metodologia'); }],
+  [49, 'click', (event, el) => { closeOverlay('screen-metodologia'); }],
+  [50, 'input', (event, el) => { updateEntradaPct('etanolAtual', el.value); }],
+  [51, 'input', (event, el) => { updateEntradaPct('limiteTeor1', el.value); }],
+  [52, 'input', (event, el) => { updateEntradaPct('limiteTeor2', el.value); }],
+  [53, 'input', (event, el) => { updateEntrada('capacidadeTanque', el.value); }],
+  [54, 'input', (event, el) => { updateEntrada('distanciaMensal', el.value); }],
+  [55, 'input', (event, el) => { updateHodometroBase(el.value); }],
+  [56, 'input', (event, el) => { updateFatorBaratao('pix','gasolina_aditivada', el.value); }],
+  [57, 'input', (event, el) => { updateFatorBaratao('pix','gasolina_comum', el.value); }],
+  [58, 'input', (event, el) => { updateFatorBaratao('pix','etanol_comum', el.value); }],
+  [59, 'input', (event, el) => { updateFatorBaratao('pix','etanol_aditivado', el.value); }],
+  [60, 'input', (event, el) => { updateFatorBaratao('cartao','gasolina_aditivada', el.value); }],
+  [61, 'input', (event, el) => { updateFatorBaratao('cartao','gasolina_comum', el.value); }],
+  [62, 'input', (event, el) => { updateFatorBaratao('cartao','etanol_comum', el.value); }],
+  [63, 'input', (event, el) => { updateFatorBaratao('cartao','etanol_aditivado', el.value); }],
+  [64, 'input', (event, el) => { updateDescontoShellOutros(el.value); }],
+  [65, 'input', (event, el) => { updateConsumoManual('gasolina', el.value); }],
+  [66, 'input', (event, el) => { updateConsumoManual('etanol', el.value); }],
+].forEach(([id, ev, fn]) => {
+  const node = document.querySelector('[data-hk-' + id + ']');
+  if(node) node.addEventListener(ev, e => fn(e, node));
+});
 </script>
 <noscript><p style="text-align:center;color:#e8ecf3;padding:16px;">Esta calculadora precisa de JavaScript ativado para fazer os cálculos.</p></noscript>
 </body>
