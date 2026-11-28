@@ -32,8 +32,8 @@ keywords:
   - refuelling-history
   - usage-condition-index
 license: MIT
-date-released: 2026-11-25
-version: "1.2.0"
+date-released: 2026-11-28
+version: "1.2.1"
 type: software
 url: "https://github.com/KM20197/Fuel"
 repository-code: "https://github.com/KM20197/Fuel"
@@ -49,7 +49,7 @@ preferred-citation:
       given-names: Ricardo Coutinho
       orcid: "https://orcid.org/0000-0002-3265-6595"
   year: 2026
-  version: "1.2.0"
+  version: "1.2.1"
   publisher:
     name: Zenodo
   doi: "10.5281/zenodo.22918209"

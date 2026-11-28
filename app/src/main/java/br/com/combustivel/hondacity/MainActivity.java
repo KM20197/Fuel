@@ -90,7 +90,7 @@ public class MainActivity extends Activity {
         settings.setDisplayZoomControls(false);
         settings.setMediaPlaybackRequiresUserGesture(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setUserAgentString(settings.getUserAgentString() + " CalculadoraCombustivelAPK/3.1.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " CalculadoraCombustivelAPK/3.1.1");
 
         webView.addJavascriptInterface(new AndroidBridge(), "AndroidBridge");
         webView.setWebViewClient(new LocalOnlyWebViewClient());
