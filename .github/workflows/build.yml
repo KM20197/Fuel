@@ -22,6 +22,12 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Validar sintaxe YAML dos workflows
+        run: |
+          for arq in .github/workflows/build.yml .github/workflows/release.yml .github/dependabot.yml; do
+            npx --yes js-yaml@4.1.0 "$arq" > /dev/null
+          done
+
       - name: Run calculation engine and metadata tests
         run: node --test tests/*.test.mjs
 
