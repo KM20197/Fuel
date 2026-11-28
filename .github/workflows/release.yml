@@ -21,7 +21,8 @@ jobs:
           node-version: '24'
 
       - name: Verificar correspondência entre a tag e a versão em CITATION.cff
-        run: grep -q "^version: \"${GITHUB_REF_NAME#v}\"" CITATION.cff
+        run: |
+          grep -q "^version: \"${GITHUB_REF_NAME#v}\"" CITATION.cff
 
       - name: Run calculation engine and metadata tests
         run: node --test tests/*.test.mjs

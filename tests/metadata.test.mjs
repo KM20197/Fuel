@@ -53,3 +53,9 @@ test('M5: build.yml declara permissions e ignora a assinatura sem Secrets em pul
   assert.match(b, /^permissions:\s*\n\s+contents: read/m);
   assert.ok(b.includes("steps.assinatura.outputs.disponivel == 'true'"));
 });
+
+test('M6: workflows são YAML válido (o release.yml anterior não era)', () => {
+  const b = ler('.github/workflows/build.yml');
+  assert.ok(b.includes('js-yaml@4.1.0'));
+  assert.ok(ler('.github/workflows/release.yml').includes('run: |'));
+});
