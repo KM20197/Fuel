@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Autor** | Ricardo Coutinho Mello (GitHub: [KM20197](https://github.com/KM20197)) |
-| **Versão** | 1.2.0 (código interno: versionCode 5 / versionName 3.1.0) |
+| **Versão** | 1.2.1 (código interno: versionCode 6 / versionName 3.1.1) |
 | **Licença** | [MIT License](https://opensource.org/license/mit) |
 | **Repositório** | https://github.com/KM20197/Fuel |
 | **DOI** | 10.5281/zenodo.22918209|
@@ -68,7 +68,7 @@ Ou use a Action **Android CI** do repositório (artefato `app-debug`).
            operacional de combustíveis a partir de histórico de abastecimentos,
            condições de uso e preços efetivos parametrizados},
   year = {2026},
-  version = {1.2.0},
+  version = {1.2.1},
   url = {https://github.com/KM20197/Fuel},
   note = {Licença MIT; DOI Zenodo em 10.5281/zenodo.22918209}
 }
@@ -77,4 +77,4 @@ Consulte também `CITATION.cff` (formato Citation File Format v1.2.0).
 
 ## Licença
 
-Este software está licenciado sob a MIT License. Texto integral em LICENSE. Texto integral em `LICENSE`. 
+Este software está licenciado sob a MIT License. Texto integral em `LICENSE`. 

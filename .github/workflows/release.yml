@@ -13,19 +13,32 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '24'
+
+      - name: Verificar correspondência entre a tag e a versão em CITATION.cff
+        run: grep -q "^version: \"${GITHUB_REF_NAME#v}\"" CITATION.cff
+
+      - name: Run calculation engine and metadata tests
+        run: node --test tests/*.test.mjs
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6
         with:
           cache-disabled: true
-          gradle-version: '8.9'
+
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest
 
       - name: Decode Release Keystore
         env:
@@ -46,7 +59,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: gradle assembleRelease
+        run: ./gradlew assembleRelease
 
       - name: Verify APK Signature and Package Assets
         run: |
@@ -62,7 +75,7 @@ jobs:
         run: rm -f "$RUNNER_TEMP/fuel-release.jks"
 
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           files: |
             Fuel-${{ github.ref_name }}-release.apk
