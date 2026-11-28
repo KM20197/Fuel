@@ -8,7 +8,7 @@
 | **Version** | 1.2.1 (internal: versionCode 6 / versionName 3.1.1) |
 | **License** | [MIT License](https://opensource.org/license/mit) |
 | **Repository** | https://github.com/KM20197/Fuel |
-| **DOI** | *10.5281/zenodo.22918209* |
+| **DOI** | *10.5281/zenodo.22918208* |
 | **Languages** | UI in Brazilian Portuguese |
 
 This is a Portuguese-language application; the current document is the English abstract and reference.
@@ -67,7 +67,7 @@ Or use the repository's **Android CI** action (artifact `app-debug`).
   year = {2026},
   version = {1.2.1},
   url = {https://github.com/KM20197/Fuel},
-  note = {MIT; Zenodo DOI 10.5281/zenodo.22918209}
+  note = {MIT; Zenodo DOI 10.5281/zenodo.22918208}
 }
 ```
 See also `CITATION.cff` (Citation File Format v1.2.0).

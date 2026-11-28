@@ -59,3 +59,12 @@ test('M6: workflows são YAML válido (o release.yml anterior não era)', () => 
   assert.ok(b.includes('js-yaml@4.1.0'));
   assert.ok(ler('.github/workflows/release.yml').includes('run: |'));
 });
+
+test('M7: DOI conceitual idêntico em CITATION.cff, READMEs e bibtex', () => {
+  const doi = cff.match(/value: "(10\.5281\/zenodo\.\d+)"/)[1];
+  const ocorrencias = [ler('README.md'), ler('README.en.md'), cff]
+    .flatMap((t) => [...t.matchAll(/10\.5281\/zenodo\.\d+/g)].map((m) => m[0]));
+  assert.ok(ocorrencias.length >= 5);
+  ocorrencias.forEach((d) => assert.equal(d, doi));
+  assert.equal(cff.match(/doi: "(10[^"]+)"/)[1], doi);
+});
